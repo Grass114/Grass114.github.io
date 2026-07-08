@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCSkin3D 多语言版 · 下载</title>
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(145deg, #f5f9ff 0%, #e6edf7 100%);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 70px 24px 24px 24px;
+        }
+
+        /* ===== 左上角固定导航条 ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-bar:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .top-bar .site-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0b1e33;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        .top-bar .site-title:hover {
+            color: #6c63ff;
+        }
+
+        .top-bar .site-title::before {
+            content: "🏠";
+            font-size: 20px;
+        }
+
+        .top-bar .nav-link {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1e293b;
+            text-decoration: none;
+            transition: color 0.2s;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .top-bar .nav-link::before {
+            content: "｜";
+            margin-right: 10px;
+            color: #94a3b8;
+            font-weight: 300;
+        }
+
+        .top-bar .nav-link:hover {
+            color: #6c63ff;
+            border-bottom-color: #6c63ff;
+        }
+
+        .top-bar .nav-link.active {
+            color: #6c63ff;
+            border-bottom-color: #6c63ff;
+        }
+
+        /* ===== 主容器 ===== */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* ===== 信息卡片 ===== */
+        .info-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 48px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 20, 40, 0.08);
+            text-align: center;
+            width: 100%;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            margin-bottom: 20px;
+        }
+
+        .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 20, 40, 0.12);
+        }
+
+        .info-card .icon {
+            font-size: 64px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .info-card h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #0b1e33;
+            letter-spacing: -0.3px;
+        }
+
+        .info-card .subtitle {
+            color: #64748b;
+            font-size: 16px;
+            margin-top: 8px;
+            line-height: 1.7;
+        }
+
+        .info-card .version {
+            display: inline-block;
+            background: rgba(108, 99, 255, 0.12);
+            color: #6c63ff;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 4px 20px;
+            border-radius: 30px;
+            margin-top: 12px;
+        }
+
+        /* ===== 链接卡片列表 ===== */
+        .link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 18px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 20, 40, 0.06);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 20, 40, 0.10);
+        }
+
+        .link-card .label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #0b1e33;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .link-card .label .icon-sm {
+            font-size: 24px;
+        }
+
+        .link-card .url {
+            font-size: 15px;
+            color: #6c63ff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 6px 16px;
+            border-radius: 30px;
+            background: rgba(108, 99, 255, 0.08);
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        .link-card .url:hover {
+            background: #6c63ff;
+            color: white;
+            border-color: #6c63ff;
+            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.25);
+        }
+
+        /* ===== 返回链接 ===== */
+        .back-link {
+            margin-top: 28px;
+        }
+
+        .back-link a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6c63ff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .back-link a:hover {
+            color: #4a42b8;
+            border-bottom-color: #4a42b8;
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            padding-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            width: 100%;
+            margin-top: 32px;
+            letter-spacing: 0.3px;
+        }
+
+        .footer a {
+            color: #6c63ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #4a42b8;
+            text-decoration: underline;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 700px) {
+            body {
+                padding: 66px 16px 16px 16px;
+            }
+            .info-card {
+                padding: 32px 24px;
+            }
+            .info-card h1 {
+                font-size: 24px;
+            }
+            .link-card {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+                padding: 16px 20px;
+            }
+            .link-card .url {
+                text-align: left;
+                width: 100%;
+                font-size: 14px;
+            }
+            .top-bar {
+                padding: 10px 18px;
+                gap: 8px;
+            }
+            .top-bar .site-title {
+                font-size: 16px;
+            }
+            .top-bar .nav-link {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .info-card h1 {
+                font-size: 20px;
+            }
+            .info-card .icon {
+                font-size: 48px;
+            }
+            .info-card .subtitle {
+                font-size: 14px;
+            }
+            .link-card .label {
+                font-size: 14px;
+            }
+            .link-card .url {
+                font-size: 13px;
+                padding: 4px 12px;
+            }
+            .top-bar .site-title {
+                font-size: 14px;
+            }
+            .top-bar .nav-link {
+                font-size: 13px;
+            }
+            .top-bar .nav-link::before {
+                margin-right: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="index.html" class="site-title">BlueCat114 官方网站</a>
+        <a href="project.html" class="nav-link active">项目</a>
+    </div>
+
+    <div class="main">
+
+        <!-- 主卡片：项目信息 -->
+        <div class="info-card">
+            <span class="icon">⛏️</span>
+            <h1>MCSkin3D 多语言增强版</h1>
+            <p class="subtitle">
+                为 MCSkin3D 添加 <strong>11 种语言</strong> 支持<br />
+                包含文件完整性修复工具、错误对照表及详细使用教程
+            </p>
+            <span class="version">v1.4.4 · 最新稳定版</span>
+        </div>
+
+        <!-- 链接卡片列表 -->
+        <div class="link-list">
+
+            <!-- MineBBS（第一位） -->
+            <div class="link-card">
+                <span class="label">
+                    <span class="icon-sm">🧊</span> MineBBS 下载链接
+                </span>
+                <a href="https://www.minebbs.com/resources/mcskin-d.16518/" target="_blank" class="url">
+                    链接：minebbs.com/resources/mcskin-d.16518/
+                </a>
+            </div>
+
+            <!-- GitHub（第二位） -->
+            <div class="link-card">
+                <span class="label">
+                    <span class="icon-sm">🐙</span> GitHub 下载链接
+                </span>
+                <a href="https://github.com/grass114/MCSkin3D/release" target="_blank" class="url">
+                    链接：github.com/grass114/MCSkin3D/release
+                </a>
+            </div>
+
+            <!-- SourceForge（第三位） -->
+            <div class="link-card">
+                <span class="label">
+                    <span class="icon-sm">📦</span> SourceForge 下载链接
+                </span>
+                <a href="https://sourceforge.net/projects/mcskin3d-more-languages/files/" target="_blank" class="url">
+                    链接：sourceforge.net/projects/mcskin3d-more-languages/files/
+                </a>
+            </div>
+
+        </div>
+
+        <!-- 返回项目列表 -->
+        <div class="back-link">
+            <a href="project.html">← 返回项目列表</a>
+        </div>
+
+        <div class="footer">
+            © 2026 <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
+        </div>
+
+    </div>
+
+</body>
+</html>
