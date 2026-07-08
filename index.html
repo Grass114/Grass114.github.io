@@ -1,102 +1,358 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的个人官网</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlueCat114 的官方网站</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #f0f2f5;
-            min-height: 100vh;
+            background: linear-gradient(145deg, #f5f9ff 0%, #e6edf7 100%);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 70px 24px 24px 24px;
+        }
+
+        /* ===== 左上角固定导航条 ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: background 0.3s;
+            display: flex;
             align-items: center;
+            gap: 12px;
         }
-        .card {
-            background: white;
-            padding: 50px 60px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
-            text-align: center;
-            max-width: 500px;
+
+        .top-bar:hover {
+            background: rgba(255, 255, 255, 0.8);
         }
-        .avatar {
-            font-size: 80px;
-            margin-bottom: 10px;
+
+        .top-bar .site-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0b1e33;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
         }
-        h1 {
-            font-size: 28px;
-            color: #1a1a2e;
-            margin-bottom: 8px;
-        }
-        .title {
+
+        .top-bar .site-title:hover {
             color: #6c63ff;
+        }
+
+        .top-bar .site-title::before {
+            content: "🏠";
+            font-size: 20px;
+        }
+
+        .top-bar .project-link {
             font-size: 16px;
             font-weight: 500;
-            margin-bottom: 16px;
+            color: #1e293b;
+            text-decoration: none;
+            transition: color 0.2s;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
         }
-        .bio {
-            color: #555;
-            font-size: 14px;
-            line-height: 1.8;
-            margin-bottom: 24px;
+
+        .top-bar .project-link::before {
+            content: "｜";
+            margin-right: 10px;
+            color: #94a3b8;
+            font-weight: 300;
         }
-        .links a {
+
+        .top-bar .project-link:hover {
+            color: #6c63ff;
+            border-bottom-color: #6c63ff;
+        }
+
+        #top {
+            position: absolute;
+            top: 0;
+        }
+
+        /* ===== 主容器 ===== */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* ===== 头部 ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .avatar {
+            font-size: 72px;
+            display: block;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            color: #0b1e33;
+            letter-spacing: -0.5px;
+            margin-top: 6px;
+            background: linear-gradient(135deg, #0b1e33 0%, #3b4a66 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding-bottom: 4px;
+            border-bottom: 4px solid rgba(108, 99, 255, 0.3);
+            display: block;
+        }
+
+        .badge {
             display: inline-block;
-            margin: 0 8px;
-            padding: 10px 24px;
+            background: rgba(30, 41, 59, 0.9);
+            color: #f1f5f9;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 28px;
+            border-radius: 60px;
+            margin-top: 10px;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== 自我介绍 ===== */
+        .intro {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 28px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 28px rgba(0, 20, 40, 0.06);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 28px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .intro:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 40px rgba(0, 20, 40, 0.10);
+        }
+
+        .intro p {
+            font-size: 17px;
+            line-height: 1.8;
+            color: #1e293b;
+        }
+
+        .intro .highlight {
+            color: #6c63ff;
+            font-weight: 600;
+        }
+
+        /* ===== 按钮区 ===== */
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin: 4px 0 20px 0;
+        }
+
+        .actions a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 36px;
             background: #6c63ff;
             color: white;
             text-decoration: none;
-            border-radius: 30px;
-            font-size: 14px;
-            transition: background 0.2s;
+            border-radius: 60px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 14px rgba(108, 99, 255, 0.25);
         }
-        .links a:hover {
+
+        .actions a:hover {
             background: #5a52d5;
+            transform: scale(1.04);
+            box-shadow: 0 8px 28px rgba(108, 99, 255, 0.35);
         }
-        .download {
-            margin-top: 16px;
+
+        /* ===== 页脚 ===== */
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            padding-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            width: 100%;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
         }
-        .download a {
+
+        .footer a {
             color: #6c63ff;
             text-decoration: none;
-            font-size: 14px;
-            border: 1.5px solid #6c63ff;
-            padding: 8px 20px;
-            border-radius: 30px;
-            transition: 0.2s;
+            font-weight: 500;
+            transition: color 0.2s;
         }
-        .download a:hover {
-            background: #6c63ff;
-            color: white;
+
+        .footer a:hover {
+            color: #4a42b8;
+            text-decoration: underline;
         }
-        .footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #aaa;
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 700px) {
+            body {
+                padding: 66px 16px 16px 16px;
+            }
+            h1 {
+                font-size: 34px;
+            }
+            .avatar {
+                font-size: 56px;
+            }
+            .intro {
+                padding: 20px 18px;
+            }
+            .intro p {
+                font-size: 15px;
+            }
+            .actions a {
+                padding: 12px 28px;
+                font-size: 14px;
+            }
+            .badge {
+                font-size: 14px;
+                padding: 6px 18px;
+            }
+            .top-bar {
+                padding: 10px 18px;
+                gap: 8px;
+            }
+            .top-bar .site-title {
+                font-size: 16px;
+            }
+            .top-bar .project-link {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 28px;
+            }
+            .intro p {
+                font-size: 14px;
+            }
+            .actions a {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+            .top-bar {
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .top-bar .site-title {
+                font-size: 14px;
+            }
+            .top-bar .project-link {
+                font-size: 13px;
+            }
+            .top-bar .project-link::before {
+                margin-right: 6px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="avatar">👋</div>
-        <h1>张三</h1>
-        <div class="title">全栈开发者 · 内容创作者</div>
-        <div class="bio">
-            热爱编程、设计和分享。<br>
-            欢迎来到我的个人小站。
-        </div>
-        <div class="links">
-            <a href="#">GitHub</a>
-            <a href="#">博客</a>
-        </div>
-        <div class="download">
-            <a href="./我的简历.pdf" download>📄 下载简历</a>
-        </div>
-        <div class="footer">© 2026 张三 · 用 ❤️ 打造</div>
+
+    <div id="top"></div>
+
+    <!-- 导航条 -->
+    <div class="top-bar">
+        <a href="#top" class="site-title">BlueCat114 官方网站</a>
+        <a href="project.html" class="project-link">项目</a>
     </div>
+
+    <div class="main">
+
+        <div class="header">
+            <span class="avatar">⛏️</span>
+            <h1>嘿！好久不见啊！</h1>
+            <div class="badge">欢迎来到 BlueCat114 的官方网站！</div>
+        </div>
+
+        <!-- 自我介绍 -->
+        <div class="intro">
+            <p>
+                我是 <span class="highlight">BlueCat114</span>，一名热爱 Minecraft 生态的
+                <span class="highlight">模组工具开发者</span>。<br />
+                专注于 <span class="highlight">MCSkin3D 多语言增强</span>、
+                皮肤搜索工具、以及各种提升游戏体验的小工具。<br />
+                喜欢折腾代码，也乐于分享。
+            </p>
+        </div>
+
+        <!-- 按钮区：GitHub -->
+        <div class="actions">
+            <a href="https://github.com/grass114" target="_blank">🐙 GitHub</a>
+        </div>
+
+        <div class="footer">
+            © 2026 <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
+        </div>
+
+    </div>
+
 </body>
 </html>
