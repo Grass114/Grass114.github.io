@@ -41,6 +41,8 @@
             --intro-bg: rgba(255, 255, 255, 0.65);
             --intro-border: rgba(255, 255, 255, 0.8);
             --clock-color: var(--text-muted);
+            --status-on: #22c55e;
+            --status-off: #ef4444;
         }
 
         [data-theme="dark"] {
@@ -69,6 +71,8 @@
             --intro-bg: rgba(30, 41, 59, 0.7);
             --intro-border: rgba(71, 85, 105, 0.4);
             --clock-color: #94a3b8;
+            --status-on: #4ade80;
+            --status-off: #f87171;
         }
 
         /* ===== 全局重置 ===== */
@@ -95,7 +99,7 @@
             color: var(--text-primary);
         }
 
-        /* ===== 左上角固定导航条 ===== */
+        /* ===== 导航条 ===== */
         .top-bar {
             position: fixed;
             top: 0;
@@ -185,13 +189,6 @@
             border-bottom-color: var(--link-color);
         }
 
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* ===== 主题切换按钮 ===== */
         .theme-toggle {
             background: none;
             border: none;
@@ -211,13 +208,6 @@
             transform: scale(1.1);
         }
 
-        .auto-indicator {
-            font-size: 12px;
-            color: var(--text-light);
-            transition: color 0.4s;
-            cursor: default;
-        }
-
         /* ===== 主容器 ===== */
         .main {
             flex: 1;
@@ -229,6 +219,45 @@
             max-width: 700px;
             margin: 0 auto;
             padding: 20px 0;
+            position: relative;
+        }
+
+        .auto-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s;
+            user-select: none;
+            white-space: nowrap;
+            z-index: 5;
+            text-align: right;
+            line-height: 1.6;
+        }
+
+        .auto-toggle:hover {
+            transform: scale(1.05);
+            border-color: var(--link-color);
+        }
+
+        .auto-toggle.on {
+            color: var(--status-on);
+        }
+
+        .auto-toggle.off {
+            color: var(--status-off);
+        }
+
+        .auto-toggle .hint {
+            font-size: 12px;
+            opacity: 0.7;
+            display: block;
         }
 
         /* ===== 致谢卡片 ===== */
@@ -243,6 +272,7 @@
             text-align: center;
             width: 100%;
             transition: transform 0.25s ease, box-shadow 0.4s, background 0.4s, border-color 0.4s;
+            margin-top: 30px;
         }
 
         .thanks-card:hover {
@@ -326,6 +356,7 @@
             }
             .thanks-card {
                 padding: 32px 24px;
+                margin-top: 24px;
             }
             .thanks-card h1 {
                 font-size: 26px;
@@ -350,8 +381,11 @@
                 font-size: 18px;
                 padding: 3px 6px;
             }
-            .auto-indicator {
-                font-size: 10px;
+            .auto-toggle {
+                font-size: 13px;
+                padding: 3px 10px;
+                top: -4px;
+                right: 0;
             }
         }
 
@@ -386,8 +420,14 @@
             .theme-toggle {
                 font-size: 16px;
             }
-            .auto-indicator {
-                font-size: 10px;
+            .auto-toggle {
+                font-size: 12px;
+                padding: 2px 8px;
+                top: -2px;
+                right: 0;
+            }
+            .thanks-card {
+                margin-top: 20px;
             }
         }
     </style>
@@ -402,12 +442,13 @@
         </div>
         <div class="top-bar-center" id="clockDisplay" title="双击恢复自动模式">--:--</div>
         <div class="top-bar-right">
-            <span class="auto-indicator" id="autoIndicator">🤖</span>
             <button class="theme-toggle" id="themeToggle" aria-label="切换暗色/亮色模式">☀️</button>
         </div>
     </div>
 
     <div class="main">
+
+        <div class="auto-toggle on" id="autoToggle">自动调节已开启！</div>
 
         <div class="thanks-card">
             <span class="icon">🙏</span>
@@ -434,7 +475,7 @@
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
-        const autoIndicator = document.getElementById('autoIndicator');
+        const autoToggle = document.getElementById('autoToggle');
 
         let isAutoMode = true;
         let currentTheme = 'light';
@@ -460,10 +501,31 @@
             }
         }
 
+        function updateAutoToggle() {
+            if (isAutoMode) {
+                autoToggle.innerHTML = '自动调节已开启！';
+                autoToggle.className = 'auto-toggle on';
+            } else {
+                autoToggle.innerHTML = '自动调节已关闭！<br><span class="hint">（双击顶部时间恢复自动）</span>';
+                autoToggle.className = 'auto-toggle off';
+            }
+        }
+
+        autoToggle.addEventListener('click', function() {
+            isAutoMode = !isAutoMode;
+            updateAutoToggle();
+            if (isAutoMode) {
+                const target = getThemeByHour();
+                currentTheme = target;
+                html.setAttribute('data-theme', target);
+                toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+            }
+        });
+
         toggle.addEventListener('click', function() {
             if (isAutoMode) {
                 isAutoMode = false;
-                autoIndicator.textContent = '👆';
+                updateAutoToggle();
             }
             const current = html.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -474,7 +536,7 @@
 
         clockDisplay.addEventListener('dblclick', function() {
             isAutoMode = true;
-            autoIndicator.textContent = '🤖';
+            updateAutoToggle();
             const target = getThemeByHour();
             currentTheme = target;
             html.setAttribute('data-theme', target);
@@ -486,8 +548,7 @@
         currentTheme = initTheme;
         html.setAttribute('data-theme', initTheme);
         toggle.textContent = initTheme === 'dark' ? '🌙' : '☀️';
-        autoIndicator.textContent = '🤖';
-
+        updateAutoToggle();
         updateClock();
         setInterval(updateClock, 1000);
     </script>
