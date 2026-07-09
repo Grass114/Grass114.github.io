@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="favicon.png" type="image/png" />
-    <title>致谢 · BlueCat114</title>
+    <title>游戏中心 · BlueCat114</title>
     <style>
         /* ===== 字体加载 ===== */
         @font-face {
@@ -31,7 +31,15 @@
             --footer-border: rgba(255, 255, 255, 0.6);
             --link-color: #6c63ff;
             --link-hover: #4a42b8;
+            --status-on: #22c55e;
+            --status-off: #ef4444;
             --clock-color: var(--text-muted);
+            --tab-bg: rgba(255, 255, 255, 0.5);
+            --tab-active: #6c63ff;
+            --tab-text: var(--text-secondary);
+            --tab-hover: rgba(108, 99, 255, 0.1);
+            --game-card-bg: rgba(255, 255, 255, 0.6);
+            --game-card-border: rgba(255, 255, 255, 0.8);
         }
 
         [data-theme="dark"] {
@@ -51,6 +59,14 @@
             --link-color: #818cf8;
             --link-hover: #a5b4fc;
             --clock-color: #94a3b8;
+            --status-on: #4ade80;
+            --status-off: #f87171;
+            --tab-bg: rgba(30, 41, 59, 0.6);
+            --tab-active: #818cf8;
+            --tab-text: #cbd5e1;
+            --tab-hover: rgba(129, 140, 248, 0.15);
+            --game-card-bg: rgba(30, 41, 59, 0.6);
+            --game-card-border: rgba(71, 85, 105, 0.4);
         }
 
         /* ===== 全局重置 ===== */
@@ -199,75 +215,169 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 700px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px 0;
+            position: relative;
         }
 
-        /* ===== 致谢卡片 ===== */
-        .thanks-card {
+        /* ===== 自动调节开关 ===== */
+        .auto-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 20px;
             background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 48px 40px;
             border: 1px solid var(--card-border);
-            box-shadow: 0 8px 32px var(--shadow-color);
-            text-align: center;
-            width: 100%;
-            transition: transform 0.25s ease, box-shadow 0.4s, background 0.4s, border-color 0.4s;
+            transition: all 0.3s;
+            user-select: none;
+            white-space: nowrap;
+            z-index: 5;
+            text-align: right;
+            line-height: 1.6;
         }
 
-        .thanks-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 48px var(--shadow-hover);
+        .auto-toggle:hover {
+            transform: scale(1.05);
+            border-color: var(--link-color);
         }
 
-        .thanks-card .icon {
-            font-size: 64px;
+        .auto-toggle.on {
+            color: var(--status-on);
+        }
+
+        .auto-toggle.off {
+            color: var(--status-off);
+        }
+
+        .auto-toggle .hint {
+            font-size: 12px;
+            opacity: 0.7;
             display: block;
-            margin-bottom: 16px;
         }
 
-        .thanks-card h1 {
+        /* ===== 页面标题 ===== */
+        .page-title {
+            text-align: center;
+            margin: 30px 0 24px 0;
+            width: 100%;
+        }
+
+        .page-title h1 {
             font-size: 32px;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.3px;
-            margin-bottom: 12px;
             transition: color 0.4s;
         }
 
-        .thanks-card .message {
-            font-size: 18px;
-            color: var(--text-secondary);
-            line-height: 1.8;
-            transition: color 0.4s;
-        }
-
-        .thanks-card .message .highlight {
-            color: var(--link-color);
-            font-weight: 600;
-        }
-
-        .thanks-card .empty-state {
-            margin-top: 20px;
-            padding: 16px 24px;
-            background: rgba(108, 99, 255, 0.06);
-            border-radius: 16px;
-            border: 1px dashed rgba(108, 99, 255, 0.2);
-            font-size: 15px;
+        .page-title p {
             color: var(--text-muted);
-            transition: background 0.4s, border-color 0.4s, color 0.4s;
+            font-size: 16px;
+            margin-top: 4px;
+            transition: color 0.4s;
         }
 
-        .thanks-card .empty-state .emoji {
-            font-size: 28px;
+        /* ===== 选项卡栏（一行5个） ===== */
+        .tab-bar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            padding: 12px 8px;
+            border: 2px solid var(--card-border);
+            border-radius: 16px;
+            background: var(--tab-bg);
+            color: var(--tab-text);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+            font-family: inherit;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 2px 8px var(--shadow-color);
+            text-decoration: none;
             display: block;
-            margin-bottom: 6px;
+        }
+
+        .tab-btn:hover {
+            background: var(--tab-hover);
+            transform: translateY(-2px);
+            border-color: var(--link-color);
+        }
+
+        .tab-btn.active {
+            background: var(--tab-active);
+            color: white;
+            border-color: var(--tab-active);
+            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.25);
+        }
+
+        .tab-btn .tab-icon {
+            display: block;
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+        .tab-btn .tab-label {
+            font-size: 13px;
+        }
+
+        /* ===== 游戏内容区 ===== */
+        .game-content {
+            width: 100%;
+            max-width: 820px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(12px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== 占位游戏卡片 ===== */
+        .placeholder-game {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px;
+            text-align: center;
+            background: var(--game-card-bg);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            border: 2px dashed var(--card-border);
+            min-height: 400px;
+            transition: background 0.4s, border-color 0.4s;
+        }
+
+        .placeholder-game .big-icon {
+            font-size: 72px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+        .placeholder-game h2 {
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            transition: color 0.4s;
+        }
+        .placeholder-game p {
+            color: var(--text-muted);
+            font-size: 16px;
+            max-width: 400px;
+            transition: color 0.4s;
         }
 
         /* ===== 页脚 ===== */
@@ -278,7 +388,7 @@
             padding-top: 22px;
             border-top: 1px solid var(--footer-border);
             width: 100%;
-            margin-top: 32px;
+            margin-top: 24px;
             letter-spacing: 0.3px;
             transition: color 0.4s, border-color 0.4s;
         }
@@ -296,18 +406,28 @@
         }
 
         /* ===== 响应式 ===== */
-        @media (max-width: 700px) {
-            body {
-                padding: 66px 16px 16px 16px;
+        @media (max-width: 820px) {
+            .tab-bar {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 6px;
             }
-            .thanks-card {
-                padding: 32px 24px;
+            .tab-btn {
+                padding: 10px 4px;
+                font-size: 13px;
+                border-radius: 12px;
             }
-            .thanks-card h1 {
-                font-size: 26px;
+            .tab-btn .tab-icon {
+                font-size: 22px;
             }
-            .thanks-card .message {
-                font-size: 16px;
+            .tab-btn .tab-label {
+                font-size: 11px;
+            }
+            .game-content .game-card {
+                padding: 16px;
+                border-radius: 20px;
+            }
+            .game-container {
+                border-radius: 14px;
             }
             .top-bar {
                 padding: 10px 18px;
@@ -328,21 +448,52 @@
                 font-size: 18px;
                 padding: 3px 6px;
             }
-        }
-
-        @media (max-width: 400px) {
-            .thanks-card h1 {
-                font-size: 22px;
+            .page-title h1 {
+                font-size: 26px;
             }
-            .thanks-card .icon {
+            .placeholder-game .big-icon {
                 font-size: 48px;
             }
-            .thanks-card .message {
-                font-size: 14px;
+            .placeholder-game h2 {
+                font-size: 22px;
+            }
+            .placeholder-game {
+                padding: 40px 20px;
+                min-height: 280px;
+            }
+            .auto-toggle {
+                font-size: 13px;
+                padding: 3px 10px;
+                top: -4px;
+                right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab-bar {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+            }
+            .tab-btn {
+                padding: 8px 2px;
+                font-size: 11px;
+                border-radius: 10px;
+                border-width: 1.5px;
+            }
+            .tab-btn .tab-icon {
+                font-size: 18px;
+            }
+            .tab-btn .tab-label {
+                font-size: 9px;
+            }
+            .game-content .game-card {
+                padding: 10px;
+                border-radius: 14px;
+            }
+            .game-container {
+                border-radius: 10px;
             }
             .top-bar {
-                flex-wrap: wrap;
-                gap: 4px;
                 padding: 8px 12px;
             }
             .top-bar .site-title {
@@ -362,6 +513,28 @@
                 font-size: 16px;
                 padding: 2px 5px;
             }
+            .page-title h1 {
+                font-size: 22px;
+            }
+            .placeholder-game .big-icon {
+                font-size: 36px;
+            }
+            .placeholder-game h2 {
+                font-size: 18px;
+            }
+            .placeholder-game {
+                padding: 30px 16px;
+                min-height: 200px;
+            }
+            .placeholder-game p {
+                font-size: 14px;
+            }
+            .auto-toggle {
+                font-size: 12px;
+                padding: 2px 8px;
+                top: -2px;
+                right: 0;
+            }
         }
     </style>
 </head>
@@ -372,8 +545,8 @@
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
             <a href="project.html" class="nav-link">项目</a>
-            <a href="game.html" class="nav-link">网页游戏</a>
-            <a href="thankyou.html" class="nav-link active">致谢</a>
+            <a href="game.html" class="nav-link active">网页游戏</a>
+            <a href="thankyou.html" class="nav-link">致谢</a>
         </div>
         <div class="top-bar-right">
             <div class="clock-display" id="clockDisplay" title="双击恢复自动模式">--:--:--</div>
@@ -381,18 +554,46 @@
         </div>
     </div>
 
+    <!-- 主要内容 -->
     <div class="main">
 
-        <div class="thanks-card">
-            <span class="icon">🙏</span>
-            <h1>致谢</h1>
-            <p class="message">
-                感谢每一位帮助过 <span class="highlight">BlueCat114</span> 的人。
-            </p>
-            <div class="empty-state">
-                <span class="emoji">🌱</span>
-                还没有人馈赠呢~<br />
-                如果你曾帮助过我，欢迎告诉我，我会把你写在这里 ❤️
+        <div class="auto-toggle on" id="autoToggle">自动调节已开启！</div>
+
+        <div class="page-title">
+            <h1>🎮 游戏中心</h1>
+            <p>选一个游戏，开始玩吧</p>
+        </div>
+
+        <!-- 选项卡栏（第一个是跳转链接） -->
+        <div class="tab-bar">
+            <a href="brick.html" class="tab-btn active">
+                <span class="tab-icon">🧱</span>
+                <span class="tab-label">打砖块</span>
+            </a>
+            <div class="tab-btn" style="cursor:default; opacity:0.6;">
+                <span class="tab-icon">🔄</span>
+                <span class="tab-label">即将推出</span>
+            </div>
+            <div class="tab-btn" style="cursor:default; opacity:0.6;">
+                <span class="tab-icon">🔄</span>
+                <span class="tab-label">即将推出</span>
+            </div>
+            <div class="tab-btn" style="cursor:default; opacity:0.6;">
+                <span class="tab-icon">🔄</span>
+                <span class="tab-label">即将推出</span>
+            </div>
+            <div class="tab-btn" style="cursor:default; opacity:0.6;">
+                <span class="tab-icon">🔄</span>
+                <span class="tab-label">即将推出</span>
+            </div>
+        </div>
+
+        <!-- 游戏内容（占位，因为第一个是跳转，所以内容区显示提示） -->
+        <div class="game-content">
+            <div class="placeholder-game">
+                <div class="big-icon">🎮</div>
+                <h2>选择上面的游戏开始</h2>
+                <p>点击“打砖块”进入游戏，其他游戏正在开发中，敬请期待！</p>
             </div>
         </div>
 
@@ -403,11 +604,14 @@
     </div>
 
     <script>
+        // ===== 年份 =====
         document.getElementById('year').textContent = new Date().getFullYear();
 
+        // ===== 时钟 + 主题控制 =====
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
+        const autoToggle = document.getElementById('autoToggle');
 
         let isAutoMode = true;
         let currentTheme = 'light';
@@ -434,17 +638,32 @@
             }
         }
 
-        clockDisplay.addEventListener('dblclick', function() {
-            isAutoMode = true;
-            const target = getThemeByHour();
-            currentTheme = target;
-            html.setAttribute('data-theme', target);
-            toggle.textContent = target === 'dark' ? '🌙' : '☀️';
-            updateClock();
+        function updateAutoToggle() {
+            if (isAutoMode) {
+                autoToggle.innerHTML = '自动调节已开启！';
+                autoToggle.className = 'auto-toggle on';
+            } else {
+                autoToggle.innerHTML = '自动调节已关闭！<br><span class="hint">（双击时间恢复自动）</span>';
+                autoToggle.className = 'auto-toggle off';
+            }
+        }
+
+        autoToggle.addEventListener('click', function() {
+            isAutoMode = !isAutoMode;
+            updateAutoToggle();
+            if (isAutoMode) {
+                const target = getThemeByHour();
+                currentTheme = target;
+                html.setAttribute('data-theme', target);
+                toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+            }
         });
 
         toggle.addEventListener('click', function() {
-            isAutoMode = false;
+            if (isAutoMode) {
+                isAutoMode = false;
+                updateAutoToggle();
+            }
             const current = html.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
             currentTheme = next;
@@ -452,10 +671,21 @@
             toggle.textContent = next === 'dark' ? '🌙' : '☀️';
         });
 
+        clockDisplay.addEventListener('dblclick', function() {
+            isAutoMode = true;
+            updateAutoToggle();
+            const target = getThemeByHour();
+            currentTheme = target;
+            html.setAttribute('data-theme', target);
+            toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+            updateClock();
+        });
+
         const initTheme = getThemeByHour();
         currentTheme = initTheme;
         html.setAttribute('data-theme', initTheme);
         toggle.textContent = initTheme === 'dark' ? '🌙' : '☀️';
+        updateAutoToggle();
         updateClock();
         setInterval(updateClock, 1000);
     </script>

@@ -26,28 +26,17 @@
             --text-light: #94a3b8;
             --shadow-color: rgba(0, 20, 40, 0.08);
             --shadow-hover: rgba(0, 20, 40, 0.12);
-            --badge-bg: rgba(30, 41, 59, 0.9);
-            --badge-text: #f1f5f9;
             --topbar-bg: rgba(255, 255, 255, 0.6);
             --topbar-border: rgba(255, 255, 255, 0.8);
-            --tag-bg: #eef2ff;
-            --tag-text: #4338ca;
-            --tag-border: #c7d2fe;
-            --btn-shadow: rgba(108, 99, 255, 0.25);
-            --btn-hover-shadow: rgba(108, 99, 255, 0.35);
             --footer-border: rgba(255, 255, 255, 0.6);
             --link-color: #6c63ff;
             --link-hover: #4a42b8;
-            --intro-bg: rgba(255, 255, 255, 0.65);
-            --intro-border: rgba(255, 255, 255, 0.8);
+            --clock-color: var(--text-muted);
             --tag-lang: #10b981;
             --tag-featured: #6c63ff;
             --tag-guide: #06b6d4;
             --tag-tool: #f59e0b;
             --tag-count: #ec4899;
-            --clock-color: var(--text-muted);
-            --status-on: #22c55e;
-            --status-off: #ef4444;
         }
 
         [data-theme="dark"] {
@@ -61,28 +50,17 @@
             --text-light: #64748b;
             --shadow-color: rgba(0, 0, 0, 0.3);
             --shadow-hover: rgba(0, 0, 0, 0.4);
-            --badge-bg: rgba(71, 85, 105, 0.9);
-            --badge-text: #e2e8f0;
             --topbar-bg: rgba(15, 23, 36, 0.8);
             --topbar-border: rgba(71, 85, 105, 0.5);
-            --tag-bg: #1e293b;
-            --tag-text: #818cf8;
-            --tag-border: #4f46e5;
-            --btn-shadow: rgba(108, 99, 255, 0.15);
-            --btn-hover-shadow: rgba(108, 99, 255, 0.25);
             --footer-border: rgba(71, 85, 105, 0.4);
             --link-color: #818cf8;
             --link-hover: #a5b4fc;
-            --intro-bg: rgba(30, 41, 59, 0.7);
-            --intro-border: rgba(71, 85, 105, 0.4);
+            --clock-color: #94a3b8;
             --tag-lang: #34d399;
             --tag-featured: #8b83f5;
             --tag-guide: #22d3ee;
             --tag-tool: #fbbf24;
             --tag-count: #f472b6;
-            --clock-color: #94a3b8;
-            --status-on: #4ade80;
-            --status-off: #f87171;
         }
 
         /* ===== 全局重置 ===== */
@@ -134,21 +112,10 @@
             gap: 12px;
         }
 
-        .top-bar-center {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--clock-color);
-            letter-spacing: 0.5px;
-            font-variant-numeric: tabular-nums;
-            transition: color 0.4s;
-            cursor: default;
-            user-select: none;
-        }
-        .top-bar-center:hover {
-            color: var(--link-color);
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .top-bar .site-title {
@@ -199,6 +166,25 @@
             border-bottom-color: var(--link-color);
         }
 
+        /* ===== 时钟显示 ===== */
+        .clock-display {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--clock-color);
+            letter-spacing: 0.5px;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.4s;
+            cursor: default;
+            user-select: none;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .clock-display:hover {
+            color: var(--link-color);
+        }
+
+        /* ===== 主题切换按钮 ===== */
         .theme-toggle {
             background: none;
             border: none;
@@ -214,7 +200,7 @@
         }
 
         .theme-toggle:hover {
-            background: var(--tag-bg);
+            background: rgba(0, 0, 0, 0.06);
             transform: scale(1.1);
         }
 
@@ -229,45 +215,6 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px 0;
-            position: relative;
-        }
-
-        .auto-toggle {
-            position: absolute;
-            top: 0;
-            right: 0;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            padding: 4px 12px;
-            border-radius: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            transition: all 0.3s;
-            user-select: none;
-            white-space: nowrap;
-            z-index: 5;
-            text-align: right;
-            line-height: 1.6;
-        }
-
-        .auto-toggle:hover {
-            transform: scale(1.05);
-            border-color: var(--link-color);
-        }
-
-        .auto-toggle.on {
-            color: var(--status-on);
-        }
-
-        .auto-toggle.off {
-            color: var(--status-off);
-        }
-
-        .auto-toggle .hint {
-            font-size: 12px;
-            opacity: 0.7;
-            display: block;
         }
 
         /* ===== 页面标题 ===== */
@@ -275,7 +222,6 @@
             text-align: center;
             margin-bottom: 36px;
             width: 100%;
-            margin-top: 30px;
         }
 
         .page-header h1 {
@@ -490,7 +436,8 @@
             }
             .top-bar {
                 padding: 10px 18px;
-                gap: 8px;
+                flex-wrap: wrap;
+                gap: 6px;
             }
             .top-bar .site-title {
                 font-size: 16px;
@@ -498,21 +445,13 @@
             .top-bar .nav-link {
                 font-size: 14px;
             }
-            .top-bar-center {
-                font-size: 13px;
+            .clock-display {
+                font-size: 14px;
+                min-width: 70px;
             }
             .theme-toggle {
                 font-size: 18px;
                 padding: 3px 6px;
-            }
-            .auto-toggle {
-                font-size: 13px;
-                padding: 3px 10px;
-                top: -4px;
-                right: 0;
-            }
-            .page-header {
-                margin-top: 24px;
             }
         }
 
@@ -528,56 +467,48 @@
                 margin-left: 0;
                 font-size: 11px;
             }
+            .top-bar {
+                flex-wrap: wrap;
+                gap: 4px;
+                padding: 8px 12px;
+            }
             .top-bar .site-title {
                 font-size: 14px;
             }
             .top-bar .nav-link {
-                font-size: 13px;
+                font-size: 12px;
             }
             .top-bar .nav-link::before {
-                margin-right: 6px;
+                margin-right: 4px;
             }
-            .top-bar-center {
+            .clock-display {
                 font-size: 12px;
-                position: static;
-                transform: none;
-                order: 3;
-                width: 100%;
-                text-align: center;
-                margin-top: 2px;
+                min-width: 60px;
             }
             .theme-toggle {
                 font-size: 16px;
-            }
-            .auto-toggle {
-                font-size: 12px;
-                padding: 2px 8px;
-                top: -2px;
-                right: 0;
-            }
-            .page-header {
-                margin-top: 20px;
+                padding: 2px 5px;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- 导航条 -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
             <a href="project.html" class="nav-link active">项目</a>
+            <a href="game.html" class="nav-link">网页游戏</a>
             <a href="thankyou.html" class="nav-link">致谢</a>
         </div>
-        <div class="top-bar-center" id="clockDisplay" title="双击恢复自动模式">--:--</div>
         <div class="top-bar-right">
+            <div class="clock-display" id="clockDisplay" title="双击恢复自动模式">--:--:--</div>
             <button class="theme-toggle" id="themeToggle" aria-label="切换暗色/亮色模式">☀️</button>
         </div>
     </div>
 
     <div class="main">
-
-        <div class="auto-toggle on" id="autoToggle">自动调节已开启！</div>
 
         <div class="page-header">
             <h1>📦 我的项目</h1>
@@ -621,7 +552,6 @@
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
-        const autoToggle = document.getElementById('autoToggle');
 
         let isAutoMode = true;
         let currentTheme = 'light';
@@ -635,7 +565,8 @@
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
-            clockDisplay.textContent = h + ':' + m;
+            const s = String(now.getSeconds()).padStart(2, '0');
+            clockDisplay.textContent = h + ':' + m + ':' + s;
 
             if (isAutoMode) {
                 const target = getThemeByHour();
@@ -647,42 +578,8 @@
             }
         }
 
-        function updateAutoToggle() {
-            if (isAutoMode) {
-                autoToggle.innerHTML = '自动调节已开启！';
-                autoToggle.className = 'auto-toggle on';
-            } else {
-                autoToggle.innerHTML = '自动调节已关闭！<br><span class="hint">（双击顶部时间恢复自动）</span>';
-                autoToggle.className = 'auto-toggle off';
-            }
-        }
-
-        autoToggle.addEventListener('click', function() {
-            isAutoMode = !isAutoMode;
-            updateAutoToggle();
-            if (isAutoMode) {
-                const target = getThemeByHour();
-                currentTheme = target;
-                html.setAttribute('data-theme', target);
-                toggle.textContent = target === 'dark' ? '🌙' : '☀️';
-            }
-        });
-
-        toggle.addEventListener('click', function() {
-            if (isAutoMode) {
-                isAutoMode = false;
-                updateAutoToggle();
-            }
-            const current = html.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            currentTheme = next;
-            html.setAttribute('data-theme', next);
-            toggle.textContent = next === 'dark' ? '🌙' : '☀️';
-        });
-
         clockDisplay.addEventListener('dblclick', function() {
             isAutoMode = true;
-            updateAutoToggle();
             const target = getThemeByHour();
             currentTheme = target;
             html.setAttribute('data-theme', target);
@@ -690,11 +587,19 @@
             updateClock();
         });
 
+        toggle.addEventListener('click', function() {
+            isAutoMode = false;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            currentTheme = next;
+            html.setAttribute('data-theme', next);
+            toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+        });
+
         const initTheme = getThemeByHour();
         currentTheme = initTheme;
         html.setAttribute('data-theme', initTheme);
         toggle.textContent = initTheme === 'dark' ? '🌙' : '☀️';
-        updateAutoToggle();
         updateClock();
         setInterval(updateClock, 1000);
     </script>
