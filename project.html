@@ -80,25 +80,31 @@
             font-size: 20px;
         }
 
-        .top-bar .project-link {
+        .top-bar .nav-link {
             font-size: 16px;
             font-weight: 500;
-            color: #6c63ff;
+            color: #1e293b;
             text-decoration: none;
+            transition: color 0.2s;
             padding: 4px 0;
-            border-bottom: 2px solid #6c63ff;
+            border-bottom: 2px solid transparent;
         }
 
-        .top-bar .project-link::before {
+        .top-bar .nav-link::before {
             content: "｜";
             margin-right: 10px;
             color: #94a3b8;
             font-weight: 300;
         }
 
-        .top-bar .project-link:hover {
-            color: #4a42b8;
-            border-bottom-color: #4a42b8;
+        .top-bar .nav-link:hover {
+            color: #6c63ff;
+            border-bottom-color: #6c63ff;
+        }
+
+        .top-bar .nav-link.active {
+            color: #6c63ff;
+            border-bottom-color: #6c63ff;
         }
 
         /* ===== 主容器 ===== */
@@ -332,7 +338,7 @@
             .top-bar .site-title {
                 font-size: 16px;
             }
-            .top-bar .project-link {
+            .top-bar .nav-link {
                 font-size: 14px;
             }
         }
@@ -352,10 +358,10 @@
             .top-bar .site-title {
                 font-size: 14px;
             }
-            .top-bar .project-link {
+            .top-bar .nav-link {
                 font-size: 13px;
             }
-            .top-bar .project-link::before {
+            .top-bar .nav-link::before {
                 margin-right: 6px;
             }
         }
@@ -365,7 +371,8 @@
 
     <div class="top-bar">
         <a href="index.html" class="site-title">BlueCat114 官方网站</a>
-        <a href="project.html" class="project-link">项目</a>
+        <a href="project.html" class="nav-link active">项目</a>
+        <a href="thankyou.html" class="nav-link">致谢</a>
     </div>
 
     <div class="main">
