@@ -6,6 +6,75 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>项目 · BlueCat114</title>
     <style>
+        /* ===== 颜色变量 ===== */
+        :root {
+            --bg-start: #f5f9ff;
+            --bg-end: #e6edf7;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(255, 255, 255, 0.8);
+            --text-primary: #0b1e33;
+            --text-secondary: #1e293b;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --shadow-color: rgba(0, 20, 40, 0.08);
+            --shadow-hover: rgba(0, 20, 40, 0.12);
+            --badge-bg: rgba(30, 41, 59, 0.9);
+            --badge-text: #f1f5f9;
+            --topbar-bg: rgba(255, 255, 255, 0.6);
+            --topbar-border: rgba(255, 255, 255, 0.8);
+            --tag-bg: #eef2ff;
+            --tag-text: #4338ca;
+            --tag-border: #c7d2fe;
+            --btn-shadow: rgba(108, 99, 255, 0.25);
+            --btn-hover-shadow: rgba(108, 99, 255, 0.35);
+            --footer-border: rgba(255, 255, 255, 0.6);
+            --link-color: #6c63ff;
+            --link-hover: #4a42b8;
+            --intro-bg: rgba(255, 255, 255, 0.65);
+            --intro-border: rgba(255, 255, 255, 0.8);
+            --empty-bg: rgba(108, 99, 255, 0.06);
+            --empty-border: rgba(108, 99, 255, 0.2);
+            --tag-lang: #10b981;
+            --tag-featured: #6c63ff;
+            --tag-guide: #06b6d4;
+            --tag-tool: #f59e0b;
+            --tag-count: #ec4899;
+        }
+
+        [data-theme="dark"] {
+            --bg-start: #0f1724;
+            --bg-end: #1a2332;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-border: rgba(71, 85, 105, 0.5);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.4);
+            --badge-bg: rgba(71, 85, 105, 0.9);
+            --badge-text: #e2e8f0;
+            --topbar-bg: rgba(15, 23, 36, 0.8);
+            --topbar-border: rgba(71, 85, 105, 0.5);
+            --tag-bg: #1e293b;
+            --tag-text: #818cf8;
+            --tag-border: #4f46e5;
+            --btn-shadow: rgba(108, 99, 255, 0.15);
+            --btn-hover-shadow: rgba(108, 99, 255, 0.25);
+            --footer-border: rgba(71, 85, 105, 0.4);
+            --link-color: #818cf8;
+            --link-hover: #a5b4fc;
+            --intro-bg: rgba(30, 41, 59, 0.7);
+            --intro-border: rgba(71, 85, 105, 0.4);
+            --empty-bg: rgba(108, 99, 255, 0.08);
+            --empty-border: rgba(108, 99, 255, 0.15);
+            --tag-lang: #34d399;
+            --tag-featured: #8b83f5;
+            --tag-guide: #22d3ee;
+            --tag-tool: #fbbf24;
+            --tag-count: #f472b6;
+        }
+
         /* ===== 字体加载 ===== */
         @font-face {
             font-family: 'Minecraft';
@@ -29,11 +98,13 @@
 
         body {
             font-family: 'Minecraft', 'Microsoft YaHei', 'PingFang SC', sans-serif;
-            background: linear-gradient(145deg, #f5f9ff 0%, #e6edf7 100%);
+            background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-end) 100%);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             padding: 70px 24px 24px 24px;
+            transition: background 0.4s ease, color 0.4s ease;
+            color: var(--text-primary);
         }
 
         /* ===== 左上角固定导航条 ===== */
@@ -44,25 +115,27 @@
             width: 100%;
             z-index: 1000;
             padding: 12px 28px;
-            background: rgba(255, 255, 255, 0.6);
+            background: var(--topbar-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-            transition: background 0.3s;
+            border-bottom: 1px solid var(--topbar-border);
+            box-shadow: 0 2px 12px var(--shadow-color);
+            transition: background 0.4s ease, border-color 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-bar-left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .top-bar:hover {
-            background: rgba(255, 255, 255, 0.8);
-        }
-
         .top-bar .site-title {
             font-size: 18px;
             font-weight: 600;
-            color: #0b1e33;
+            color: var(--text-primary);
             text-decoration: none;
             letter-spacing: 0.3px;
             display: inline-flex;
@@ -72,7 +145,7 @@
         }
 
         .top-bar .site-title:hover {
-            color: #6c63ff;
+            color: var(--link-color);
         }
 
         .top-bar .site-title::before {
@@ -83,7 +156,7 @@
         .top-bar .nav-link {
             font-size: 16px;
             font-weight: 500;
-            color: #1e293b;
+            color: var(--text-secondary);
             text-decoration: none;
             transition: color 0.2s;
             padding: 4px 0;
@@ -93,18 +166,38 @@
         .top-bar .nav-link::before {
             content: "｜";
             margin-right: 10px;
-            color: #94a3b8;
+            color: var(--text-light);
             font-weight: 300;
         }
 
         .top-bar .nav-link:hover {
-            color: #6c63ff;
-            border-bottom-color: #6c63ff;
+            color: var(--link-color);
+            border-bottom-color: var(--link-color);
         }
 
         .top-bar .nav-link.active {
-            color: #6c63ff;
-            border-bottom-color: #6c63ff;
+            color: var(--link-color);
+            border-bottom-color: var(--link-color);
+        }
+
+        /* ===== 主题切换按钮 ===== */
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+            transition: background 0.3s;
+            color: var(--text-primary);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            line-height: 1;
+        }
+
+        .theme-toggle:hover {
+            background: var(--tag-bg);
+            transform: scale(1.1);
         }
 
         /* ===== 主容器 ===== */
@@ -129,14 +222,16 @@
         .page-header h1 {
             font-size: 36px;
             font-weight: 700;
-            color: #0b1e33;
+            color: var(--text-primary);
             letter-spacing: -0.3px;
+            transition: color 0.4s;
         }
 
         .page-header p {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: 16px;
             margin-top: 8px;
+            transition: color 0.4s;
         }
 
         /* ===== 项目列表 ===== */
@@ -149,14 +244,14 @@
         }
 
         .project-item {
-            background: rgba(255, 255, 255, 0.7);
+            background: var(--card-bg);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border-radius: 20px;
             padding: 24px 28px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 8px 28px rgba(0, 20, 40, 0.06);
-            transition: all 0.25s ease;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 28px var(--shadow-color);
+            transition: all 0.25s ease, background 0.4s, border-color 0.4s, box-shadow 0.4s;
             text-decoration: none;
             color: inherit;
             display: block;
@@ -164,17 +259,18 @@
 
         .project-item:hover {
             transform: translateY(-4px);
-            box-shadow: 0 14px 40px rgba(0, 20, 40, 0.10);
+            box-shadow: 0 14px 40px var(--shadow-hover);
             border-color: rgba(108, 99, 255, 0.2);
         }
 
         .project-item h3 {
             font-size: 20px;
             font-weight: 600;
-            color: #0b1e33;
+            color: var(--text-primary);
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: color 0.4s;
         }
 
         .project-item .status {
@@ -189,9 +285,10 @@
 
         .project-item p {
             font-size: 15px;
-            color: #475569;
+            color: var(--text-secondary);
             margin-top: 6px;
             line-height: 1.6;
+            transition: color 0.4s;
         }
 
         .project-item .tags {
@@ -217,20 +314,20 @@
 
         /* ----- 各标签配色 ----- */
         .project-item .tags span.lang {
-            background: linear-gradient(135deg, #10b981, #34d399);
+            background: linear-gradient(135deg, var(--tag-lang), #34d399);
             color: #064e3b;
-            border-color: #10b981;
+            border-color: var(--tag-lang);
         }
         .project-item .tags span.lang:hover {
-            background: linear-gradient(135deg, #059669, #10b981);
+            background: linear-gradient(135deg, #059669, var(--tag-lang));
             color: white;
             box-shadow: 0 2px 12px rgba(16, 185, 129, 0.35);
         }
 
         .project-item .tags span.featured {
-            background: linear-gradient(135deg, #6c63ff, #8b83f5);
+            background: linear-gradient(135deg, var(--tag-featured), #8b83f5);
             color: white;
-            border-color: #6c63ff;
+            border-color: var(--tag-featured);
             box-shadow: 0 2px 8px rgba(108, 99, 255, 0.25);
         }
         .project-item .tags span.featured:hover {
@@ -239,34 +336,34 @@
         }
 
         .project-item .tags span.guide {
-            background: linear-gradient(135deg, #06b6d4, #22d3ee);
+            background: linear-gradient(135deg, var(--tag-guide), #22d3ee);
             color: #164e63;
-            border-color: #06b6d4;
+            border-color: var(--tag-guide);
         }
         .project-item .tags span.guide:hover {
-            background: linear-gradient(135deg, #0891b2, #06b6d4);
+            background: linear-gradient(135deg, #0891b2, var(--tag-guide));
             color: white;
             box-shadow: 0 2px 12px rgba(6, 182, 212, 0.35);
         }
 
         .project-item .tags span.tool {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            background: linear-gradient(135deg, var(--tag-tool), #fbbf24);
             color: #78350f;
-            border-color: #f59e0b;
+            border-color: var(--tag-tool);
         }
         .project-item .tags span.tool:hover {
-            background: linear-gradient(135deg, #d97706, #f59e0b);
+            background: linear-gradient(135deg, #d97706, var(--tag-tool));
             color: white;
             box-shadow: 0 2px 12px rgba(245, 158, 11, 0.35);
         }
 
         .project-item .tags span.count {
-            background: linear-gradient(135deg, #ec4899, #f472b6);
+            background: linear-gradient(135deg, var(--tag-count), #f472b6);
             color: #831843;
-            border-color: #ec4899;
+            border-color: var(--tag-count);
         }
         .project-item .tags span.count:hover {
-            background: linear-gradient(135deg, #db2777, #ec4899);
+            background: linear-gradient(135deg, #db2777, var(--tag-count));
             color: white;
             box-shadow: 0 2px 12px rgba(236, 72, 153, 0.35);
         }
@@ -280,7 +377,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            color: #6c63ff;
+            color: var(--link-color);
             text-decoration: none;
             font-weight: 500;
             font-size: 15px;
@@ -289,31 +386,32 @@
         }
 
         .back-link a:hover {
-            color: #4a42b8;
-            border-bottom-color: #4a42b8;
+            color: var(--link-hover);
+            border-bottom-color: var(--link-hover);
         }
 
         /* ===== 页脚 ===== */
         .footer {
             text-align: center;
             font-size: 14px;
-            color: #64748b;
+            color: var(--text-muted);
             padding-top: 22px;
-            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-top: 1px solid var(--footer-border);
             width: 100%;
             margin-top: 32px;
             letter-spacing: 0.3px;
+            transition: color 0.4s, border-color 0.4s;
         }
 
         .footer a {
-            color: #6c63ff;
+            color: var(--link-color);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
         }
 
         .footer a:hover {
-            color: #4a42b8;
+            color: var(--link-hover);
             text-decoration: underline;
         }
 
@@ -341,6 +439,10 @@
             .top-bar .nav-link {
                 font-size: 14px;
             }
+            .theme-toggle {
+                font-size: 18px;
+                padding: 3px 6px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -364,15 +466,21 @@
             .top-bar .nav-link::before {
                 margin-right: 6px;
             }
+            .theme-toggle {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <a href="index.html" class="site-title">BlueCat114 官方网站</a>
-        <a href="project.html" class="nav-link active">项目</a>
-        <a href="thankyou.html" class="nav-link">致谢</a>
+        <div class="top-bar-left">
+            <a href="index.html" class="site-title">BlueCat114 官方网站</a>
+            <a href="project.html" class="nav-link active">项目</a>
+            <a href="thankyou.html" class="nav-link">致谢</a>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="切换暗色/亮色模式">☀️</button>
     </div>
 
     <div class="main">
@@ -415,6 +523,20 @@
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        toggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+        toggle.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+        });
     </script>
 
 </body>

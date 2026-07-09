@@ -6,6 +6,65 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>致谢 · BlueCat114</title>
     <style>
+        /* ===== 颜色变量 ===== */
+        :root {
+            --bg-start: #f5f9ff;
+            --bg-end: #e6edf7;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(255, 255, 255, 0.8);
+            --text-primary: #0b1e33;
+            --text-secondary: #1e293b;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --shadow-color: rgba(0, 20, 40, 0.08);
+            --shadow-hover: rgba(0, 20, 40, 0.12);
+            --badge-bg: rgba(30, 41, 59, 0.9);
+            --badge-text: #f1f5f9;
+            --topbar-bg: rgba(255, 255, 255, 0.6);
+            --topbar-border: rgba(255, 255, 255, 0.8);
+            --tag-bg: #eef2ff;
+            --tag-text: #4338ca;
+            --tag-border: #c7d2fe;
+            --btn-shadow: rgba(108, 99, 255, 0.25);
+            --btn-hover-shadow: rgba(108, 99, 255, 0.35);
+            --footer-border: rgba(255, 255, 255, 0.6);
+            --link-color: #6c63ff;
+            --link-hover: #4a42b8;
+            --intro-bg: rgba(255, 255, 255, 0.65);
+            --intro-border: rgba(255, 255, 255, 0.8);
+            --empty-bg: rgba(108, 99, 255, 0.06);
+            --empty-border: rgba(108, 99, 255, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-start: #0f1724;
+            --bg-end: #1a2332;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-border: rgba(71, 85, 105, 0.5);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.4);
+            --badge-bg: rgba(71, 85, 105, 0.9);
+            --badge-text: #e2e8f0;
+            --topbar-bg: rgba(15, 23, 36, 0.8);
+            --topbar-border: rgba(71, 85, 105, 0.5);
+            --tag-bg: #1e293b;
+            --tag-text: #818cf8;
+            --tag-border: #4f46e5;
+            --btn-shadow: rgba(108, 99, 255, 0.15);
+            --btn-hover-shadow: rgba(108, 99, 255, 0.25);
+            --footer-border: rgba(71, 85, 105, 0.4);
+            --link-color: #818cf8;
+            --link-hover: #a5b4fc;
+            --intro-bg: rgba(30, 41, 59, 0.7);
+            --intro-border: rgba(71, 85, 105, 0.4);
+            --empty-bg: rgba(108, 99, 255, 0.08);
+            --empty-border: rgba(108, 99, 255, 0.15);
+        }
+
         /* ===== 字体加载 ===== */
         @font-face {
             font-family: 'Minecraft';
@@ -29,11 +88,13 @@
 
         body {
             font-family: 'Minecraft', 'Microsoft YaHei', 'PingFang SC', sans-serif;
-            background: linear-gradient(145deg, #f5f9ff 0%, #e6edf7 100%);
+            background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-end) 100%);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             padding: 70px 24px 24px 24px;
+            transition: background 0.4s ease, color 0.4s ease;
+            color: var(--text-primary);
         }
 
         /* ===== 左上角固定导航条 ===== */
@@ -44,25 +105,27 @@
             width: 100%;
             z-index: 1000;
             padding: 12px 28px;
-            background: rgba(255, 255, 255, 0.6);
+            background: var(--topbar-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-            transition: background 0.3s;
+            border-bottom: 1px solid var(--topbar-border);
+            box-shadow: 0 2px 12px var(--shadow-color);
+            transition: background 0.4s ease, border-color 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .top-bar-left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .top-bar:hover {
-            background: rgba(255, 255, 255, 0.8);
-        }
-
         .top-bar .site-title {
             font-size: 18px;
             font-weight: 600;
-            color: #0b1e33;
+            color: var(--text-primary);
             text-decoration: none;
             letter-spacing: 0.3px;
             display: inline-flex;
@@ -72,7 +135,7 @@
         }
 
         .top-bar .site-title:hover {
-            color: #6c63ff;
+            color: var(--link-color);
         }
 
         .top-bar .site-title::before {
@@ -83,7 +146,7 @@
         .top-bar .nav-link {
             font-size: 16px;
             font-weight: 500;
-            color: #1e293b;
+            color: var(--text-secondary);
             text-decoration: none;
             transition: color 0.2s;
             padding: 4px 0;
@@ -93,18 +156,38 @@
         .top-bar .nav-link::before {
             content: "｜";
             margin-right: 10px;
-            color: #94a3b8;
+            color: var(--text-light);
             font-weight: 300;
         }
 
         .top-bar .nav-link:hover {
-            color: #6c63ff;
-            border-bottom-color: #6c63ff;
+            color: var(--link-color);
+            border-bottom-color: var(--link-color);
         }
 
         .top-bar .nav-link.active {
-            color: #6c63ff;
-            border-bottom-color: #6c63ff;
+            color: var(--link-color);
+            border-bottom-color: var(--link-color);
+        }
+
+        /* ===== 主题切换按钮 ===== */
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+            transition: background 0.3s;
+            color: var(--text-primary);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            line-height: 1;
+        }
+
+        .theme-toggle:hover {
+            background: var(--tag-bg);
+            transform: scale(1.1);
         }
 
         /* ===== 主容器 ===== */
@@ -122,21 +205,21 @@
 
         /* ===== 致谢卡片 ===== */
         .thanks-card {
-            background: rgba(255, 255, 255, 0.7);
+            background: var(--card-bg);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border-radius: 28px;
             padding: 48px 40px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 8px 32px rgba(0, 20, 40, 0.08);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 32px var(--shadow-color);
             text-align: center;
             width: 100%;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            transition: transform 0.25s ease, box-shadow 0.4s, background 0.4s, border-color 0.4s;
         }
 
         .thanks-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 48px rgba(0, 20, 40, 0.12);
+            box-shadow: 0 16px 48px var(--shadow-hover);
         }
 
         .thanks-card .icon {
@@ -148,30 +231,33 @@
         .thanks-card h1 {
             font-size: 32px;
             font-weight: 700;
-            color: #0b1e33;
+            color: var(--text-primary);
             letter-spacing: -0.3px;
             margin-bottom: 12px;
+            transition: color 0.4s;
         }
 
         .thanks-card .message {
             font-size: 18px;
-            color: #475569;
+            color: var(--text-secondary);
             line-height: 1.8;
+            transition: color 0.4s;
         }
 
         .thanks-card .message .highlight {
-            color: #6c63ff;
+            color: var(--link-color);
             font-weight: 600;
         }
 
         .thanks-card .empty-state {
             margin-top: 20px;
             padding: 16px 24px;
-            background: rgba(108, 99, 255, 0.06);
+            background: var(--empty-bg);
             border-radius: 16px;
-            border: 1px dashed rgba(108, 99, 255, 0.2);
+            border: 1px dashed var(--empty-border);
             font-size: 15px;
-            color: #64748b;
+            color: var(--text-muted);
+            transition: background 0.4s, border-color 0.4s, color 0.4s;
         }
 
         .thanks-card .empty-state .emoji {
@@ -184,23 +270,24 @@
         .footer {
             text-align: center;
             font-size: 14px;
-            color: #64748b;
+            color: var(--text-muted);
             padding-top: 22px;
-            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-top: 1px solid var(--footer-border);
             width: 100%;
             margin-top: 32px;
             letter-spacing: 0.3px;
+            transition: color 0.4s, border-color 0.4s;
         }
 
         .footer a {
-            color: #6c63ff;
+            color: var(--link-color);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.2s;
         }
 
         .footer a:hover {
-            color: #4a42b8;
+            color: var(--link-hover);
             text-decoration: underline;
         }
 
@@ -228,6 +315,10 @@
             .top-bar .nav-link {
                 font-size: 14px;
             }
+            .theme-toggle {
+                font-size: 18px;
+                padding: 3px 6px;
+            }
         }
 
         @media (max-width: 400px) {
@@ -249,15 +340,21 @@
             .top-bar .nav-link::before {
                 margin-right: 6px;
             }
+            .theme-toggle {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <a href="index.html" class="site-title">BlueCat114 官方网站</a>
-        <a href="project.html" class="nav-link">项目</a>
-        <a href="thankyou.html" class="nav-link active">致谢</a>
+        <div class="top-bar-left">
+            <a href="index.html" class="site-title">BlueCat114 官方网站</a>
+            <a href="project.html" class="nav-link">项目</a>
+            <a href="thankyou.html" class="nav-link active">致谢</a>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="切换暗色/亮色模式">☀️</button>
     </div>
 
     <div class="main">
@@ -283,6 +380,20 @@
 
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        toggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+        toggle.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            toggle.textContent = next === 'dark' ? '🌙' : '☀️';
+        });
     </script>
 
 </body>
