@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="favicon.png" type="image/png" />
-    <title>MCSkin3D 多语言版 · 下载</title>
+    <title>致谢 · BlueCat114</title>
     <style>
         /* ===== 字体加载 ===== */
         @font-face {
@@ -231,8 +231,8 @@
             padding: 20px 0;
         }
 
-        /* ===== 信息卡片 ===== */
-        .info-card {
+        /* ===== 致谢卡片 ===== */
+        .thanks-card {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -243,131 +243,55 @@
             text-align: center;
             width: 100%;
             transition: transform 0.25s ease, box-shadow 0.4s, background 0.4s, border-color 0.4s;
-            margin-bottom: 20px;
         }
 
-        .info-card:hover {
+        .thanks-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 16px 48px var(--shadow-hover);
         }
 
-        .info-card .icon {
+        .thanks-card .icon {
             font-size: 64px;
             display: block;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
-        .info-card h1 {
-            font-size: 30px;
+        .thanks-card h1 {
+            font-size: 32px;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.3px;
+            margin-bottom: 12px;
             transition: color 0.4s;
         }
 
-        .info-card .subtitle {
-            color: var(--text-muted);
-            font-size: 16px;
-            margin-top: 8px;
-            line-height: 1.7;
+        .thanks-card .message {
+            font-size: 18px;
+            color: var(--text-secondary);
+            line-height: 1.8;
             transition: color 0.4s;
         }
 
-        .info-card .version {
-            display: inline-block;
-            background: rgba(108, 99, 255, 0.12);
+        .thanks-card .message .highlight {
             color: var(--link-color);
-            font-size: 14px;
             font-weight: 600;
-            padding: 4px 20px;
-            border-radius: 30px;
-            margin-top: 12px;
-            transition: background 0.4s, color 0.4s;
         }
 
-        /* ===== 链接卡片列表 ===== */
-        .link-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 100%;
-        }
-
-        .link-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 18px 28px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 8px 32px var(--shadow-color);
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: transform 0.25s ease, box-shadow 0.4s, background 0.4s, border-color 0.4s;
-        }
-
-        .link-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px var(--shadow-hover);
-        }
-
-        .link-card .label {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: color 0.4s;
-        }
-
-        .link-card .label .icon-sm {
-            font-size: 24px;
-        }
-
-        .link-card .url {
+        .thanks-card .empty-state {
+            margin-top: 20px;
+            padding: 16px 24px;
+            background: rgba(108, 99, 255, 0.06);
+            border-radius: 16px;
+            border: 1px dashed rgba(108, 99, 255, 0.2);
             font-size: 15px;
-            color: var(--link-color);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 6px 16px;
-            border-radius: 30px;
-            background: rgba(108, 99, 255, 0.08);
-            transition: all 0.2s;
-            border: 1px solid transparent;
-            word-break: break-all;
-            text-align: right;
+            color: var(--text-muted);
+            transition: background 0.4s, border-color 0.4s, color 0.4s;
         }
 
-        .link-card .url:hover {
-            background: var(--link-color);
-            color: white;
-            border-color: var(--link-color);
-            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.25);
-        }
-
-        /* ===== 返回链接 ===== */
-        .back-link {
-            margin-top: 28px;
-        }
-
-        .back-link a {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--link-color);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
-            transition: color 0.2s;
-            border-bottom: 2px solid transparent;
-        }
-
-        .back-link a:hover {
-            color: var(--link-hover);
-            border-bottom-color: var(--link-hover);
+        .thanks-card .empty-state .emoji {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 6px;
         }
 
         /* ===== 页脚 ===== */
@@ -400,22 +324,14 @@
             body {
                 padding: 66px 16px 16px 16px;
             }
-            .info-card {
+            .thanks-card {
                 padding: 32px 24px;
             }
-            .info-card h1 {
-                font-size: 24px;
+            .thanks-card h1 {
+                font-size: 26px;
             }
-            .link-card {
-                flex-direction: column;
-                gap: 12px;
-                align-items: flex-start;
-                padding: 16px 20px;
-            }
-            .link-card .url {
-                text-align: left;
-                width: 100%;
-                font-size: 14px;
+            .thanks-card .message {
+                font-size: 16px;
             }
             .top-bar {
                 padding: 10px 18px;
@@ -440,21 +356,14 @@
         }
 
         @media (max-width: 400px) {
-            .info-card h1 {
-                font-size: 20px;
+            .thanks-card h1 {
+                font-size: 22px;
             }
-            .info-card .icon {
+            .thanks-card .icon {
                 font-size: 48px;
             }
-            .info-card .subtitle {
+            .thanks-card .message {
                 font-size: 14px;
-            }
-            .link-card .label {
-                font-size: 14px;
-            }
-            .link-card .url {
-                font-size: 13px;
-                padding: 4px 12px;
             }
             .top-bar .site-title {
                 font-size: 14px;
@@ -488,8 +397,8 @@
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
-            <a href="project.html" class="nav-link active">项目</a>
-            <a href="thankyou.html" class="nav-link">致谢</a>
+            <a href="project.html" class="nav-link">项目</a>
+            <a href="thankyou.html" class="nav-link active">致谢</a>
         </div>
         <div class="top-bar-center" id="clockDisplay" title="双击恢复自动模式">--:--</div>
         <div class="top-bar-right">
@@ -500,55 +409,17 @@
 
     <div class="main">
 
-        <!-- 主卡片：项目信息 -->
-        <div class="info-card">
-            <span class="icon">⛏️</span>
-            <h1>MCSkin3D 多语言增强版</h1>
-            <p class="subtitle">
-                为 MCSkin3D 添加 <strong>11 种语言</strong> 支持<br />
-                包含文件完整性修复工具、错误对照表及详细使用教程
+        <div class="thanks-card">
+            <span class="icon">🙏</span>
+            <h1>致谢</h1>
+            <p class="message">
+                感谢每一位帮助过 <span class="highlight">BlueCat114</span> 的人。
             </p>
-            <span class="version">v1.4.4 · 最新稳定版</span>
-        </div>
-
-        <!-- 链接卡片列表 -->
-        <div class="link-list">
-
-            <!-- MineBBS -->
-            <div class="link-card">
-                <span class="label">
-                    <span class="icon-sm">🧊</span> MineBBS 下载链接
-                </span>
-                <a href="https://www.minebbs.com/resources/mcskin-d.16518/" target="_blank" class="url">
-                    链接：minebbs.com/resources/mcskin-d.16518/
-                </a>
+            <div class="empty-state">
+                <span class="emoji">🌱</span>
+                还没有人馈赠呢~<br />
+                如果你曾帮助过我，欢迎告诉我，我会把你写在这里 ❤️
             </div>
-
-            <!-- GitHub -->
-            <div class="link-card">
-                <span class="label">
-                    <span class="icon-sm">🐙</span> GitHub 下载链接
-                </span>
-                <a href="https://github.com/Grass114/mcskin3d-more-languages/releases" target="_blank" class="url">
-                    链接：github.com/Grass114/mcskin3d-more-languages/releases
-                </a>
-            </div>
-
-            <!-- SourceForge -->
-            <div class="link-card">
-                <span class="label">
-                    <span class="icon-sm">📦</span> SourceForge 下载链接
-                </span>
-                <a href="https://sourceforge.net/projects/mcskin3d-more-languages/files/" target="_blank" class="url">
-                    链接：sourceforge.net/projects/mcskin3d-more-languages/files/
-                </a>
-            </div>
-
-        </div>
-
-        <!-- 返回项目列表 -->
-        <div class="back-link">
-            <a href="project.html">← 返回项目列表</a>
         </div>
 
         <div class="footer">

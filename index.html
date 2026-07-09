@@ -40,6 +40,7 @@
             --link-hover: #4a42b8;
             --intro-bg: rgba(255, 255, 255, 0.65);
             --intro-border: rgba(255, 255, 255, 0.8);
+            --clock-color: var(--text-muted);
         }
 
         [data-theme="dark"] {
@@ -67,6 +68,7 @@
             --link-hover: #a5b4fc;
             --intro-bg: rgba(30, 41, 59, 0.7);
             --intro-border: rgba(71, 85, 105, 0.4);
+            --clock-color: #94a3b8;
         }
 
         /* ===== 全局重置 ===== */
@@ -119,6 +121,23 @@
             gap: 12px;
         }
 
+        .top-bar-center {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--clock-color);
+            letter-spacing: 0.5px;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.4s;
+            cursor: default;
+            user-select: none;
+        }
+        .top-bar-center:hover {
+            color: var(--link-color);
+        }
+
         .top-bar .site-title {
             font-size: 18px;
             font-weight: 600;
@@ -167,6 +186,12 @@
             border-bottom-color: var(--link-color);
         }
 
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         /* ===== 主题切换按钮 ===== */
         .theme-toggle {
             background: none;
@@ -185,6 +210,14 @@
         .theme-toggle:hover {
             background: var(--tag-bg);
             transform: scale(1.1);
+        }
+
+        /* 自动模式指示器 - 一个小点表示当前是自动还是手动 */
+        .auto-indicator {
+            font-size: 12px;
+            color: var(--text-light);
+            transition: color 0.4s;
+            cursor: default;
         }
 
         #top {
@@ -382,9 +415,15 @@
             .top-bar .nav-link {
                 font-size: 14px;
             }
+            .top-bar-center {
+                font-size: 13px;
+            }
             .theme-toggle {
                 font-size: 18px;
                 padding: 3px 6px;
+            }
+            .auto-indicator {
+                font-size: 10px;
             }
         }
 
@@ -412,8 +451,20 @@
             .top-bar .nav-link::before {
                 margin-right: 6px;
             }
+            .top-bar-center {
+                font-size: 12px;
+                position: static;
+                transform: none;
+                order: 3;
+                width: 100%;
+                text-align: center;
+                margin-top: 2px;
+            }
             .theme-toggle {
                 font-size: 16px;
+            }
+            .auto-indicator {
+                font-size: 10px;
             }
         }
     </style>
@@ -429,7 +480,11 @@
             <a href="project.html" class="nav-link">项目</a>
             <a href="thankyou.html" class="nav-link">致谢</a>
         </div>
-        <button class="theme-toggle" id="themeToggle" aria-label="切换暗色/亮色模式">☀️</button>
+        <div class="top-bar-center" id="clockDisplay" title="双击恢复自动模式">--:--</div>
+        <div class="top-bar-right">
+            <span class="auto-indicator" id="autoIndicator">🤖</span>
+            <button class="theme-toggle" id="themeToggle" aria-label="切换暗色/亮色模式">☀️</button>
+        </div>
     </div>
 
     <div class="main">
@@ -466,20 +521,76 @@
         // ===== 年份自动更新 =====
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // ===== 暗色/亮色切换 =====
+        // ===== 时钟 + 自动切换 =====
+        const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        html.setAttribute('data-theme', savedTheme);
-        toggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+        const autoIndicator = document.getElementById('autoIndicator');
 
+        let isAutoMode = true; // 默认自动模式
+        let currentTheme = 'light';
+
+        // 根据小时判断应该是什么主题
+        function getThemeByHour() {
+            const h = new Date().getHours();
+            // 6:00 ~ 18:00 亮色，18:00 ~ 次日6:00 暗色
+            return (h >= 6 && h < 18) ? 'light' : 'dark';
+        }
+
+        // 更新时钟和主题
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            clockDisplay.textContent = h + ':' + m;
+
+            // 自动模式下根据时间切换
+            if (isAutoMode) {
+                const target = getThemeByHour();
+                if (target !== currentTheme) {
+                    currentTheme = target;
+                    html.setAttribute('data-theme', target);
+                    toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+                }
+            }
+        }
+
+        // 手动切换
         toggle.addEventListener('click', function() {
+            if (isAutoMode) {
+                // 第一次手动切换，退出自动模式
+                isAutoMode = false;
+                autoIndicator.textContent = '👆';
+            }
             const current = html.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
+            currentTheme = next;
             html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
             toggle.textContent = next === 'dark' ? '🌙' : '☀️';
         });
+
+        // 双击时钟恢复自动模式
+        clockDisplay.addEventListener('dblclick', function() {
+            isAutoMode = true;
+            autoIndicator.textContent = '🤖';
+            const target = getThemeByHour();
+            currentTheme = target;
+            html.setAttribute('data-theme', target);
+            toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+            // 瞬间刷新一下时钟
+            updateClock();
+        });
+
+        // 初始化：先按时间设置主题
+        const initTheme = getThemeByHour();
+        currentTheme = initTheme;
+        html.setAttribute('data-theme', initTheme);
+        toggle.textContent = initTheme === 'dark' ? '🌙' : '☀️';
+        autoIndicator.textContent = '🤖';
+
+        // 启动时钟（每秒更新一次）
+        updateClock();
+        setInterval(updateClock, 1000);
     </script>
 
 </body>
