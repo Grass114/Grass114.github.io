@@ -359,10 +359,14 @@
         </div>
 
         <div class="footer">
-            © 2026 <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
+            © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
 
     </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 
 </body>
 </html>

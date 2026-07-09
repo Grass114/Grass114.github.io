@@ -384,7 +384,7 @@
 
         <div class="project-list">
 
-            <!-- 项目1：MCSkin3D 多语言版 → 跳转到 mcskin3d.html -->
+            <!-- 项目1：MCSkin3D 多语言版 -->
             <a href="mcskin3d.html" class="project-item">
                 <h3>
                     ⛏️ MCSkin3D 多语言增强版
@@ -408,10 +408,14 @@
         </div>
 
         <div class="footer">
-            © 2026 <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
+            © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
 
     </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 
 </body>
 </html>

@@ -366,7 +366,7 @@
         <!-- 链接卡片列表 -->
         <div class="link-list">
 
-            <!-- MineBBS（第一位） -->
+            <!-- MineBBS -->
             <div class="link-card">
                 <span class="label">
                     <span class="icon-sm">🧊</span> MineBBS 下载链接
@@ -376,7 +376,7 @@
                 </a>
             </div>
 
-            <!-- GitHub（第二位） -->
+            <!-- GitHub -->
             <div class="link-card">
                 <span class="label">
                     <span class="icon-sm">🐙</span> GitHub 下载链接
@@ -386,7 +386,7 @@
                 </a>
             </div>
 
-            <!-- SourceForge（第三位） -->
+            <!-- SourceForge -->
             <div class="link-card">
                 <span class="label">
                     <span class="icon-sm">📦</span> SourceForge 下载链接
@@ -404,10 +404,14 @@
         </div>
 
         <div class="footer">
-            © 2026 <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
+            © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
 
     </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 
 </body>
 </html>
