@@ -1,0 +1,290 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.png" type="image/png" />
+    <title>页面走丢了 · BlueCat114</title>
+    <style>
+        /* ===== 字体加载 ===== */
+        @font-face {
+            font-family: 'Minecraft';
+            src: url('Minecraft.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Minecraft', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(145deg, #f5f9ff 0%, #e6edf7 100%);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 70px 24px 24px 24px;
+        }
+
+        /* ===== 左上角固定导航条 ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-bar:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .top-bar .site-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0b1e33;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        .top-bar .site-title:hover {
+            color: #6c63ff;
+        }
+
+        .top-bar .site-title::before {
+            content: "🏠";
+            font-size: 20px;
+        }
+
+        .top-bar .nav-link {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1e293b;
+            text-decoration: none;
+            transition: color 0.2s;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .top-bar .nav-link::before {
+            content: "｜";
+            margin-right: 10px;
+            color: #94a3b8;
+            font-weight: 300;
+        }
+
+        .top-bar .nav-link:hover {
+            color: #6c63ff;
+            border-bottom-color: #6c63ff;
+        }
+
+        /* ===== 主容器 ===== */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* ===== 404 卡片 ===== */
+        .error-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 48px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 8px 32px rgba(0, 20, 40, 0.08);
+            text-align: center;
+            width: 100%;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .error-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 20, 40, 0.12);
+        }
+
+        .error-card .icon {
+            font-size: 80px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .error-card h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0b1e33;
+            letter-spacing: -0.3px;
+            margin-bottom: 8px;
+        }
+
+        .error-card .sub {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .error-card .hint {
+            font-size: 15px;
+            color: #94a3b8;
+            margin-top: 4px;
+            margin-bottom: 24px;
+        }
+
+        .error-card .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: #6c63ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 60px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(108, 99, 255, 0.25);
+            border: 1px solid transparent;
+        }
+
+        .error-card .btn:hover {
+            background: #5a52d5;
+            transform: scale(1.04);
+            box-shadow: 0 8px 28px rgba(108, 99, 255, 0.35);
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            padding-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            width: 100%;
+            margin-top: 32px;
+            letter-spacing: 0.3px;
+        }
+
+        .footer a {
+            color: #6c63ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: #4a42b8;
+            text-decoration: underline;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 700px) {
+            body {
+                padding: 66px 16px 16px 16px;
+            }
+            .error-card {
+                padding: 32px 24px;
+            }
+            .error-card h1 {
+                font-size: 28px;
+            }
+            .error-card .icon {
+                font-size: 60px;
+            }
+            .error-card .sub {
+                font-size: 16px;
+            }
+            .top-bar {
+                padding: 10px 18px;
+                gap: 8px;
+            }
+            .top-bar .site-title {
+                font-size: 16px;
+            }
+            .top-bar .nav-link {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .error-card h1 {
+                font-size: 22px;
+            }
+            .error-card .icon {
+                font-size: 48px;
+            }
+            .error-card .sub {
+                font-size: 14px;
+            }
+            .error-card .btn {
+                padding: 10px 24px;
+                font-size: 14px;
+            }
+            .top-bar .site-title {
+                font-size: 14px;
+            }
+            .top-bar .nav-link {
+                font-size: 13px;
+            }
+            .top-bar .nav-link::before {
+                margin-right: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="index.html" class="site-title">BlueCat114 官方网站</a>
+    </div>
+
+    <div class="main">
+
+        <div class="error-card">
+            <span class="icon">❌</span>
+            <h1>404</h1>
+            <p class="sub">出现了一个区块加载错误……</p>
+            <p class="hint">你要找的页面可能被苦力怕炸飞了 💥</p>
+            <a href="index.html" class="btn">🏠 返回首页</a>
+        </div>
+
+        <div class="footer">
+            © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
