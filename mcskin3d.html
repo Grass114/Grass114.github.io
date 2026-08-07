@@ -4,16 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="favicon.png" type="image/png" />
-    <title>MCSkin3D 多语言版 · 下载</title>
+    <title>MCSkin3D 的详细资料及下载</title>
     <style>
-        /* ===== 字体加载 ===== */
-        @font-face {
-            font-family: 'Minecraft';
-            src: url('Minecraft.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
         /* ===== 颜色变量 ===== */
         :root {
             --bg-start: #f5f9ff;
@@ -32,6 +24,13 @@
             --link-color: #6c63ff;
             --link-hover: #4a42b8;
             --clock-color: var(--text-muted);
+            --credit-bg: rgba(255, 255, 255, 0.4);
+            --credit-border: rgba(255, 255, 255, 0.5);
+            --tag-bg: #eef2ff;
+            --tag-text: #4338ca;
+            --tag-border: #c7d2fe;
+            --info-bg: rgba(255, 255, 255, 0.35);
+            --info-border: rgba(255, 255, 255, 0.4);
         }
 
         [data-theme="dark"] {
@@ -51,6 +50,13 @@
             --link-color: #818cf8;
             --link-hover: #a5b4fc;
             --clock-color: #94a3b8;
+            --credit-bg: rgba(30, 41, 59, 0.5);
+            --credit-border: rgba(71, 85, 105, 0.3);
+            --tag-bg: #1e293b;
+            --tag-text: #818cf8;
+            --tag-border: #4f46e5;
+            --info-bg: rgba(30, 41, 59, 0.4);
+            --info-border: rgba(71, 85, 105, 0.25);
         }
 
         /* ===== 全局重置 ===== */
@@ -67,7 +73,7 @@
         }
 
         body {
-            font-family: 'Minecraft', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
             background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-end) 100%);
             display: flex;
             flex-direction: column;
@@ -85,15 +91,19 @@
             width: 100%;
             z-index: 1000;
             padding: 12px 28px;
-            background: var(--topbar-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--topbar-border);
-            box-shadow: 0 2px 12px var(--shadow-color);
-            transition: background 0.4s ease, border-color 0.4s ease;
+            background: #ffffff;
+            border-bottom: 1px solid #e9edf2;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        [data-theme="dark"] .top-bar {
+            background: #1a2332;
+            border-bottom: 1px solid #2a3a4a;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
         }
 
         .top-bar-left {
@@ -111,13 +121,17 @@
         .top-bar .site-title {
             font-size: 18px;
             font-weight: 600;
-            color: var(--text-primary);
+            color: #0b1e33;
             text-decoration: none;
             letter-spacing: 0.3px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
             transition: color 0.2s;
+        }
+
+        [data-theme="dark"] .top-bar .site-title {
+            color: #e2e8f0;
         }
 
         .top-bar .site-title:hover {
@@ -132,17 +146,21 @@
         .top-bar .nav-link {
             font-size: 16px;
             font-weight: 500;
-            color: var(--text-secondary);
+            color: #1e293b;
             text-decoration: none;
             transition: color 0.2s;
             padding: 4px 0;
             border-bottom: 2px solid transparent;
         }
 
+        [data-theme="dark"] .top-bar .nav-link {
+            color: #cbd5e1;
+        }
+
         .top-bar .nav-link::before {
             content: "｜";
             margin-right: 10px;
-            color: var(--text-light);
+            color: #94a3b8;
             font-weight: 300;
         }
 
@@ -183,10 +201,16 @@
             padding: 4px 8px;
             border-radius: 30px;
             transition: background 0.3s;
-            color: var(--text-primary);
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            color: #0b1e33;
+            background: #f1f4f9;
+            border: 1px solid #e2e8f0;
             line-height: 1;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            color: #e2e8f0;
+            background: #2a3a4a;
+            border: 1px solid #3a4a5a;
         }
 
         .theme-toggle:hover {
@@ -199,98 +223,258 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 700px;
+            max-width: 720px;
             margin: 0 auto;
             padding: 20px 0;
         }
 
-        /* ===== 信息卡片 ===== */
-        .info-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 48px 40px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 8px 32px var(--shadow-color);
+        /* ===== 项目信息（图标 + 标题） ===== */
+        .info-section {
             text-align: center;
             width: 100%;
-            transition: transform 0.25s ease, box-shadow 0.4s, background 0.4s, border-color 0.4s;
-            margin-bottom: 20px;
         }
 
-        .info-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 48px var(--shadow-hover);
-        }
-
-        .info-card .icon {
-            font-size: 64px;
+        .info-icon {
             display: block;
-            margin-bottom: 12px;
+            margin: 0 auto 8px auto;
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
         }
 
-        .info-card h1 {
-            font-size: 30px;
+        .info-title {
+            font-size: 32px;
             font-weight: 700;
             color: var(--text-primary);
             letter-spacing: -0.3px;
             transition: color 0.4s;
         }
 
-        .info-card .subtitle {
-            color: var(--text-muted);
-            font-size: 16px;
-            margin-top: 8px;
-            line-height: 1.7;
+        [data-theme="dark"] .info-title {
+            color: #e2e8f0;
+        }
+
+        /* ===== 原作者与版权 + Paril ===== */
+        .credit-section {
+            width: 100%;
+            margin-top: 24px;
+            padding: 22px 26px;
+            background: var(--credit-bg);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 16px;
+            border: 1px solid var(--credit-border);
+            transition: background 0.4s, border-color 0.4s;
+        }
+
+        .credit-section .credit-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
             transition: color 0.4s;
         }
 
-        .info-card .version {
-            display: inline-block;
-            background: rgba(108, 99, 255, 0.12);
-            color: var(--link-color);
+        [data-theme="dark"] .credit-section .credit-title {
+            color: #e2e8f0;
+        }
+
+        .credit-section .credit-body {
             font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            transition: color 0.4s;
+        }
+
+        [data-theme="dark"] .credit-section .credit-body {
+            color: #cbd5e1;
+        }
+
+        .credit-section .credit-body .highlight {
+            color: var(--link-color);
+            font-weight: 500;
+        }
+
+        .credit-section .credit-body .label {
             font-weight: 600;
-            padding: 4px 20px;
+            color: var(--text-muted);
+        }
+
+        [data-theme="dark"] .credit-section .credit-body .label {
+            color: #94a3b8;
+        }
+
+        .credit-section .credit-body .tag {
+            display: inline-block;
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            border: 1px solid var(--tag-border);
+            padding: 0px 12px;
             border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.4s, color 0.4s, border-color 0.4s;
+        }
+
+        .credit-section .credit-body .block {
             margin-top: 12px;
-            transition: background 0.4s, color 0.4s;
         }
 
-        /* ===== 链接卡片列表 ===== */
-        .link-list {
+        .credit-section .credit-body .block:first-of-type {
+            margin-top: 0;
+        }
+
+        .credit-section .credit-body .block-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: color 0.4s;
+        }
+
+        [data-theme="dark"] .credit-section .credit-body .block-title {
+            color: #e2e8f0;
+        }
+
+        .credit-section .credit-links {
             display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 100%;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--credit-border);
+            transition: border-color 0.4s;
         }
 
-        .link-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 18px 28px;
-            border: 1px solid var(--card-border);
-            box-shadow: 0 8px 32px var(--shadow-color);
+        .credit-section .credit-links a {
+            font-size: 13px;
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            border-bottom: 1px solid transparent;
+        }
+
+        .credit-section .credit-links a:hover {
+            color: var(--link-hover);
+            border-bottom-color: var(--link-hover);
+        }
+
+        /* ===== 关于本修改版 + 下载链接（合并） ===== */
+        .combined-card {
             width: 100%;
+            margin-top: 16px;
+            padding: 22px 26px;
+            background: var(--info-bg);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 16px;
+            border: 1px solid var(--info-border);
+            transition: background 0.4s, border-color 0.4s;
+        }
+
+        .combined-card .card-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            transition: color 0.4s;
+        }
+
+        [data-theme="dark"] .combined-card .card-title {
+            color: #e2e8f0;
+        }
+
+        .combined-card .card-body {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            transition: color 0.4s;
+        }
+
+        [data-theme="dark"] .combined-card .card-body {
+            color: #cbd5e1;
+        }
+
+        .combined-card .card-body .highlight {
+            color: var(--link-color);
+            font-weight: 500;
+        }
+
+        .combined-card .card-body .tag {
+            display: inline-block;
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            border: 1px solid var(--tag-border);
+            padding: 0px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.4s, color 0.4s, border-color 0.4s;
+        }
+
+        .combined-card .card-body .lang-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 10px;
+            margin-top: 4px;
+        }
+
+        .combined-card .card-body .lang-list .lang-tag {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            border: 1px solid var(--tag-border);
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background 0.4s, color 0.4s, border-color 0.4s;
+        }
+
+        .combined-card .card-body .step {
+            display: block;
+            margin-top: 4px;
+        }
+
+        .combined-card .card-body .step:first-of-type {
+            margin-top: 0;
+        }
+
+        .combined-card .download-section {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--info-border);
+            transition: border-color 0.4s;
+        }
+
+        .combined-card .download-section .download-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            transition: color 0.4s;
+        }
+
+        [data-theme="dark"] .combined-card .download-section .download-title {
+            color: #e2e8f0;
+        }
+
+        .combined-card .download-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: transform 0.25s ease, box-shadow 0.4s, background 0.4s, border-color 0.4s;
+            padding: 8px 4px;
+            border-bottom: 1px solid var(--info-border);
+            transition: border-color 0.4s;
         }
 
-        .link-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px var(--shadow-hover);
+        .combined-card .download-item:last-child {
+            border-bottom: none;
         }
 
-        .link-card .label {
-            font-size: 16px;
+        .combined-card .download-item .label {
+            font-size: 14px;
             font-weight: 500;
             color: var(--text-primary);
             display: flex;
@@ -299,16 +483,20 @@
             transition: color 0.4s;
         }
 
-        .link-card .label .icon-sm {
-            font-size: 24px;
+        [data-theme="dark"] .combined-card .download-item .label {
+            color: #e2e8f0;
         }
 
-        .link-card .url {
-            font-size: 15px;
+        .combined-card .download-item .label .icon-sm {
+            font-size: 20px;
+        }
+
+        .combined-card .download-item .url {
+            font-size: 13px;
             color: var(--link-color);
             text-decoration: none;
             font-weight: 500;
-            padding: 6px 16px;
+            padding: 4px 14px;
             border-radius: 30px;
             background: rgba(108, 99, 255, 0.08);
             transition: all 0.2s;
@@ -317,7 +505,7 @@
             text-align: right;
         }
 
-        .link-card .url:hover {
+        .combined-card .download-item .url:hover {
             background: var(--link-color);
             color: white;
             border-color: var(--link-color);
@@ -376,22 +564,39 @@
             body {
                 padding: 66px 16px 16px 16px;
             }
-            .info-card {
-                padding: 32px 24px;
+            .info-icon {
+                width: 56px;
+                height: 56px;
             }
-            .info-card h1 {
-                font-size: 24px;
+            .info-title {
+                font-size: 26px;
             }
-            .link-card {
+            .credit-section {
+                padding: 18px 18px;
+            }
+            .credit-section .credit-body {
+                font-size: 13px;
+            }
+            .credit-section .credit-links a {
+                font-size: 12px;
+            }
+            .combined-card {
+                padding: 18px 18px;
+            }
+            .combined-card .card-body {
+                font-size: 13px;
+            }
+            .combined-card .download-item {
                 flex-direction: column;
-                gap: 12px;
+                gap: 6px;
                 align-items: flex-start;
-                padding: 16px 20px;
+                padding: 6px 2px;
             }
-            .link-card .url {
+            .combined-card .download-item .url {
                 text-align: left;
                 width: 100%;
-                font-size: 14px;
+                font-size: 12px;
+                padding: 3px 10px;
             }
             .top-bar {
                 padding: 10px 18px;
@@ -415,25 +620,44 @@
         }
 
         @media (max-width: 400px) {
-            .info-card h1 {
-                font-size: 20px;
+            .info-icon {
+                width: 44px;
+                height: 44px;
             }
-            .info-card .icon {
-                font-size: 48px;
+            .info-title {
+                font-size: 22px;
             }
-            .info-card .subtitle {
-                font-size: 14px;
+            .credit-section {
+                padding: 14px 14px;
             }
-            .link-card .label {
-                font-size: 14px;
+            .credit-section .credit-body {
+                font-size: 12px;
             }
-            .link-card .url {
+            .credit-section .credit-links {
+                gap: 8px 14px;
+                flex-wrap: wrap;
+            }
+            .credit-section .credit-links a {
+                font-size: 11px;
+            }
+            .combined-card {
+                padding: 14px 14px;
+            }
+            .combined-card .card-body {
+                font-size: 12px;
+            }
+            .combined-card .card-body .lang-list .lang-tag {
+                font-size: 11px;
+                padding: 1px 10px;
+            }
+            .combined-card .download-item .label {
                 font-size: 13px;
-                padding: 4px 12px;
+            }
+            .combined-card .download-item .url {
+                font-size: 11px;
+                padding: 2px 8px;
             }
             .top-bar {
-                flex-wrap: wrap;
-                gap: 4px;
                 padding: 8px 12px;
             }
             .top-bar .site-title {
@@ -453,18 +677,23 @@
                 font-size: 16px;
                 padding: 2px 5px;
             }
+            .footer {
+                font-size: 12px;
+                padding: 18px 0 20px 0;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- 导航条 -->
+    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
             <a href="project.html" class="nav-link active">项目</a>
             <a href="game.html" class="nav-link">网页游戏</a>
             <a href="thankyou.html" class="nav-link">致谢</a>
+            <a href="about.html" class="nav-link">关于我</a>
         </div>
         <div class="top-bar-right">
             <div class="clock-display" id="clockDisplay" title="双击恢复自动模式">--:--:--</div>
@@ -472,52 +701,202 @@
         </div>
     </div>
 
+    <!-- ===== 主要内容 ===== -->
     <div class="main">
 
-        <!-- 主卡片：项目信息 -->
-        <div class="info-card">
-            <span class="icon">⛏️</span>
-            <h1>MCSkin3D 多语言增强版</h1>
-            <p class="subtitle">
-                为 MCSkin3D 添加 <strong>11 种语言</strong> 支持<br />
-                包含文件完整性修复工具、错误对照表及详细使用教程
-            </p>
-            <span class="version">v1.4.4 · 最新稳定版</span>
+        <!-- 项目信息（图标 + 标题） -->
+        <div class="info-section">
+            <img class="info-icon" src="mcskin3d.ico" alt="MCSkin3D" />
+            <h1 class="info-title">MCSkin3D 的详细资料及下载</h1>
         </div>
 
-        <!-- 链接卡片列表 -->
-        <div class="link-list">
+        <!-- 原作者与版权 + Paril -->
+        <div class="credit-section">
+            <div class="credit-title">原作者与版权 · Paril</div>
+            <div class="credit-body">
 
-            <!-- MineBBS -->
-            <div class="link-card">
-                <span class="label">
-                    <span class="icon-sm">🧊</span> MineBBS 下载链接
-                </span>
-                <a href="https://www.minebbs.com/resources/mcskin-d.16518/" target="_blank" class="url">
-                    链接：minebbs.com/resources/mcskin-d.16518/
-                </a>
+                <div class="block">
+                    <div class="block-title">👤 原作者与开发者</div>
+                    MCSkin3D 由 <span class="highlight">Paril</span> 于 2011 年 10 月开发，
+                    在 Planet Minecraft 社区持续维护多年。
+                    主要开发者：<span class="highlight">Pierre Bondoerffer</span> 和 <span class="highlight">Jonas Triki</span>。<br />
+                    艺术与示例皮肤由 <span class="highlight">whtdragon</span> 提供。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">🌐 在线身份与代表作</div>
+                    网络昵称 <span class="highlight">Paril</span>（自 2006 年开始使用）。<br />
+                    Planet Minecraft（PMC）社区管理员、首席开发者，GitHub 上拥有 12 个代码仓库。<br />
+                    <span class="highlight">代表作：</span>MCSkin3D（2011 年 10 月开发，一周后公开发布）、PMCSkin3D（官方网页版续作）。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">💼 职业与背景</div>
+                    Paril 是一位 <span class="highlight">自学成才的程序员</span>。
+                    2013 年时 20 岁的他受雇于 Cyprezz（Planet Minecraft 创始人），
+                    两人是长期的现实生活好友及开发伙伴。<br />
+                    其他合作者包括 Pierre Bondoerffer、Jonas Triki 等。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">🧑‍💻 编程启蒙与教育</div>
+                    编程生涯始于初中时期，为游戏《雷神之锤II》（Quake II）制作模组。<br />
+                    哥哥给了他一份 <span class="highlight">Visual C++ 6.0 光盘</span>，对他影响很大。<br />
+                    未上大学，高中时曾做过专业技术支持工作。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">🎮 个人生活与兴趣</div>
+                    兴趣爱好：编程、睡觉、玩游戏，喜欢看纪录片和播客。<br />
+                    2013 年时，他有一位交往超过一年的女友 Lali，两人通过 PMC 相识。<br />
+                    <span class="highlight">名字由来：</span>“Paril”这个网名从 2006 年左右开始使用，他想取一个简短、易记的名字。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">📦 版权与开发状态</div>
+                    版权归属 <span class="highlight">Altered Softworks &amp; MCSkin3D Team</span>。<br />
+                    官方开发已停止，原作者推荐使用其网页版续作 <span class="highlight">PMCSkin3D</span>。<br />
+                    社区开发的现代化桌面续作 <span class="highlight">MCSkinn</span> 也已获原作者同意。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">🚀 其他项目与影响</div>
+                    他有大量未发布的项目，一个名为“projects”的文件夹大小曾接近 <span class="highlight">7 GB</span>。<br />
+                    曾为游戏《Duck Game》开发模组框架并获得报酬。<br />
+                    GitHub 上还托管了《雷神之锤II》的源码存档等项目。<br />
+                    PMC 社区中甚至有以他名字命名的 <span class="highlight">“Paril 海军航空站”</span> 建筑项目，
+                    以及 <span class="highlight">“Blame Paril”</span> 这样的社区梗。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">🛠️ 核心功能</div>
+                    <span class="tag">皮肤创建与编辑</span>
+                    <span class="tag">3D/2D 多视角</span>
+                    <span class="tag">绘图工具</span>
+                    <span class="tag">皮肤管理</span>
+                    <span class="tag">自定义快捷键</span>
+                    <span class="tag">辅助线</span>
+                    <br />
+                    支持从零创作或导入修改，提供 <span class="highlight">3D 透视、2D 纹理展开、混合</span> 三种视图模式。
+                    内置铅笔、橡皮擦、吸管、印章、色轮、色板等多种工具。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">💻 系统要求</div>
+                    <span class="tag">Windows 7 及以上</span>
+                    <span class="tag">.NET Framework v4.0</span>
+                    <span class="tag">仅 1.59–2.5 MB</span>
+                    <br />
+                    安装时请勿放入 <span class="highlight">Program Files</span> 目录，
+                    推荐 <span class="highlight">C:/MCSkin3D/</span> 等简单路径，避免权限问题。<br />
+                    原生为英文界面，可通过汉化包切换为中文。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">📜 版本历史</div>
+                    <span class="tag">首个正式版 v1.3 · 2011.11.19</span>
+                    <span class="tag">最新稳定版 v1.6.0.603 · 2011.12.9</span>
+                    <br />
+                    <span class="highlight">v1.6.0</span> 主要更新：
+                    新增印章工具、色板功能、辅助线；支持皮肤在 1.8 与 1.0 版本间转换；
+                    支持部分生物及物品皮肤编辑；重做皮肤目录功能。
+                </div>
+
+                <div class="block">
+                    <div class="block-title">❓ 常见问题</div>
+                    <span class="tag">不支持高清皮肤</span>
+                    <span class="tag">光标偏移 Bug（部分用户）</span>
+                    <br />
+                    ⚠️ 部分用户在编辑皮肤右侧区域时，可能会遇到光标偏移的问题。
+                </div>
+
             </div>
 
-            <!-- GitHub -->
-            <div class="link-card">
-                <span class="label">
-                    <span class="icon-sm">🐙</span> GitHub 下载链接
-                </span>
-                <a href="https://github.com/Grass114/mcskin3d-more-languages/releases" target="_blank" class="url">
-                    链接：github.com/Grass114/mcskin3d-more-languages/releases
-                </a>
+            <div class="credit-links">
+                <a href="https://www.planetminecraft.com/mod/mcskin3d/" target="_blank">🌍 PMC 下载页</a>
+                <a href="https://github.com/paril/mcskin3d" target="_blank">🐙 GitHub 源码</a>
+                <a href="https://www.planetminecraft.com/skin-editor/" target="_blank">🎨 PMCSkin3D 网页版</a>
             </div>
+        </div>
 
-            <!-- SourceForge -->
-            <div class="link-card">
-                <span class="label">
-                    <span class="icon-sm">📦</span> SourceForge 下载链接
-                </span>
-                <a href="https://sourceforge.net/projects/mcskin3d-more-languages/files/" target="_blank" class="url">
-                    链接：sourceforge.net/projects/mcskin3d-more-languages/files/
-                </a>
+        <!-- ===== 关于本修改版 + 下载链接（合并） ===== -->
+        <div class="combined-card">
+            <div class="card-title">📦 关于本修改版</div>
+            <div class="card-body">
+
+                <p>
+                    这是基于 <span class="highlight">Paril</span> 开发的 MCSkin3D 原版制作的社区语言包增强版。
+                    在完整保留原版功能的基础上，增加了简体中文 (zh_CN) 等多语言支持，
+                    让皮肤编辑器对中文用户和其他语言用户更友好。
+                </p>
+
+                <div style="margin-top:12px;">
+                    <span style="font-weight:600;color:var(--text-primary);">🌐 当前语言支持</span>
+                    <div class="lang-list">
+                        <span class="lang-tag">English（软件自带）</span>
+                        <span class="lang-tag">简体中文 (zh_CN)</span>
+                        <span class="lang-tag">香港繁体 (zh_HK)</span>
+                        <span class="lang-tag">澳门繁体 (zh_MO)</span>
+                        <span class="lang-tag">台湾正体 (zh_TW)</span>
+                        <span class="lang-tag">韩语</span>
+                        <span class="lang-tag">法语</span>
+                        <span class="lang-tag">西班牙语</span>
+                        <span class="lang-tag">阿拉伯语</span>
+                        <span class="lang-tag">俄语</span>
+                        <span class="lang-tag">乌克兰语</span>
+                        <span class="lang-tag">日语</span>
+                    </div>
+                </div>
+
+                <div style="margin-top:14px;">
+                    <span style="font-weight:600;color:var(--text-primary);">📥 安装方法</span>
+                    <span class="step">1. 下载本资源或从 GitHub Releases 或其他下载方式获取压缩包</span>
+                    <span class="step">2. 解压到任意文件夹</span>
+                    <span class="step">3. 运行 <span class="highlight">MCSkin3D.exe</span></span>
+                    <span class="step">4. 点击菜单 <span class="highlight">Options → Language</span>，选择“简体中文”或其他语言！</span>
+                </div>
+
+                <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--info-border);">
+                    本修改版遵循 <span class="highlight">GNU GPL v3</span> 协议发布，
+                    原版软件版权归 <span class="highlight">Paril</span> 所有，
+                    修改版由 <span class="highlight">BlueCat</span> 制作。<br />
+                    欢迎反馈问题或提出建议。
+                </div>
+
+                <!-- ===== 下载区域 ===== -->
+                <div class="download-section">
+                    <div class="download-title">📥 下载</div>
+
+                    <div class="download-item">
+                        <span class="label">
+                            <span class="icon-sm">🧊</span> MineBBS
+                        </span>
+                        <a href="https://www.minebbs.com/resources/mcskin-d.16518/" target="_blank" class="url">
+                            minebbs.com/resources/mcskin-d.16518/
+                        </a>
+                    </div>
+
+                    <div class="download-item">
+                        <span class="label">
+                            <span class="icon-sm">🐙</span> GitHub
+                        </span>
+                        <a href="https://github.com/Grass114/mcskin3d-more-languages/releases" target="_blank" class="url">
+                            github.com/Grass114/mcskin3d-more-languages/releases
+                        </a>
+                    </div>
+
+                    <div class="download-item">
+                        <span class="label">
+                            <span class="icon-sm">📦</span> SourceForge
+                        </span>
+                        <a href="https://sourceforge.net/projects/mcskin3d-more-languages/files/" target="_blank" class="url">
+                            sourceforge.net/projects/mcskin3d-more-languages/files/
+                        </a>
+                    </div>
+
+                </div>
+
             </div>
-
         </div>
 
         <!-- 返回项目列表 -->
@@ -525,6 +904,7 @@
             <a href="project.html">← 返回项目列表</a>
         </div>
 
+        <!-- 页脚 -->
         <div class="footer">
             © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
@@ -532,8 +912,10 @@
     </div>
 
     <script>
+        // ===== 年份自动更新 =====
         document.getElementById('year').textContent = new Date().getFullYear();
 
+        // ===== 时钟 + 主题控制 =====
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
@@ -563,6 +945,7 @@
             }
         }
 
+        // 双击时钟恢复自动模式
         clockDisplay.addEventListener('dblclick', function() {
             isAutoMode = true;
             const target = getThemeByHour();
@@ -572,6 +955,7 @@
             updateClock();
         });
 
+        // 手动切换主题
         toggle.addEventListener('click', function() {
             isAutoMode = false;
             const current = html.getAttribute('data-theme');
@@ -581,6 +965,7 @@
             toggle.textContent = next === 'dark' ? '🌙' : '☀️';
         });
 
+        // 初始化
         const initTheme = getThemeByHour();
         currentTheme = initTheme;
         html.setAttribute('data-theme', initTheme);
