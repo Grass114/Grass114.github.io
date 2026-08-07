@@ -284,7 +284,7 @@
             transition: color 0.4s;
         }
 
-        /* ===== 选项卡栏（一行5个） ===== */
+        /* ===== 选项卡栏 ===== */
         .tab-bar {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -332,18 +332,6 @@
         }
         .tab-btn .tab-label {
             font-size: 13px;
-        }
-
-        /* ===== 游戏内容区 ===== */
-        .game-content {
-            width: 100%;
-            max-width: 820px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(12px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== 占位游戏卡片 ===== */
@@ -422,13 +410,6 @@
             .tab-btn .tab-label {
                 font-size: 11px;
             }
-            .game-content .game-card {
-                padding: 16px;
-                border-radius: 20px;
-            }
-            .game-container {
-                border-radius: 14px;
-            }
             .top-bar {
                 padding: 10px 18px;
                 flex-wrap: wrap;
@@ -486,13 +467,6 @@
             .tab-btn .tab-label {
                 font-size: 9px;
             }
-            .game-content .game-card {
-                padding: 10px;
-                border-radius: 14px;
-            }
-            .game-container {
-                border-radius: 10px;
-            }
             .top-bar {
                 padding: 8px 12px;
             }
@@ -540,13 +514,14 @@
 </head>
 <body>
 
-    <!-- 导航条 -->
+    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
             <a href="project.html" class="nav-link">项目</a>
             <a href="game.html" class="nav-link active">网页游戏</a>
             <a href="thankyou.html" class="nav-link">致谢</a>
+            <a href="about.html" class="nav-link">关于我</a>
         </div>
         <div class="top-bar-right">
             <div class="clock-display" id="clockDisplay" title="双击恢复自动模式">--:--:--</div>
@@ -554,7 +529,6 @@
         </div>
     </div>
 
-    <!-- 主要内容 -->
     <div class="main">
 
         <div class="auto-toggle on" id="autoToggle">自动调节已开启！</div>
@@ -564,7 +538,6 @@
             <p>选一个游戏，开始玩吧</p>
         </div>
 
-        <!-- 选项卡栏（第一个是跳转链接） -->
         <div class="tab-bar">
             <a href="brick.html" class="tab-btn active">
                 <span class="tab-icon">🧱</span>
@@ -588,7 +561,6 @@
             </div>
         </div>
 
-        <!-- 游戏内容（占位，因为第一个是跳转，所以内容区显示提示） -->
         <div class="game-content">
             <div class="placeholder-game">
                 <div class="big-icon">🎮</div>
@@ -604,10 +576,8 @@
     </div>
 
     <script>
-        // ===== 年份 =====
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // ===== 时钟 + 主题控制 =====
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
