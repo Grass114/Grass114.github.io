@@ -484,6 +484,7 @@
         </div>
     </div>
 
+    <!-- ===== 主要内容 ===== -->
     <div class="main">
 
         <div class="page-title">
@@ -491,15 +492,16 @@
             <p>选一个游戏，开始玩吧</p>
         </div>
 
+        <!-- 选项卡栏：第二个已换成扫雷 -->
         <div class="tab-bar">
             <a href="brick.html" class="tab-btn active">
                 <span class="tab-icon">🧱</span>
                 <span class="tab-label">打砖块</span>
             </a>
-            <div class="tab-btn" style="cursor:default; opacity:0.6;">
-                <span class="tab-icon">🔄</span>
-                <span class="tab-label">即将推出</span>
-            </div>
+            <a href="minesweeper.html" class="tab-btn">
+                <span class="tab-icon">💣</span>
+                <span class="tab-label">扫雷</span>
+            </a>
             <div class="tab-btn" style="cursor:default; opacity:0.6;">
                 <span class="tab-icon">🔄</span>
                 <span class="tab-label">即将推出</span>
@@ -518,7 +520,7 @@
             <div class="placeholder-game">
                 <div class="big-icon">🎮</div>
                 <h2>选择上面的游戏开始</h2>
-                <p>点击“打砖块”进入游戏，其他游戏正在开发中，敬请期待！</p>
+                <p>点击“打砖块”或“扫雷”进入游戏，其他游戏正在开发中，敬请期待！</p>
             </div>
         </div>
 
@@ -561,7 +563,6 @@
             }
         }
 
-        // 双击时钟恢复自动模式
         clockDisplay.addEventListener('dblclick', function() {
             isAutoMode = true;
             const target = getThemeByHour();
@@ -571,7 +572,6 @@
             updateClock();
         });
 
-        // 手动切换主题
         toggle.addEventListener('click', function() {
             isAutoMode = false;
             const current = html.getAttribute('data-theme');
@@ -581,7 +581,6 @@
             toggle.textContent = next === 'dark' ? '🌙' : '☀️';
         });
 
-        // 初始化
         const initTheme = getThemeByHour();
         currentTheme = initTheme;
         html.setAttribute('data-theme', initTheme);
