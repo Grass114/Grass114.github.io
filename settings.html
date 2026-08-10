@@ -1,0 +1,1093 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.png" type="image/png" />
+    <title>设置 · BlueCat114</title>
+    <style>
+        /* ===== 颜色变量 ===== */
+        :root {
+            --bg-start: #f5f9ff;
+            --bg-end: #e6edf7;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --card-border: rgba(255, 255, 255, 0.8);
+            --text-primary: #0b1e33;
+            --text-secondary: #1e293b;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --shadow-color: rgba(0, 20, 40, 0.08);
+            --shadow-hover: rgba(0, 20, 40, 0.12);
+            --topbar-bg: rgba(255, 255, 255, 0.6);
+            --topbar-border: rgba(255, 255, 255, 0.8);
+            --footer-border: rgba(255, 255, 255, 0.6);
+            --link-color: #6c63ff;
+            --link-hover: #4a42b8;
+            --clock-color: var(--text-muted);
+            --tag-bg: #eef2ff;
+            --tag-text: #4338ca;
+            --tag-border: #c7d2fe;
+            --toast-bg: #22c55e;
+            --toast-text: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-start: #0f1724;
+            --bg-end: #1a2332;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --card-border: rgba(71, 85, 105, 0.5);
+            --text-primary: #e2e8f0;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-hover: rgba(0, 0, 0, 0.4);
+            --topbar-bg: rgba(15, 23, 36, 0.8);
+            --topbar-border: rgba(71, 85, 105, 0.5);
+            --footer-border: rgba(71, 85, 105, 0.4);
+            --link-color: #818cf8;
+            --link-hover: #a5b4fc;
+            --clock-color: #94a3b8;
+            --tag-bg: #1e293b;
+            --tag-text: #818cf8;
+            --tag-border: #4f46e5;
+            --toast-bg: #22c55e;
+            --toast-text: #ffffff;
+        }
+
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-end) 100%);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 70px 24px 24px 24px;
+            transition: background 0.4s ease, color 0.4s ease;
+            color: var(--text-primary);
+        }
+
+        /* ===== 导航条（实色） ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 12px 28px;
+            background: #ffffff;
+            border-bottom: 1px solid #e9edf2;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        [data-theme="dark"] .top-bar {
+            background: #1a2332;
+            border-bottom: 1px solid #2a3a4a;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .top-bar .site-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0b1e33;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        [data-theme="dark"] .top-bar .site-title {
+            color: #e2e8f0;
+        }
+
+        .top-bar .site-title:hover {
+            color: var(--link-color);
+        }
+
+        .top-bar .site-title::before {
+            content: "🏠";
+            font-size: 20px;
+        }
+
+        .top-bar .nav-link {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1e293b;
+            text-decoration: none;
+            transition: color 0.2s;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        [data-theme="dark"] .top-bar .nav-link {
+            color: #cbd5e1;
+        }
+
+        .top-bar .nav-link::before {
+            content: "｜";
+            margin-right: 10px;
+            color: #94a3b8;
+            font-weight: 300;
+        }
+
+        .top-bar .nav-link:hover {
+            color: var(--link-color);
+            border-bottom-color: var(--link-color);
+        }
+
+        .top-bar .nav-link.active {
+            color: var(--link-color);
+            border-bottom-color: var(--link-color);
+        }
+
+        /* ===== 时钟显示 ===== */
+        .clock-display {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--clock-color);
+            letter-spacing: 0.5px;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.4s;
+            cursor: default;
+            user-select: none;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .clock-display:hover {
+            color: var(--link-color);
+        }
+
+        /* ===== 主题切换按钮 ===== */
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+            transition: background 0.3s;
+            color: #0b1e33;
+            background: #f1f4f9;
+            border: 1px solid #e2e8f0;
+            line-height: 1;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            color: #e2e8f0;
+            background: #2a3a4a;
+            border: 1px solid #3a4a5a;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.06);
+            transform: scale(1.1);
+        }
+
+        /* ============================================================
+           Toast 提示条（标题栏下方）
+        ============================================================ */
+        .toast-container {
+            position: fixed;
+            top: 62px;
+            left: 0;
+            right: 0;
+            z-index: 1500;
+            padding: 0 24px;
+            pointer-events: none;
+        }
+
+        .toast {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            border-radius: 12px;
+            background: var(--toast-bg);
+            color: var(--toast-text);
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+            text-align: center;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast .toast-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+            transition: color 0.2s;
+            font-family: inherit;
+            margin-left: 8px;
+        }
+
+        .toast .toast-close:hover {
+            color: #ffffff;
+        }
+
+        /* ===== 主容器 ===== */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* ===== 页面标题 ===== */
+        .page-title {
+            text-align: center;
+            margin-bottom: 28px;
+            width: 100%;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+            transition: color 0.4s;
+        }
+
+        /* ===== 设置卡片 ===== */
+        .settings-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 28px 28px 20px 28px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 28px var(--shadow-color);
+            width: 100%;
+            transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
+        }
+
+        .settings-card:hover {
+            box-shadow: 0 14px 40px var(--shadow-hover);
+        }
+
+        /* ===== 设置组 ===== */
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+            transition: color 0.4s;
+        }
+
+        /* ===== 选项按钮 ===== */
+        .setting-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .setting-options .opt-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--card-border);
+            border-radius: 30px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .setting-options .opt-btn:hover {
+            border-color: var(--link-color);
+            color: var(--link-color);
+        }
+
+        .setting-options .opt-btn.active {
+            background: var(--link-color);
+            border-color: var(--link-color);
+            color: white;
+        }
+
+        /* ===== 应用按钮 ===== */
+        .apply-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background: var(--link-color);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            width: 100%;
+            margin-top: 6px;
+            box-shadow: 0 4px 14px var(--link-color);
+        }
+
+        .apply-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 24px var(--link-color);
+        }
+
+        .apply-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== 重置按钮 ===== */
+        .settings-reset {
+            padding: 10px 20px;
+            border: 2px solid var(--card-border);
+            border-radius: 30px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .settings-reset:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* ===== 返回首页按钮 ===== */
+        .back-link {
+            margin-top: 24px;
+        }
+
+        .back-link a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .back-link a:hover {
+            color: var(--link-hover);
+            border-bottom-color: var(--link-hover);
+        }
+
+        /* ===== 页脚 ===== */
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted);
+            padding-top: 22px;
+            border-top: 1px solid var(--footer-border);
+            width: 100%;
+            margin-top: 24px;
+            letter-spacing: 0.3px;
+            transition: color 0.4s, border-color 0.4s;
+        }
+
+        .footer a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: var(--link-hover);
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+              确认弹窗
+            ============================================================ */
+        .confirm-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            animation: confirmFadeIn 0.2s ease;
+        }
+
+        .confirm-overlay.open {
+            display: flex;
+        }
+
+        @keyframes confirmFadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .confirm-box {
+            background: #ffffff;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 100%;
+            padding: 32px 28px 24px 28px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
+            animation: confirmSlideIn 0.25s ease;
+        }
+
+        [data-theme="dark"] .confirm-box {
+            background: #1a2332;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        @keyframes confirmSlideIn {
+            0% {
+                transform: translateY(20px) scale(0.96);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .confirm-box .confirm-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0b1e33;
+            margin-bottom: 8px;
+        }
+
+        [data-theme="dark"] .confirm-box .confirm-title {
+            color: #e2e8f0;
+        }
+
+        .confirm-box .confirm-desc {
+            font-size: 15px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        [data-theme="dark"] .confirm-box .confirm-desc {
+            color: #94a3b8;
+        }
+
+        .confirm-box .confirm-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .confirm-box .confirm-actions .btn-cancel {
+            padding: 10px 28px;
+            border: 2px solid var(--card-border);
+            border-radius: 30px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .confirm-box .confirm-actions .btn-cancel:hover {
+            border-color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        [data-theme="dark"] .confirm-box .confirm-actions .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .confirm-box .confirm-actions .btn-confirm {
+            padding: 10px 28px;
+            border: none;
+            border-radius: 30px;
+            background: #ef4444;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
+        }
+
+        .confirm-box .confirm-actions .btn-confirm:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 24px rgba(239, 68, 68, 0.35);
+        }
+
+        .confirm-box .confirm-actions .btn-confirm:active {
+            transform: scale(0.97);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 700px) {
+            body {
+                padding: 66px 16px 16px 16px;
+            }
+            .settings-card {
+                padding: 20px 18px 16px 18px;
+            }
+            .page-title h1 {
+                font-size: 24px;
+            }
+            .top-bar {
+                padding: 10px 18px;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .top-bar .site-title {
+                font-size: 16px;
+            }
+            .top-bar .nav-link {
+                font-size: 14px;
+            }
+            .clock-display {
+                font-size: 14px;
+                min-width: 70px;
+            }
+            .theme-toggle {
+                font-size: 18px;
+                padding: 3px 6px;
+            }
+            .setting-options .opt-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+            .confirm-box {
+                padding: 24px 20px 20px 20px;
+            }
+            .confirm-box .confirm-title {
+                font-size: 18px;
+            }
+            .confirm-box .confirm-desc {
+                font-size: 14px;
+            }
+            .toast-container {
+                padding: 0 16px;
+                top: 58px;
+            }
+            .toast {
+                font-size: 13px;
+                padding: 10px 16px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .settings-card {
+                padding: 16px 14px 12px 14px;
+            }
+            .page-title h1 {
+                font-size: 20px;
+            }
+            .top-bar {
+                padding: 8px 12px;
+                gap: 4px;
+            }
+            .top-bar .site-title {
+                font-size: 14px;
+            }
+            .top-bar .nav-link {
+                font-size: 12px;
+            }
+            .top-bar .nav-link::before {
+                margin-right: 4px;
+            }
+            .clock-display {
+                font-size: 12px;
+                min-width: 60px;
+            }
+            .theme-toggle {
+                font-size: 16px;
+                padding: 2px 5px;
+            }
+            .setting-options .opt-btn {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+            .footer {
+                font-size: 12px;
+                padding: 16px 0 18px 0;
+            }
+            .confirm-box {
+                padding: 20px 16px 16px 16px;
+            }
+            .confirm-box .confirm-actions {
+                flex-direction: column;
+            }
+            .confirm-box .confirm-actions .btn-cancel,
+            .confirm-box .confirm-actions .btn-confirm {
+                width: 100%;
+                justify-content: center;
+                text-align: center;
+            }
+            .toast-container {
+                padding: 0 12px;
+                top: 54px;
+            }
+            .toast {
+                font-size: 12px;
+                padding: 8px 12px;
+                border-radius: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 导航条 ===== -->
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <a href="index.html" class="site-title">BlueCat114 官方网站</a>
+            <a href="project.html" class="nav-link">项目</a>
+            <a href="game.html" class="nav-link">网页游戏</a>
+            <a href="thankyou.html" class="nav-link">致谢</a>
+            <a href="about.html" class="nav-link">关于我</a>
+        </div>
+        <div class="top-bar-right">
+            <div class="clock-display" id="clockDisplay" title="双击恢复自动模式">--:--:--</div>
+            <button class="theme-toggle" id="themeToggle" aria-label="切换暗色/亮色模式">☀️</button>
+        </div>
+    </div>
+
+    <!-- ===== Toast 提示条 ===== -->
+    <div class="toast-container" id="toastContainer">
+        <div class="toast" id="toast">
+            <span class="toast-icon">✅</span>
+            <span id="toastMessage">应用已生效！</span>
+            <button class="toast-close" id="toastClose">✕</button>
+        </div>
+    </div>
+
+    <!-- ===== 主要内容 ===== -->
+    <div class="main">
+
+        <div class="page-title">
+            <h1>⚙️ 设置</h1>
+        </div>
+
+        <div class="settings-card">
+
+            <!-- 主题 -->
+            <div class="setting-group">
+                <label class="setting-label">🌓 主题</label>
+                <div class="setting-options" data-setting="theme">
+                    <button class="opt-btn" data-value="light">☀️ 亮色</button>
+                    <button class="opt-btn" data-value="dark">🌙 暗色</button>
+                    <button class="opt-btn" data-value="auto">🔄 跟随系统</button>
+                    <button class="opt-btn" data-value="time">⏰ 跟随时间</button>
+                </div>
+            </div>
+
+            <!-- 应用按钮 -->
+            <button class="apply-btn" id="applyBtn">✅ 应用</button>
+
+            <!-- 重置 -->
+            <div class="setting-group" style="border-top:1px solid var(--card-border);padding-top:16px;margin-top:12px;">
+                <button class="settings-reset" id="settingsReset">🔄 恢复默认设置</button>
+            </div>
+
+        </div>
+
+        <!-- 返回首页 -->
+        <div class="back-link">
+            <a href="index.html">← 返回首页</a>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="footer">
+            © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
+        </div>
+
+    </div>
+
+    <!-- ===== 自定义确认弹窗 ===== -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-box">
+            <div class="confirm-title">⚠️ 确认重置</div>
+            <div class="confirm-desc">确定要恢复所有设置到默认值吗？<br />此操作不可撤销。</div>
+            <div class="confirm-actions">
+                <button class="btn-cancel" id="confirmCancel">取消</button>
+                <button class="btn-confirm" id="confirmOk">继续</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  设置页面
+        // ============================================================
+
+        // ---------- 年份 ----------
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // ---------- 默认设置 ----------
+        const DEFAULTS = {
+            theme: 'auto'
+        };
+
+        let settings = {};
+        let tempTheme = 'auto';
+        let timeThemeTimer = null;
+
+        // ---------- Toast 提示 ----------
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastClose = document.getElementById('toastClose');
+        let toastTimer = null;
+
+        function showToast(message) {
+            toastMessage.textContent = message || '✅ 应用已生效！';
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+
+        function hideToast() {
+            toast.classList.remove('show');
+            clearTimeout(toast._hideTimer);
+        }
+
+        toastClose.addEventListener('click', hideToast);
+
+        // ---------- 确认弹窗 ----------
+        const confirmOverlay = document.getElementById('confirmOverlay');
+        let confirmCallback = null;
+
+        function showConfirm(callback) {
+            confirmCallback = callback || null;
+            confirmOverlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideConfirm() {
+            confirmOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+            confirmCallback = null;
+        }
+
+        document.getElementById('confirmCancel').addEventListener('click', function() {
+            hideConfirm();
+        });
+
+        document.getElementById('confirmOk').addEventListener('click', function() {
+            if (confirmCallback) {
+                confirmCallback();
+            }
+            hideConfirm();
+        });
+
+        confirmOverlay.addEventListener('click', function(e) {
+            if (e.target === confirmOverlay) {
+                hideConfirm();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && confirmOverlay.classList.contains('open')) {
+                hideConfirm();
+            }
+        });
+
+        // ---------- 根据时间获取主题 ----------
+        function getThemeByHour() {
+            const h = new Date().getHours();
+            return (h >= 6 && h < 18) ? 'light' : 'dark';
+        }
+
+        // ---------- 加载设置 ----------
+        function loadSettings() {
+            const saved = localStorage.getItem('webSettings');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    settings.theme = parsed.theme || DEFAULTS.theme;
+                } catch {
+                    settings = { ...DEFAULTS };
+                }
+            } else {
+                settings = { ...DEFAULTS };
+            }
+            tempTheme = settings.theme;
+            applySettings(false);
+            updateUI();
+
+            if (settings.theme === 'time') {
+                startTimeThemeTimer();
+            }
+        }
+
+        // ---------- 保存设置 ----------
+        function saveSettings() {
+            localStorage.setItem('webSettings', JSON.stringify(settings));
+        }
+
+        // ---------- 应用设置（预览 + 保存） ----------
+        function applySettings(andSave = true) {
+            const html = document.documentElement;
+
+            if (tempTheme === 'auto') {
+                const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+                stopTimeThemeTimer();
+            } else if (tempTheme === 'time') {
+                const isDark = getThemeByHour() === 'dark';
+                html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+                if (andSave) {
+                    startTimeThemeTimer();
+                }
+            } else {
+                html.setAttribute('data-theme', tempTheme);
+                stopTimeThemeTimer();
+            }
+
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) {
+                const theme = html.getAttribute('data-theme') || 'light';
+                toggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+            }
+
+            if (andSave) {
+                settings.theme = tempTheme;
+                saveSettings();
+            }
+        }
+
+        // ---------- 启动时间主题定时器 ----------
+        function startTimeThemeTimer() {
+            stopTimeThemeTimer();
+            applyTimeTheme();
+            timeThemeTimer = setInterval(() => {
+                const html = document.documentElement;
+                const target = getThemeByHour();
+                const current = html.getAttribute('data-theme');
+                if (current !== target) {
+                    html.setAttribute('data-theme', target);
+                    const toggle = document.getElementById('themeToggle');
+                    if (toggle) {
+                        toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+                    }
+                }
+            }, 60000);
+        }
+
+        function stopTimeThemeTimer() {
+            if (timeThemeTimer) {
+                clearInterval(timeThemeTimer);
+                timeThemeTimer = null;
+            }
+        }
+
+        function applyTimeTheme() {
+            const html = document.documentElement;
+            const target = getThemeByHour();
+            html.setAttribute('data-theme', target);
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) {
+                toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+            }
+        }
+
+        // ---------- 更新UI ----------
+        function updateUI() {
+            const group = document.querySelector('.setting-options');
+            if (!group) return;
+            const value = tempTheme;
+            group.querySelectorAll('.opt-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === value);
+            });
+        }
+
+        // ---------- 重置 ----------
+        function resetSettings() {
+            showConfirm(function() {
+                tempTheme = DEFAULTS.theme;
+                settings = { ...DEFAULTS };
+                saveSettings();
+                applySettings(true);
+                updateUI();
+                if (settings.theme !== 'time') {
+                    stopTimeThemeTimer();
+                }
+                showToast('🔄 已恢复默认设置');
+            });
+        }
+
+        // ---------- 事件绑定 ----------
+        function initSettings() {
+            // 选项点击（预览）
+            document.querySelectorAll('.setting-options .opt-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const value = this.dataset.value;
+                    tempTheme = value;
+                    if (value === 'time') {
+                        const html = document.documentElement;
+                        const target = getThemeByHour();
+                        html.setAttribute('data-theme', target);
+                        const toggle = document.getElementById('themeToggle');
+                        if (toggle) {
+                            toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+                        }
+                    } else {
+                        applySettings(false);
+                    }
+                    updateUI();
+                });
+            });
+
+            // 应用按钮
+            document.getElementById('applyBtn').addEventListener('click', function() {
+                if (tempTheme === 'time') {
+                    settings.theme = 'time';
+                    saveSettings();
+                    applySettings(true);
+                    startTimeThemeTimer();
+                    showToast('⏰ 已切换为跟随时间模式');
+                } else {
+                    settings.theme = tempTheme;
+                    saveSettings();
+                    applySettings(true);
+                    stopTimeThemeTimer();
+                    showToast('✅ 应用已生效！');
+                }
+            });
+
+            // 重置按钮
+            document.getElementById('settingsReset').addEventListener('click', resetSettings);
+
+            // 导航栏主题切换按钮
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) {
+                toggle.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    tempTheme = next;
+                    settings.theme = next;
+                    saveSettings();
+                    applySettings(true);
+                    stopTimeThemeTimer();
+                    updateUI();
+                    showToast('✅ 已切换到 ' + (next === 'dark' ? '暗色' : '亮色') + ' 模式');
+                });
+            }
+
+            // 监听系统主题变化（仅当设置为 auto 时）
+            if (window.matchMedia) {
+                const media = window.matchMedia('(prefers-color-scheme: dark)');
+                media.addEventListener('change', function(e) {
+                    if (settings.theme === 'auto') {
+                        const html = document.documentElement;
+                        html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+                        const toggle = document.getElementById('themeToggle');
+                        if (toggle) {
+                            toggle.textContent = e.matches ? '🌙' : '☀️';
+                        }
+                    }
+                });
+            }
+
+            // 时钟
+            const clockDisplay = document.getElementById('clockDisplay');
+            if (clockDisplay) {
+                function updateClock() {
+                    const now = new Date();
+                    const h = String(now.getHours()).padStart(2, '0');
+                    const m = String(now.getMinutes()).padStart(2, '0');
+                    const s = String(now.getSeconds()).padStart(2, '0');
+                    clockDisplay.textContent = h + ':' + m + ':' + s;
+                }
+                updateClock();
+                setInterval(updateClock, 1000);
+            }
+
+            // 加载已保存的设置
+            loadSettings();
+            console.log('⚙️ 设置页面已加载');
+        }
+
+        // 初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSettings);
+        } else {
+            initSettings();
+        }
+    </script>
+
+</body>
+</html>
