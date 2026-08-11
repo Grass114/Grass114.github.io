@@ -1012,7 +1012,7 @@
         }
 
         /* ============================================================
-          响应式
+          响应式 —— 手机端显示图标+文字（不隐藏文字）
         ============================================================ */
         @media (max-width: 700px) {
             body {
@@ -1101,6 +1101,7 @@
                 transform: translateX(14px);
             }
 
+            /* 位置选择 —— 手机端图标+文字一起显示 */
             .pet-location-row {
                 flex-wrap: wrap;
                 gap: 6px;
@@ -1116,6 +1117,8 @@
             }
             .pet-location-row .page-checkboxes .page-check .page-name {
                 font-size: 10px;
+                display: inline !important;
+                /* 强制显示文字 */;
             }
             .location-actions .action-btn {
                 font-size: 10px;
@@ -1239,6 +1242,7 @@
                 transform: translateX(12px);
             }
 
+            /* 位置选择 —— 手机小屏图标+文字 */
             .pet-location-row .page-checkboxes {
                 gap: 4px;
             }
@@ -1249,6 +1253,7 @@
             }
             .pet-location-row .page-checkboxes .page-check .page-name {
                 font-size: 9px;
+                display: inline !important;
             }
             .pet-location-row .page-checkboxes .page-check .check-icon {
                 font-size: 11px;
@@ -1317,6 +1322,7 @@
             }
         }
 
+        /* 极小屏：文字极小但仍然显示 */
         @media (max-width: 380px) {
             .theme-grid {
                 grid-template-columns: 1fr 1fr;
@@ -1331,10 +1337,11 @@
                 font-size: 9px;
             }
             .pet-location-row .page-checkboxes .page-check .page-name {
-                display: none;
+                font-size: 8px;
+                display: inline !important;
             }
             .pet-location-row .page-checkboxes .page-check {
-                padding: 3px 6px;
+                padding: 2px 4px;
             }
         }
     </style>
