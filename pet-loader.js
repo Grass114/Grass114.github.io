@@ -1,7 +1,7 @@
 ﻿// ============================================================
 //  pet-loader.js - 统一的宠物加载器 + 主题色应用
 //  自动读取 localStorage 配置，控制猫和狗的显示
-//  同时应用用户自定义的主题色
+//  同时应用用户自定义的主题色（所有页面同步）
 // ============================================================
 
 (function() {
@@ -81,6 +81,12 @@
             document.documentElement.style.setProperty('--theme-color', color);
             const rgb = hexToRgb(color);
             document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+            console.log('🎨 主题色已应用:', color);
+        } else {
+            // 如果没有保存的主题色，使用默认紫色
+            const defaultColor = '#6c63ff';
+            document.documentElement.style.setProperty('--theme-color', defaultColor);
+            document.documentElement.style.setProperty('--theme-color-rgb', '108, 99, 255');
         }
     }
 
@@ -139,7 +145,8 @@
             setTimeout(loadPet, 50);
         }
         if (e.key === 'themeColor') {
-            setTimeout(applyThemeColor, 50);
+            // 主题色变化时立即应用
+            setTimeout(applyThemeColor, 20);
         }
     });
 
@@ -147,23 +154,31 @@
         if (e.data && e.data.type === 'petSettingsChanged') {
             setTimeout(loadPet, 50);
         }
+        if (e.data && e.data.type === 'themeColorChanged') {
+            // 其他页面发来的主题色变更通知
+            setTimeout(applyThemeColor, 20);
+        }
     });
 
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
-            setTimeout(loadPet, 50);
+            // 页面重新可见时刷新主题色（可能在其他标签页改了）
+            setTimeout(applyThemeColor, 50);
+            setTimeout(loadPet, 100);
         }
     });
 
     // ---------- 启动 ----------
+    // 先应用主题色
     applyThemeColor();
 
+    // 再加载宠物
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadPet);
     } else {
         setTimeout(loadPet, 100);
     }
 
-    console.log('🎨 主题色已应用');
     console.log('🐱🐶 宠物加载器已启动（按页面勾选显示）');
+    console.log('🎨 主题色自动同步已开启');
 })();

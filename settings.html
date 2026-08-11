@@ -2069,6 +2069,10 @@
                 } catch (e) {}
                 localStorage.setItem('petSettings_trigger', Date.now().toString());
                 localStorage.removeItem('petSettings_trigger');
+                // 通知其他页面主题色已变化
+                try {
+                    window.postMessage({ type: 'themeColorChanged' }, '*');
+                } catch (e) {}
             }
 
             // ---------- 应用主题 ----------
