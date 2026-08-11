@@ -37,7 +37,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 1000;
+            z-index: 10000;
             padding: 12px 28px;
             background: #ffffff;
             border-bottom: 1px solid #e9edf2;
@@ -259,7 +259,6 @@
             border-color: rgba(129, 140, 248, 0.2);
         }
 
-        /* ===== 正方形带圆角头像 ===== */
         .thanks-card .avatar {
             width: 48px;
             height: 48px;
@@ -510,17 +509,6 @@
                     </div>
                 </div>
 
-                <!-- 后续可以继续添加更多致谢卡片 -->
-                <!--
-                <div class="thanks-card">
-                    <img class="avatar" src="xxx.jpg" alt="xxx" />
-                    <div class="info">
-                        <span class="name">xxx</span>
-                        <span class="badge">❤️ 感谢支持</span>
-                    </div>
-                </div>
-                -->
-
             </div>
 
             <!-- 空状态提示 -->
@@ -536,6 +524,9 @@
         </div>
 
     </div>
+
+    <!-- ===== 小宠物（由设置页控制显示） ===== -->
+    <script src="pet-loader.js"></script>
 
     <script>
         // ===== 年份自动更新 =====
