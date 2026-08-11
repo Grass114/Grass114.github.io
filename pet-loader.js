@@ -1,6 +1,7 @@
 ﻿// ============================================================
-//  pet-loader.js - 统一的宠物加载器
-//  根据 settings.html 的勾选，决定每个页面是否显示宠物
+//  pet-loader.js - 统一的宠物加载器 + 主题色应用
+//  自动读取 localStorage 配置，控制猫和狗的显示
+//  同时应用用户自定义的主题色
 // ============================================================
 
 (function() {
@@ -61,6 +62,28 @@
         return pages.includes(currentPage);
     }
 
+    // ---------- 主题色工具 ----------
+    function hexToRgb(hex) {
+        if (hex && hex.startsWith('#')) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : { r: 108, g: 99, b: 255 };
+        }
+        return { r: 108, g: 99, b: 255 };
+    }
+
+    function applyThemeColor() {
+        const color = localStorage.getItem('themeColor');
+        if (color) {
+            document.documentElement.style.setProperty('--theme-color', color);
+            const rgb = hexToRgb(color);
+            document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+        }
+    }
+
     // ---------- 加载宠物 ----------
     let iframe = null;
     let currentShown = false;
@@ -115,6 +138,9 @@
         if (e.key === 'petSettings' || e.key === 'petSettings_trigger') {
             setTimeout(loadPet, 50);
         }
+        if (e.key === 'themeColor') {
+            setTimeout(applyThemeColor, 50);
+        }
     });
 
     window.addEventListener('message', function(e) {
@@ -130,11 +156,14 @@
     });
 
     // ---------- 启动 ----------
+    applyThemeColor();
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadPet);
     } else {
         setTimeout(loadPet, 100);
     }
 
+    console.log('🎨 主题色已应用');
     console.log('🐱🐶 宠物加载器已启动（按页面勾选显示）');
 })();
