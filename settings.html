@@ -29,6 +29,9 @@
             --tag-border: #c7d2fe;
             --toast-bg: #22c55e;
             --toast-text: #ffffff;
+            --switch-on: #6c63ff;
+            --switch-off: #cbd5e1;
+            --switch-knob: #ffffff;
         }
 
         [data-theme="dark"] {
@@ -53,6 +56,9 @@
             --tag-border: #4f46e5;
             --toast-bg: #22c55e;
             --toast-text: #ffffff;
+            --switch-on: #818cf8;
+            --switch-off: #3a4a5a;
+            --switch-knob: #e2e8f0;
         }
 
         /* ===== 全局重置 ===== */
@@ -215,7 +221,7 @@
         }
 
         /* ============================================================
-           Toast 提示条（标题栏下方）
+           Toast 提示条
         ============================================================ */
         .toast-container {
             position: fixed;
@@ -368,6 +374,68 @@
             background: var(--link-color);
             border-color: var(--link-color);
             color: white;
+        }
+
+        /* ===== 宠物开关 ===== */
+        .pet-switch-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            margin-top: 4px;
+        }
+
+        .pet-switch-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+            user-select: none;
+        }
+
+        .pet-switch-item:hover {
+            color: var(--text-primary);
+        }
+
+        /* 开关样式 */
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+            background: var(--switch-off);
+            border-radius: 30px;
+            transition: background 0.3s ease;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--switch-knob);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .switch.on {
+            background: var(--switch-on);
+        }
+
+        .switch.on::after {
+            transform: translateX(20px);
+        }
+
+        .pet-switch-item .pet-icon {
+            font-size: 20px;
+            line-height: 1;
         }
 
         /* ===== 应用按钮 ===== */
@@ -627,6 +695,20 @@
                 font-size: 12px;
                 padding: 6px 12px;
             }
+            .pet-switch-item {
+                font-size: 13px;
+            }
+            .switch {
+                width: 38px;
+                height: 22px;
+            }
+            .switch::after {
+                width: 18px;
+                height: 18px;
+            }
+            .switch.on::after {
+                transform: translateX(16px);
+            }
             .confirm-box {
                 padding: 24px 20px 20px 20px;
             }
@@ -677,6 +759,21 @@
             .setting-options .opt-btn {
                 font-size: 11px;
                 padding: 4px 10px;
+            }
+            .pet-switch-item {
+                font-size: 12px;
+                gap: 8px;
+            }
+            .switch {
+                width: 34px;
+                height: 20px;
+            }
+            .switch::after {
+                width: 16px;
+                height: 16px;
+            }
+            .switch.on::after {
+                transform: translateX(14px);
             }
             .footer {
                 font-size: 12px;
@@ -753,6 +850,26 @@
                 </div>
             </div>
 
+            <!-- ===== 宠物设置 ===== -->
+            <div class="setting-group" style="border-top:1px solid var(--card-border);padding-top:16px;margin-top:16px;">
+                <label class="setting-label">🐾 宠物显示</label>
+                <div class="pet-switch-group">
+                    <label class="pet-switch-item" id="catSwitchLabel">
+                        <span class="pet-icon">🐱</span>
+                        猫
+                        <span class="switch" id="catSwitch"></span>
+                    </label>
+                    <label class="pet-switch-item" id="dogSwitchLabel">
+                        <span class="pet-icon">🐶</span>
+                        狗
+                        <span class="switch" id="dogSwitch"></span>
+                    </label>
+                </div>
+                <p style="font-size:12px;color:var(--text-muted);margin-top:8px;transition:color 0.4s;">
+                    关闭后，对应宠物将在所有页面隐藏
+                </p>
+            </div>
+
             <!-- 应用按钮 -->
             <button class="apply-btn" id="applyBtn">✅ 应用</button>
 
@@ -797,23 +914,23 @@
 
         // ---------- 默认设置 ----------
         const DEFAULTS = {
-            theme: 'auto'
+            theme: 'auto',
+            pet: { cat: true, dog: true }
         };
 
         let settings = {};
         let tempTheme = 'auto';
+        let tempPet = { cat: true, dog: true };
         let timeThemeTimer = null;
 
         // ---------- Toast 提示 ----------
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toastMessage');
         const toastClose = document.getElementById('toastClose');
-        let toastTimer = null;
 
         function showToast(message) {
             toastMessage.textContent = message || '✅ 应用已生效！';
             toast.classList.add('show');
-            clearTimeout(toastTimer);
             clearTimeout(toast._hideTimer);
             toast._hideTimer = setTimeout(() => {
                 toast.classList.remove('show');
@@ -843,9 +960,7 @@
             confirmCallback = null;
         }
 
-        document.getElementById('confirmCancel').addEventListener('click', function() {
-            hideConfirm();
-        });
+        document.getElementById('confirmCancel').addEventListener('click', hideConfirm);
 
         document.getElementById('confirmOk').addEventListener('click', function() {
             if (confirmCallback) {
@@ -855,15 +970,34 @@
         });
 
         confirmOverlay.addEventListener('click', function(e) {
-            if (e.target === confirmOverlay) {
-                hideConfirm();
-            }
+            if (e.target === confirmOverlay) hideConfirm();
         });
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && confirmOverlay.classList.contains('open')) {
-                hideConfirm();
-            }
+            if (e.key === 'Escape' && confirmOverlay.classList.contains('open')) hideConfirm();
+        });
+
+        // ---------- 宠物开关 ----------
+        const catSwitch = document.getElementById('catSwitch');
+        const dogSwitch = document.getElementById('dogSwitch');
+        const catLabel = document.getElementById('catSwitchLabel');
+        const dogLabel = document.getElementById('dogSwitchLabel');
+
+        function updatePetSwitches() {
+            catSwitch.classList.toggle('on', tempPet.cat);
+            dogSwitch.classList.toggle('on', tempPet.dog);
+        }
+
+        catLabel.addEventListener('click', function(e) {
+            e.preventDefault();
+            tempPet.cat = !tempPet.cat;
+            updatePetSwitches();
+        });
+
+        dogLabel.addEventListener('click', function(e) {
+            e.preventDefault();
+            tempPet.dog = !tempPet.dog;
+            updatePetSwitches();
         });
 
         // ---------- 根据时间获取主题 ----------
@@ -874,6 +1008,7 @@
 
         // ---------- 加载设置 ----------
         function loadSettings() {
+            // 加载主题
             const saved = localStorage.getItem('webSettings');
             if (saved) {
                 try {
@@ -886,8 +1021,24 @@
                 settings = { ...DEFAULTS };
             }
             tempTheme = settings.theme;
+
+            // 加载宠物设置
+            try {
+                const petSaved = localStorage.getItem('petSettings');
+                if (petSaved) {
+                    const parsed = JSON.parse(petSaved);
+                    tempPet.cat = parsed.cat !== undefined ? parsed.cat : DEFAULTS.pet.cat;
+                    tempPet.dog = parsed.dog !== undefined ? parsed.dog : DEFAULTS.pet.dog;
+                } else {
+                    tempPet = { ...DEFAULTS.pet };
+                }
+            } catch {
+                tempPet = { ...DEFAULTS.pet };
+            }
+
             applySettings(false);
             updateUI();
+            updatePetSwitches();
 
             if (settings.theme === 'time') {
                 startTimeThemeTimer();
@@ -896,10 +1047,22 @@
 
         // ---------- 保存设置 ----------
         function saveSettings() {
-            localStorage.setItem('webSettings', JSON.stringify(settings));
+            localStorage.setItem('webSettings', JSON.stringify({ theme: settings.theme }));
+            localStorage.setItem('petSettings', JSON.stringify(tempPet));
         }
 
-        // ---------- 应用设置（预览 + 保存） ----------
+        // ---------- 通知其他页面宠物设置已变化 ----------
+        function notifyPetChange() {
+            // 触发 storage 事件（同标签页内不会触发，用 postMessage 补充）
+            try {
+                window.postMessage({ type: 'petSettingsChanged' }, '*');
+            } catch (e) {}
+            // 同时也触发 storage 事件（跨标签页）
+            localStorage.setItem('petSettings_trigger', Date.now().toString());
+            localStorage.removeItem('petSettings_trigger');
+        }
+
+        // ---------- 应用设置 ----------
         function applySettings(andSave = true) {
             const html = document.documentElement;
 
@@ -927,10 +1090,12 @@
             if (andSave) {
                 settings.theme = tempTheme;
                 saveSettings();
+                // 通知其他页面宠物设置变化
+                notifyPetChange();
             }
         }
 
-        // ---------- 启动时间主题定时器 ----------
+        // ---------- 主题定时器 ----------
         function startTimeThemeTimer() {
             stopTimeThemeTimer();
             applyTimeTheme();
@@ -979,20 +1144,23 @@
         function resetSettings() {
             showConfirm(function() {
                 tempTheme = DEFAULTS.theme;
+                tempPet = { ...DEFAULTS.pet };
                 settings = { ...DEFAULTS };
                 saveSettings();
                 applySettings(true);
                 updateUI();
+                updatePetSwitches();
                 if (settings.theme !== 'time') {
                     stopTimeThemeTimer();
                 }
+                notifyPetChange();
                 showToast('🔄 已恢复默认设置');
             });
         }
 
         // ---------- 事件绑定 ----------
         function initSettings() {
-            // 选项点击（预览）
+            // 主题选项点击
             document.querySelectorAll('.setting-options .opt-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const value = this.dataset.value;
@@ -1014,19 +1182,18 @@
 
             // 应用按钮
             document.getElementById('applyBtn').addEventListener('click', function() {
-                if (tempTheme === 'time') {
-                    settings.theme = 'time';
-                    saveSettings();
-                    applySettings(true);
-                    startTimeThemeTimer();
-                    showToast('⏰ 已切换为跟随时间模式');
-                } else {
-                    settings.theme = tempTheme;
-                    saveSettings();
-                    applySettings(true);
+                settings.theme = tempTheme;
+                saveSettings();
+                applySettings(true);
+                if (tempTheme !== 'time') {
                     stopTimeThemeTimer();
-                    showToast('✅ 应用已生效！');
                 }
+                notifyPetChange();
+                const petStatus = [];
+                if (tempPet.cat) petStatus.push('🐱');
+                if (tempPet.dog) petStatus.push('🐶');
+                const petText = petStatus.length ? petStatus.join(' ') : '（已全部隐藏）';
+                showToast('✅ 已应用 · 宠物：' + petText);
             });
 
             // 重置按钮
@@ -1044,11 +1211,12 @@
                     applySettings(true);
                     stopTimeThemeTimer();
                     updateUI();
+                    notifyPetChange();
                     showToast('✅ 已切换到 ' + (next === 'dark' ? '暗色' : '亮色') + ' 模式');
                 });
             }
 
-            // 监听系统主题变化（仅当设置为 auto 时）
+            // 监听系统主题变化
             if (window.matchMedia) {
                 const media = window.matchMedia('(prefers-color-scheme: dark)');
                 media.addEventListener('change', function(e) {

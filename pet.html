@@ -1,0 +1,923 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小宠物</title>
+    <style>
+        /* ===== 容器重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background: transparent !important;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* ===== 🎨 颜色配置 ===== */
+        :root {
+            --cat-main: #6c63ff;
+            --cat-main-light: #8b83f5;
+            --cat-main-dark: #4a42b8;
+            --cat-ear-inner: #ffb3c6;
+            --cat-belly: rgba(255, 255, 255, 0.5);
+            --cat-eye-dark: #1a0a3a;
+            --cat-eye-light: #4a3a7a;
+            --cat-whisker: rgba(75, 60, 120, 0.2);
+
+            --dog-main: #d4a373;
+            --dog-main-light: #f0d5b0;
+            --dog-main-dark: #b8895e;
+            --dog-spot: #b8895e;
+            --dog-ear-inner: #d4a373;
+            --dog-belly: rgba(255, 255, 255, 0.5);
+            --dog-eye-dark: #2d1a0a;
+            --dog-eye-light: #5a3a1a;
+            --dog-nose: #4a2a1a;
+            --dog-tongue: #ff6b81;
+            --dog-collar: #e74c3c;
+        }
+
+        [data-theme="dark"] {
+            --cat-main: #818cf8;
+            --cat-main-light: #a59bf5;
+            --cat-main-dark: #5a52b8;
+            --cat-ear-inner: #ffb3c6;
+            --cat-belly: rgba(255, 255, 255, 0.4);
+            --cat-eye-dark: #1a0a3a;
+            --cat-eye-light: #4a3a7a;
+            --cat-whisker: rgba(200, 180, 255, 0.2);
+
+            --dog-main: #c9956b;
+            --dog-main-light: #e8c8a8;
+            --dog-main-dark: #a87850;
+            --dog-spot: #a87850;
+            --dog-ear-inner: #c9956b;
+            --dog-belly: rgba(255, 255, 255, 0.4);
+            --dog-eye-dark: #2d1a0a;
+            --dog-eye-light: #5a3a1a;
+            --dog-nose: #4a2a1a;
+            --dog-tongue: #ff6b81;
+            --dog-collar: #e74c3c;
+        }
+
+        /* ===== 每个宠物独立定位 ===== */
+        .pet-wrapper {
+            position: fixed;
+            pointer-events: auto;
+            touch-action: none;
+            cursor: grab;
+            z-index: 9999;
+            transition: none;
+            user-select: none;
+            -webkit-user-select: none;
+            display: none;
+            /* 默认隐藏，由 JS 控制显示 */;
+        }
+        .pet-wrapper:active {
+            cursor: grabbing;
+        }
+
+        #catWrapper {
+            bottom: 30px;
+            right: 86px;
+        }
+        #dogWrapper {
+            bottom: 30px;
+            right: 16px;
+        }
+
+        .pet-wrapper.dragging {
+            transition: none !important;
+        }
+        .pet-wrapper.dragging .pet {
+            animation: none !important;
+        }
+
+        /* ===== 宠物基本尺寸 ===== */
+        .pet {
+            position: relative;
+            width: 70px;
+            height: 85px;
+            animation: pet-float 3s ease-in-out infinite;
+            user-select: none;
+            pointer-events: none;
+        }
+        .pet-dog {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes pet-float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+        @keyframes pet-jump {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            30% {
+                transform: translateY(-20px) scale(1.1);
+            }
+            60% {
+                transform: translateY(-6px) scale(0.95);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes pet-blink {
+            0%,
+            96%,
+            100% {
+                transform: scaleY(1);
+            }
+            98% {
+                transform: scaleY(0.1);
+            }
+        }
+        @keyframes pet-tail-wag {
+            0%,
+            100% {
+                transform: rotate(-10deg);
+            }
+            50% {
+                transform: rotate(20deg);
+            }
+        }
+        @keyframes pet-ear-twitch {
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-5deg);
+            }
+            75% {
+                transform: rotate(5deg);
+            }
+        }
+        @keyframes dog-pant {
+            0%,
+            100% {
+                transform: translateX(-50%) scaleY(1);
+            }
+            50% {
+                transform: translateX(-50%) scaleY(0.6) translateY(1px);
+            }
+        }
+        @keyframes dog-tail-wag {
+            0%,
+            100% {
+                transform: rotate(-30deg);
+            }
+            50% {
+                transform: rotate(10deg);
+            }
+        }
+
+        .pet-wrapper:hover .cat-tail {
+            animation: pet-tail-wag 0.4s ease-in-out infinite;
+        }
+        .pet-wrapper:hover .cat-ear-left {
+            animation: pet-ear-twitch 0.3s ease-in-out infinite;
+        }
+        .pet-wrapper:hover .cat-ear-right {
+            animation: pet-ear-twitch 0.3s ease-in-out infinite 0.1s;
+        }
+        .pet-wrapper:hover .dog-ear-left {
+            transform: rotate(20deg);
+        }
+        .pet-wrapper:hover .dog-ear-right {
+            transform: rotate(-20deg);
+        }
+        .pet-wrapper:hover .dog-tail {
+            animation: dog-tail-wag 0.3s ease-in-out infinite;
+        }
+
+        /* ===== 猫 ===== */
+        .pet-cat .pet-body-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .cat-head {
+            position: relative;
+            width: 44px;
+            height: 40px;
+            background: radial-gradient(ellipse at 40% 35%, var(--cat-main-light), var(--cat-main) 60%, var(--cat-main-dark));
+            border-radius: 50% 50% 45% 45%;
+            z-index: 2;
+            flex-shrink: 0;
+            box-shadow: 0 3px 12px rgba(108, 99, 255, 0.2);
+        }
+        .cat-ear {
+            position: absolute;
+            top: -6px;
+            width: 12px;
+            height: 14px;
+            background: radial-gradient(ellipse at 50% 60%, var(--cat-main-light), var(--cat-main-dark));
+            border-radius: 50% 50% 0 0;
+            transform-origin: bottom center;
+            transition: transform 0.2s ease;
+        }
+        .cat-ear::after {
+            content: '';
+            position: absolute;
+            bottom: 1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 7px;
+            background: radial-gradient(ellipse at 50% 60%, var(--cat-ear-inner), #ff8fab);
+            border-radius: 50% 50% 0 0;
+        }
+        .cat-ear-left {
+            left: 1px;
+            transform: rotate(-10deg);
+        }
+        .cat-ear-right {
+            right: 1px;
+            transform: rotate(10deg);
+        }
+
+        .cat-eye {
+            position: absolute;
+            top: 14px;
+            width: 11px;
+            height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        .cat-eye::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 7px;
+            background: radial-gradient(circle at 40% 35%, var(--cat-eye-light), var(--cat-eye-dark));
+            border-radius: 50%;
+        }
+        .cat-eye::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .cat-eye-left {
+            left: 6px;
+        }
+        .cat-eye-right {
+            right: 6px;
+        }
+        .cat-eye.blink {
+            animation: pet-blink 0.15s ease;
+        }
+
+        .cat-nose {
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 4px;
+            background: radial-gradient(ellipse at 50% 60%, #ff8fab, #ff6b81);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+        }
+        .cat-mouth {
+            position: absolute;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 4px;
+            border-bottom: 1.5px solid rgba(75, 60, 120, 0.3);
+            border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        }
+        [data-theme="dark"] .cat-mouth {
+            border-bottom-color: rgba(200, 180, 255, 0.3);
+        }
+
+        .cat-whisker {
+            position: absolute;
+            top: 24px;
+            width: 12px;
+            height: 1px;
+            background: var(--cat-whisker);
+            border-radius: 1px;
+        }
+        .cat-whisker-l1 {
+            left: -6px;
+            transform: rotate(-10deg);
+        }
+        .cat-whisker-l2 {
+            left: -6px;
+            top: 27px;
+            transform: rotate(8deg);
+        }
+        .cat-whisker-r1 {
+            right: -6px;
+            transform: rotate(10deg);
+        }
+        .cat-whisker-r2 {
+            right: -6px;
+            top: 27px;
+            transform: rotate(-8deg);
+        }
+
+        .cat-body {
+            position: relative;
+            width: 36px;
+            height: 28px;
+            background: radial-gradient(ellipse at 50% 40%, var(--cat-main-light), var(--cat-main) 60%, var(--cat-main-dark));
+            border-radius: 50% 50% 50% 50% / 30% 30% 60% 60%;
+            margin-top: -6px;
+            z-index: 1;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(108, 99, 255, 0.15);
+        }
+        .cat-belly {
+            position: absolute;
+            bottom: 1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 14px;
+            background: radial-gradient(ellipse at 50% 60%, var(--cat-belly), rgba(255, 255, 255, 0.1));
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+        }
+        .cat-tail {
+            position: absolute;
+            bottom: 4px;
+            right: -14px;
+            width: 14px;
+            height: 14px;
+            border: 3px solid var(--cat-main);
+            border-color: var(--cat-main) transparent transparent var(--cat-main);
+            border-radius: 50%;
+            transform: rotate(-10deg);
+            transition: transform 0.3s ease;
+            z-index: 0;
+        }
+        .cat-paw {
+            position: absolute;
+            bottom: -2px;
+            width: 8px;
+            height: 6px;
+            background: radial-gradient(ellipse at 50% 40%, var(--cat-main-light), var(--cat-main) 60%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            z-index: 0;
+        }
+        .cat-paw-left {
+            left: 3px;
+            transform: rotate(-15deg);
+        }
+        .cat-paw-right {
+            right: 3px;
+            transform: rotate(15deg);
+        }
+
+        /* ===== 狗 ===== */
+        .pet-dog .pet-body-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+        .dog-head {
+            position: relative;
+            width: 46px;
+            height: 40px;
+            background: radial-gradient(ellipse at 50% 40%, var(--dog-main-light), var(--dog-main) 60%, var(--dog-main-dark));
+            border-radius: 55% 55% 45% 45%;
+            z-index: 2;
+            flex-shrink: 0;
+            box-shadow: 0 3px 12px rgba(180, 140, 100, 0.2);
+        }
+        .dog-spot {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 8px;
+            background: var(--dog-spot);
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+        .dog-ear {
+            position: absolute;
+            top: 3px;
+            width: 13px;
+            height: 18px;
+            background: radial-gradient(ellipse at 50% 40%, var(--dog-main-light), var(--dog-main-dark));
+            border-radius: 0 0 50% 50% / 0 0 60% 60%;
+            transform-origin: top center;
+            transition: transform 0.3s ease;
+        }
+        .dog-ear::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 10px;
+            background: radial-gradient(ellipse at 50% 60%, var(--dog-ear-inner), var(--dog-main-dark));
+            border-radius: 0 0 50% 50% / 0 0 60% 60%;
+            opacity: 0.5;
+        }
+        .dog-ear-left {
+            left: -2px;
+            transform: rotate(12deg);
+        }
+        .dog-ear-right {
+            right: -2px;
+            transform: rotate(-12deg);
+        }
+
+        .dog-eye {
+            position: absolute;
+            top: 14px;
+            width: 10px;
+            height: 11px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+        .dog-eye::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 7px;
+            background: radial-gradient(circle at 40% 35%, var(--dog-eye-light), var(--dog-eye-dark));
+            border-radius: 50%;
+        }
+        .dog-eye::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 3px;
+            height: 3px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 1;
+        }
+        .dog-eye-left {
+            left: 6px;
+        }
+        .dog-eye-right {
+            right: 6px;
+        }
+        .dog-eye.blink {
+            animation: pet-blink 0.15s ease;
+        }
+
+        .dog-nose {
+            position: absolute;
+            top: 23px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 9px;
+            height: 7px;
+            background: radial-gradient(ellipse at 50% 50%, var(--dog-nose), #2a1a0a);
+            border-radius: 50% 50% 50% 50% / 50% 50% 40% 40%;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+        .dog-nose::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2.5px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+        }
+        .dog-mouth {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 5px;
+            border-bottom: 1.5px solid rgba(60, 40, 20, 0.3);
+            border-radius: 0 0 50% 50% / 0 0 100% 100%;
+        }
+        [data-theme="dark"] .dog-mouth {
+            border-bottom-color: rgba(180, 150, 120, 0.3);
+        }
+        .dog-tongue {
+            position: absolute;
+            top: 33px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 8px;
+            background: radial-gradient(ellipse at 50% 60%, var(--dog-tongue), #e74c6f);
+            border-radius: 0 0 50% 50% / 0 0 100% 100%;
+            animation: dog-pant 1.5s ease-in-out infinite;
+        }
+
+        .dog-body {
+            position: relative;
+            width: 38px;
+            height: 28px;
+            background: radial-gradient(ellipse at 50% 40%, var(--dog-main-light), var(--dog-main) 60%, var(--dog-main-dark));
+            border-radius: 50% 50% 50% 50% / 35% 35% 55% 55%;
+            margin-top: -6px;
+            z-index: 1;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(180, 140, 100, 0.15);
+        }
+        .dog-belly {
+            position: absolute;
+            bottom: 1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 18px;
+            height: 12px;
+            background: radial-gradient(ellipse at 50% 60%, var(--dog-belly), rgba(255, 255, 255, 0.1));
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+        }
+        .dog-collar {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 4px;
+            background: var(--dog-collar);
+            border-radius: 3px;
+            z-index: 3;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        .dog-collar::after {
+            content: '🔔';
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 7px;
+            line-height: 1;
+        }
+
+        .dog-tail {
+            position: absolute;
+            bottom: 10px;
+            right: -10px;
+            width: 10px;
+            height: 16px;
+            border: 3px solid var(--dog-main);
+            border-color: var(--dog-main) transparent transparent transparent;
+            border-radius: 50%;
+            transform: rotate(-30deg);
+            transition: transform 0.3s ease;
+            z-index: 0;
+        }
+        .dog-paw {
+            position: absolute;
+            bottom: -2px;
+            width: 10px;
+            height: 6px;
+            background: radial-gradient(ellipse at 50% 40%, var(--dog-main-light), var(--dog-main) 60%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            z-index: 0;
+        }
+        .dog-paw::after {
+            content: '';
+            position: absolute;
+            bottom: 1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 2.5px;
+            background: rgba(255, 180, 150, 0.4);
+            border-radius: 50%;
+        }
+        .dog-paw-left {
+            left: 2px;
+            transform: rotate(-10deg);
+        }
+        .dog-paw-right {
+            right: 2px;
+            transform: rotate(10deg);
+        }
+
+        @media (max-width: 500px) {
+            #catWrapper {
+                bottom: 16px;
+                right: 62px;
+            }
+            #dogWrapper {
+                bottom: 16px;
+                right: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 猫 ===== -->
+    <div class="pet-wrapper" id="catWrapper">
+        <div class="pet pet-cat">
+            <div class="pet-body-inner">
+                <div class="cat-head">
+                    <div class="cat-ear cat-ear-left"></div>
+                    <div class="cat-ear cat-ear-right"></div>
+                    <div class="cat-eye cat-eye-left" id="catEyeL"></div>
+                    <div class="cat-eye cat-eye-right" id="catEyeR"></div>
+                    <div class="cat-nose"></div>
+                    <div class="cat-mouth"></div>
+                    <div class="cat-whisker cat-whisker-l1"></div>
+                    <div class="cat-whisker cat-whisker-l2"></div>
+                    <div class="cat-whisker cat-whisker-r1"></div>
+                    <div class="cat-whisker cat-whisker-r2"></div>
+                </div>
+                <div class="cat-body">
+                    <div class="cat-belly"></div>
+                </div>
+                <div class="cat-tail"></div>
+                <div class="cat-paw cat-paw-left"></div>
+                <div class="cat-paw cat-paw-right"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 狗 ===== -->
+    <div class="pet-wrapper" id="dogWrapper">
+        <div class="pet pet-dog">
+            <div class="pet-body-inner">
+                <div class="dog-head">
+                    <div class="dog-spot"></div>
+                    <div class="dog-ear dog-ear-left"></div>
+                    <div class="dog-ear dog-ear-right"></div>
+                    <div class="dog-eye dog-eye-left" id="dogEyeL"></div>
+                    <div class="dog-eye dog-eye-right" id="dogEyeR"></div>
+                    <div class="dog-nose"></div>
+                    <div class="dog-mouth"></div>
+                    <div class="dog-tongue"></div>
+                    <div class="dog-collar"></div>
+                </div>
+                <div class="dog-body">
+                    <div class="dog-belly"></div>
+                </div>
+                <div class="dog-tail"></div>
+                <div class="dog-paw dog-paw-left"></div>
+                <div class="dog-paw dog-paw-right"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  解析 URL 参数，控制猫和狗的显示
+        // ============================================================
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const showCat = params.get('cat') !== 'false';
+            const showDog = params.get('dog') !== 'false';
+
+            const catWrapper = document.getElementById('catWrapper');
+            const dogWrapper = document.getElementById('dogWrapper');
+
+            if (showCat) {
+                catWrapper.style.display = 'block';
+            }
+            if (showDog) {
+                dogWrapper.style.display = 'block';
+            }
+
+            // ============================================================
+            //  交互：眨眼 + 跳跃 + 独立长按拖动
+            // ============================================================
+
+            const cEyeL = document.getElementById('catEyeL');
+            const cEyeR = document.getElementById('catEyeR');
+            const dEyeL = document.getElementById('dogEyeL');
+            const dEyeR = document.getElementById('dogEyeR');
+
+            function blink(eyeL, eyeR) {
+                eyeL.classList.add('blink');
+                eyeR.classList.add('blink');
+                setTimeout(() => {
+                    eyeL.classList.remove('blink');
+                    eyeR.classList.remove('blink');
+                }, 150);
+            }
+
+            function scheduleBlink(eyeL, eyeR, minDelay, maxDelay) {
+                const delay = minDelay + Math.random() * (maxDelay - minDelay);
+                setTimeout(() => {
+                    blink(eyeL, eyeR);
+                    scheduleBlink(eyeL, eyeR, minDelay, maxDelay);
+                }, delay);
+            }
+            if (showCat) {
+                scheduleBlink(cEyeL, cEyeR, 2500, 5500);
+                setTimeout(() => blink(cEyeL, cEyeR), 1500);
+            }
+            if (showDog) {
+                scheduleBlink(dEyeL, dEyeR, 3500, 7000);
+                setTimeout(() => blink(dEyeL, dEyeR), 2500);
+            }
+
+            function jump(petElement) {
+                petElement.style.animation = 'none';
+                void petElement.offsetHeight;
+                petElement.style.animation = 'pet-jump 0.5s ease';
+                setTimeout(() => {
+                    petElement.style.animation = 'pet-float 3s ease-in-out infinite';
+                    if (petElement.classList.contains('pet-dog')) {
+                        petElement.style.animationDelay = '0.6s';
+                    }
+                }, 500);
+            }
+
+            // ============================================================
+            //  独立拖动逻辑
+            // ============================================================
+
+            function makeDraggable(wrapper) {
+                if (!wrapper || wrapper.style.display === 'none') return;
+                const pet = wrapper.querySelector('.pet');
+
+                const onPointerDown = function(e) {
+                    e.preventDefault();
+                    const pointer = e.pointerId !== undefined ? e : (e.touches ? e.touches[0] : e);
+                    const startX = pointer.clientX;
+                    const startY = pointer.clientY;
+
+                    const rect = wrapper.getBoundingClientRect();
+                    const startLeft = rect.left;
+                    const startTop = rect.top;
+
+                    let isDragging = false;
+                    let isLongPress = false;
+                    let moved = false;
+                    let longPressTimer = null;
+
+                    const onMove = function(ev) {
+                        const p = ev.pointerId !== undefined ? ev : (ev.touches ? ev.touches[0] : ev);
+                        const dx = p.clientX - startX;
+                        const dy = p.clientY - startY;
+
+                        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                            moved = true;
+                            if (longPressTimer) {
+                                clearTimeout(longPressTimer);
+                                longPressTimer = null;
+                            }
+                        }
+
+                        if (isDragging) {
+                            ev.preventDefault();
+                            let newLeft = startLeft + dx;
+                            let newTop = startTop + dy;
+
+                            const w = wrapper.offsetWidth || 70;
+                            const h = wrapper.offsetHeight || 85;
+                            const maxX = window.innerWidth - w;
+                            const maxY = window.innerHeight - h;
+                            newLeft = Math.max(0, Math.min(newLeft, maxX));
+                            newTop = Math.max(0, Math.min(newTop, maxY));
+
+                            wrapper.style.right = 'auto';
+                            wrapper.style.bottom = 'auto';
+                            wrapper.style.left = newLeft + 'px';
+                            wrapper.style.top = newTop + 'px';
+
+                            wrapper.classList.add('dragging');
+                        }
+                    };
+
+                    const onUp = function(ev) {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
+
+                        document.removeEventListener('pointermove', onMove);
+                        document.removeEventListener('pointerup', onUp);
+                        document.removeEventListener('touchmove', onMove);
+                        document.removeEventListener('touchend', onUp);
+
+                        if (isDragging) {
+                            isDragging = false;
+                            wrapper.classList.remove('dragging');
+                            if (pet) {
+                                pet.style.animation = 'pet-float 3s ease-in-out infinite';
+                                if (wrapper.id === 'dogWrapper') {
+                                    pet.style.animationDelay = '0.6s';
+                                }
+                            }
+                            wrapper.style.cursor = 'grab';
+                            return;
+                        }
+
+                        if (!isLongPress && !moved) {
+                            if (pet) jump(pet);
+                        }
+                    };
+
+                    longPressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        isDragging = true;
+                        wrapper.style.cursor = 'grabbing';
+                        if (pet) pet.style.animation = 'none';
+                        document.addEventListener('pointermove', onMove);
+                        document.addEventListener('pointerup', onUp);
+                        document.addEventListener('touchmove', onMove, { passive: false });
+                        document.addEventListener('touchend', onUp);
+                    }, 300);
+
+                    const cancelTimerOnMove = function(ev) {
+                        const p = ev.pointerId !== undefined ? ev : (ev.touches ? ev.touches[0] : ev);
+                        const dx = p.clientX - startX;
+                        const dy = p.clientY - startY;
+                        if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                            if (longPressTimer) {
+                                clearTimeout(longPressTimer);
+                                longPressTimer = null;
+                            }
+                            document.removeEventListener('pointermove', cancelTimerOnMove);
+                            document.removeEventListener('touchmove', cancelTimerOnMove);
+                        }
+                    };
+                    document.addEventListener('pointermove', cancelTimerOnMove);
+                    document.addEventListener('touchmove', cancelTimerOnMove, { passive: true });
+
+                    const cleanupCancel = function() {
+                        document.removeEventListener('pointermove', cancelTimerOnMove);
+                        document.removeEventListener('touchmove', cancelTimerOnMove);
+                        document.removeEventListener('pointerup', cleanupCancel);
+                        document.removeEventListener('touchend', cleanupCancel);
+                    };
+                    document.addEventListener('pointerup', cleanupCancel);
+                    document.addEventListener('touchend', cleanupCancel);
+
+                    const onLeave = function() {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
+                        document.removeEventListener('pointerleave', onLeave);
+                    };
+                    document.addEventListener('pointerleave', onLeave);
+                };
+
+                wrapper.addEventListener('pointerdown', onPointerDown);
+                wrapper.addEventListener('touchstart', onPointerDown, { passive: false });
+            }
+
+            if (showCat) makeDraggable(catWrapper);
+            if (showDog) makeDraggable(dogWrapper);
+
+            // ----- 监听父页面主题 -----
+            try {
+                const parentTheme = window.parent.document.documentElement.getAttribute('data-theme');
+                if (parentTheme) document.documentElement.setAttribute('data-theme', parentTheme);
+                const observer = new MutationObserver(() => {
+                    const theme = window.parent.document.documentElement.getAttribute('data-theme');
+                    if (theme) document.documentElement.setAttribute('data-theme', theme);
+                });
+                observer.observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+            } catch (_) {}
+
+            console.log('🐱🐶 宠物已加载，显示: 猫=' + showCat + ' 狗=' + showDog);
+
+        })();
+    </script>
+
+</body>
+</html>
