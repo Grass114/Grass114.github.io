@@ -37,6 +37,9 @@
             --option-border: rgba(0, 0, 0, 0.04);
             --option-hover: rgba(108, 99, 255, 0.06);
             --option-active: #6c63ff;
+            --disabled-opacity: 0.4;
+            --check-bg: rgba(108, 99, 255, 0.08);
+            --check-checked: #6c63ff;
         }
 
         [data-theme="dark"] {
@@ -69,6 +72,9 @@
             --option-border: rgba(71, 85, 105, 0.3);
             --option-hover: rgba(129, 140, 248, 0.08);
             --option-active: #818cf8;
+            --disabled-opacity: 0.35;
+            --check-bg: rgba(129, 140, 248, 0.08);
+            --check-checked: #818cf8;
         }
 
         /* ===== 全局重置 ===== */
@@ -399,14 +405,7 @@
             font-size: 13px;
         }
 
-        .sidebar-divider {
-            height: 1px;
-            background: var(--card-border);
-            margin: 6px 16px;
-            transition: background 0.4s;
-        }
-
-        /* ===== 右侧内容区（子级） ===== */
+        /* ===== 右侧内容区 ===== */
         .settings-content {
             flex: 1;
             padding: 20px 24px 20px 24px;
@@ -608,6 +607,174 @@
         .pet-card.on {
             border-color: var(--link-color);
             background: var(--option-hover);
+        }
+
+        /* ============================================================
+           显示位置 —— 每个宠物独立勾选页面
+        ============================================================ */
+        .location-section {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--card-border);
+            transition: border-color 0.4s, opacity 0.3s ease;
+        }
+
+        .location-section.disabled {
+            opacity: var(--disabled-opacity);
+            pointer-events: none;
+        }
+
+        .location-section .location-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.4s;
+        }
+
+        .location-section .location-label .lock-icon {
+            font-size: 14px;
+        }
+
+        .location-section .location-label .sub {
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--text-light);
+        }
+
+        /* 每个宠物的页面选择行 */
+        .pet-location-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--option-border);
+            transition: border-color 0.4s;
+        }
+
+        .pet-location-row:last-child {
+            border-bottom: none;
+        }
+
+        .pet-location-row .row-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+            width: 28px;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        .pet-location-row .row-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+            width: 32px;
+            transition: color 0.4s;
+        }
+
+        .pet-location-row .page-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .pet-location-row .page-checkboxes .page-check {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px 4px 6px;
+            border-radius: 6px;
+            border: 1.5px solid var(--option-border);
+            background: var(--content-bg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: inherit;
+            user-select: none;
+        }
+
+        .pet-location-row .page-checkboxes .page-check:hover {
+            border-color: var(--link-color);
+            background: var(--option-hover);
+        }
+
+        .pet-location-row .page-checkboxes .page-check.checked {
+            border-color: var(--check-checked);
+            background: var(--check-bg);
+            color: var(--link-color);
+        }
+
+        .pet-location-row .page-checkboxes .page-check input[type="checkbox"] {
+            display: none;
+        }
+
+        .pet-location-row .page-checkboxes .page-check .check-icon {
+            font-size: 14px;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+
+        .pet-location-row .page-checkboxes .page-check.checked .check-icon {
+            opacity: 1;
+        }
+
+        .pet-location-row .page-checkboxes .page-check .page-name {
+            font-size: 11px;
+        }
+
+        /* 全选/清空 按钮 */
+        .location-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .location-actions .action-btn {
+            padding: 4px 12px;
+            border: 1.5px solid var(--option-border);
+            border-radius: 6px;
+            background: var(--content-bg);
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .location-actions .action-btn:hover {
+            border-color: var(--link-color);
+            color: var(--link-color);
+            background: var(--option-hover);
+        }
+
+        .location-actions .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .location-section.disabled .action-btn {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .location-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            transition: color 0.4s;
+            font-style: italic;
+        }
+
+        .location-hint .highlight {
+            color: var(--link-color);
+            font-weight: 500;
+            font-style: normal;
         }
 
         /* ===== 底部按钮 ===== */
@@ -888,9 +1055,6 @@
             .sidebar-item .label {
                 font-size: 12px;
             }
-            .sidebar-divider {
-                display: none;
-            }
             .settings-content {
                 padding: 16px 18px 16px 18px;
             }
@@ -936,6 +1100,31 @@
             .pet-card .pet-switch.on::after {
                 transform: translateX(14px);
             }
+
+            .pet-location-row {
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 8px 0;
+            }
+            .pet-location-row .row-name {
+                width: auto;
+                font-size: 12px;
+            }
+            .pet-location-row .page-checkboxes .page-check {
+                padding: 3px 8px 3px 5px;
+                font-size: 11px;
+            }
+            .pet-location-row .page-checkboxes .page-check .page-name {
+                font-size: 10px;
+            }
+            .location-actions .action-btn {
+                font-size: 10px;
+                padding: 3px 10px;
+            }
+            .location-hint {
+                font-size: 10px;
+            }
+
             .top-bar {
                 padding: 10px 18px;
                 flex-wrap: wrap;
@@ -1049,6 +1238,35 @@
             .pet-card .pet-switch.on::after {
                 transform: translateX(12px);
             }
+
+            .pet-location-row .page-checkboxes {
+                gap: 4px;
+            }
+            .pet-location-row .page-checkboxes .page-check {
+                padding: 2px 6px 2px 4px;
+                font-size: 10px;
+                border-radius: 4px;
+            }
+            .pet-location-row .page-checkboxes .page-check .page-name {
+                font-size: 9px;
+            }
+            .pet-location-row .page-checkboxes .page-check .check-icon {
+                font-size: 11px;
+            }
+            .location-actions .action-btn {
+                font-size: 9px;
+                padding: 2px 8px;
+            }
+            .location-hint {
+                font-size: 9px;
+            }
+            .location-section .location-label {
+                font-size: 12px;
+            }
+            .location-section .location-label .sub {
+                font-size: 10px;
+            }
+
             .apply-btn {
                 font-size: 13px;
                 padding: 10px 16px;
@@ -1111,6 +1329,12 @@
             }
             .sidebar-item .label {
                 font-size: 9px;
+            }
+            .pet-location-row .page-checkboxes .page-check .page-name {
+                display: none;
+            }
+            .pet-location-row .page-checkboxes .page-check {
+                padding: 3px 6px;
             }
         }
     </style>
@@ -1195,6 +1419,8 @@
                         <span class="icon">🐾</span> 宠物
                     </div>
                     <div class="section-desc">控制猫和狗在网页上的显示</div>
+
+                    <!-- ===== 宠物开关 ===== -->
                     <div class="pet-grid">
                         <div class="pet-card" id="catCard">
                             <div class="pet-avatar cat">🐱</div>
@@ -1213,9 +1439,43 @@
                             <span class="pet-switch" id="dogSwitch"></span>
                         </div>
                     </div>
+
+                    <!-- ===== 显示位置（自由勾选页面） ===== -->
+                    <div class="location-section" id="locationSection">
+                        <div class="location-label">
+                            📌 显示位置
+                            <span class="lock-icon" id="locationLock">🔓</span>
+                            <span class="sub">— 为每个宠物选择要显示的页面</span>
+                        </div>
+
+                        <!-- 猫的位置选择 -->
+                        <div class="pet-location-row" id="catLocationRow">
+                            <span class="row-icon">🐱</span>
+                            <span class="row-name">猫</span>
+                            <div class="page-checkboxes" id="catPages"></div>
+                        </div>
+
+                        <!-- 狗的位置选择 -->
+                        <div class="pet-location-row" id="dogLocationRow">
+                            <span class="row-icon">🐶</span>
+                            <span class="row-name">狗</span>
+                            <div class="page-checkboxes" id="dogPages"></div>
+                        </div>
+
+                        <!-- 快捷操作 -->
+                        <div class="location-actions">
+                            <button class="action-btn" id="selectAllPages">✅ 全选所有</button>
+                            <button class="action-btn" id="deselectAllPages">⬜ 清空所有</button>
+                        </div>
+
+                        <div class="location-hint" id="locationHint">
+                            💡 勾选页面后，宠物只会出现在对应的页面上
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- ===== 底部：应用 + 重置（两个面板共用） ===== -->
+                <!-- ===== 底部：应用 + 重置 ===== -->
                 <div class="settings-footer">
                     <button class="apply-btn" id="applyBtn">✅ 应用</button>
                     <button class="settings-reset" id="settingsReset">🔄 恢复默认设置</button>
@@ -1259,20 +1519,47 @@
             // ---------- 年份 ----------
             document.getElementById('year').textContent = new Date().getFullYear();
 
+            // ---------- 所有页面列表 ----------
+            const ALL_PAGES = [
+                { id: 'index', label: '🏠 首页' },
+                { id: 'about', label: '👤 关于我' },
+                { id: 'project', label: '📦 项目' },
+                { id: 'game', label: '🎮 游戏中心' },
+                { id: 'thankyou', label: '🙏 致谢' },
+                { id: 'mcskin3d', label: '⛏️ MCSkin3D' },
+                { id: 'brick', label: '🧱 打砖块' },
+                { id: 'minesweeper', label: '💣 扫雷' },
+            ];
+
             // ---------- 默认设置 ----------
             const DEFAULTS = {
                 theme: 'auto',
-                pet: { cat: true, dog: true }
+                pet: {
+                    cat: true,
+                    dog: true,
+                    catPages: ALL_PAGES.map(p => p.id),
+                    dogPages: ALL_PAGES.map(p => p.id)
+                }
             };
 
             let settings = {};
             let tempTheme = 'auto';
-            let tempPet = { cat: true, dog: true };
+            let tempPet = {
+                cat: true,
+                dog: true,
+                catPages: ALL_PAGES.map(p => p.id),
+                dogPages: ALL_PAGES.map(p => p.id)
+            };
             let timeThemeTimer = null;
 
-            // 记录初始值，用于判断哪些设置被修改了
+            // 记录初始值
             let initialTheme = 'auto';
-            let initialPet = { cat: true, dog: true };
+            let initialPet = {
+                cat: true,
+                dog: true,
+                catPages: ALL_PAGES.map(p => p.id),
+                dogPages: ALL_PAGES.map(p => p.id)
+            };
 
             // ---------- DOM 引用 ----------
             const sidebarItems = document.querySelectorAll('.sidebar-item');
@@ -1287,6 +1574,13 @@
             const dogSwitch = document.getElementById('dogSwitch');
             const catStatus = document.getElementById('catStatus');
             const dogStatus = document.getElementById('dogStatus');
+
+            const locationSection = document.getElementById('locationSection');
+            const locationLock = document.getElementById('locationLock');
+            const locationHint = document.getElementById('locationHint');
+
+            const catPagesContainer = document.getElementById('catPages');
+            const dogPagesContainer = document.getElementById('dogPages');
 
             // ---------- Toast ----------
             const toast = document.getElementById('toast');
@@ -1352,6 +1646,106 @@
                 });
             });
 
+            // ---------- 生成页面复选框 ----------
+            function renderPageCheckboxes(container, selectedPages) {
+                container.innerHTML = '';
+                ALL_PAGES.forEach(page => {
+                    const label = document.createElement('label');
+                    const isChecked = selectedPages.includes(page.id);
+                    label.className = 'page-check' + (isChecked ? ' checked' : '');
+                    label.dataset.page = page.id;
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.checked = isChecked;
+                    checkbox.dataset.page = page.id;
+
+                    const icon = document.createElement('span');
+                    icon.className = 'check-icon';
+                    icon.textContent = isChecked ? '✅' : '⬜';
+
+                    const name = document.createElement('span');
+                    name.className = 'page-name';
+                    name.textContent = page.label;
+
+                    label.appendChild(checkbox);
+                    label.appendChild(icon);
+                    label.appendChild(name);
+
+                    // 点击切换
+                    label.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const pageId = this.dataset.page;
+                        const idx = selectedPages.indexOf(pageId);
+                        if (idx > -1) {
+                            selectedPages.splice(idx, 1);
+                        } else {
+                            selectedPages.push(pageId);
+                        }
+                        // 更新UI
+                        updatePageCheckboxesUI(container, selectedPages);
+                        updateLocationHint();
+                    });
+
+                    container.appendChild(label);
+                });
+            }
+
+            function updatePageCheckboxesUI(container, selectedPages) {
+                const labels = container.querySelectorAll('.page-check');
+                labels.forEach(label => {
+                    const pageId = label.dataset.page;
+                    const isChecked = selectedPages.includes(pageId);
+                    label.classList.toggle('checked', isChecked);
+
+                    const checkbox = label.querySelector('input[type="checkbox"]');
+                    if (checkbox) checkbox.checked = isChecked;
+
+                    const icon = label.querySelector('.check-icon');
+                    if (icon) icon.textContent = isChecked ? '✅' : '⬜';
+                });
+            }
+
+            // ---------- 更新位置提示 ----------
+            function updateLocationHint() {
+                const anyEnabled = tempPet.cat || tempPet.dog;
+                if (!anyEnabled) {
+                    locationHint.innerHTML = '💡 请先开启猫或狗，才能调整显示位置';
+                    return;
+                }
+
+                const catCount = tempPet.catPages.length;
+                const dogCount = tempPet.dogPages.length;
+                const totalPages = ALL_PAGES.length;
+
+                let parts = [];
+                if (tempPet.cat) {
+                    parts.push('🐱猫：' + catCount + '/' + totalPages + ' 页');
+                } else {
+                    parts.push('🐱猫：已关闭');
+                }
+                if (tempPet.dog) {
+                    parts.push('🐶狗：' + dogCount + '/' + totalPages + ' 页');
+                } else {
+                    parts.push('🐶狗：已关闭');
+                }
+                locationHint.innerHTML = '💡 ' + parts.join(' · ');
+            }
+
+            // ---------- 更新位置区域锁定状态 ----------
+            function updateLocationState() {
+                const anyEnabled = tempPet.cat || tempPet.dog;
+
+                if (anyEnabled) {
+                    locationSection.classList.remove('disabled');
+                    locationLock.textContent = '🔓';
+                } else {
+                    locationSection.classList.add('disabled');
+                    locationLock.textContent = '🔒';
+                }
+                updateLocationHint();
+            }
+
             // ---------- 宠物开关 ----------
             function updatePetUI() {
                 catCard.classList.toggle('on', tempPet.cat);
@@ -1361,6 +1755,22 @@
                 dogCard.classList.toggle('on', tempPet.dog);
                 dogSwitch.classList.toggle('on', tempPet.dog);
                 dogStatus.textContent = tempPet.dog ? '已显示 ✅' : '已隐藏 ❌';
+
+                // 猫的页面复选框启用/禁用
+                const catChecks = catPagesContainer.querySelectorAll('.page-check');
+                catChecks.forEach(el => {
+                    el.style.pointerEvents = tempPet.cat ? 'auto' : 'none';
+                    el.style.opacity = tempPet.cat ? '1' : '0.5';
+                });
+
+                // 狗的页面复选框启用/禁用
+                const dogChecks = dogPagesContainer.querySelectorAll('.page-check');
+                dogChecks.forEach(el => {
+                    el.style.pointerEvents = tempPet.dog ? 'auto' : 'none';
+                    el.style.opacity = tempPet.dog ? '1' : '0.5';
+                });
+
+                updateLocationState();
             }
 
             catCard.addEventListener('click', function(e) {
@@ -1375,6 +1785,32 @@
                 updatePetUI();
             });
 
+            // ---------- 全选/清空 ----------
+            document.getElementById('selectAllPages').addEventListener('click', function() {
+                const allIds = ALL_PAGES.map(p => p.id);
+                if (tempPet.cat) {
+                    tempPet.catPages = [...allIds];
+                    updatePageCheckboxesUI(catPagesContainer, tempPet.catPages);
+                }
+                if (tempPet.dog) {
+                    tempPet.dogPages = [...allIds];
+                    updatePageCheckboxesUI(dogPagesContainer, tempPet.dogPages);
+                }
+                updateLocationHint();
+            });
+
+            document.getElementById('deselectAllPages').addEventListener('click', function() {
+                if (tempPet.cat) {
+                    tempPet.catPages = [];
+                    updatePageCheckboxesUI(catPagesContainer, tempPet.catPages);
+                }
+                if (tempPet.dog) {
+                    tempPet.dogPages = [];
+                    updatePageCheckboxesUI(dogPagesContainer, tempPet.dogPages);
+                }
+                updateLocationHint();
+            });
+
             // ---------- 主题 ----------
             function getThemeByHour() {
                 const h = new Date().getHours();
@@ -1386,8 +1822,19 @@
                 return tempTheme !== initialTheme;
             }
 
+            function arraysEqual(a, b) {
+                if (a.length !== b.length) return false;
+                const sortedA = [...a].sort();
+                const sortedB = [...b].sort();
+                return sortedA.every((v, i) => v === sortedB[i]);
+            }
+
             function hasPetChanged() {
-                return tempPet.cat !== initialPet.cat || tempPet.dog !== initialPet.dog;
+                if (tempPet.cat !== initialPet.cat) return true;
+                if (tempPet.dog !== initialPet.dog) return true;
+                if (!arraysEqual(tempPet.catPages, initialPet.catPages)) return true;
+                if (!arraysEqual(tempPet.dogPages, initialPet.dogPages)) return true;
+                return false;
             }
 
             function getPetChangeSummary() {
@@ -1397,6 +1844,20 @@
                 }
                 if (tempPet.dog !== initialPet.dog) {
                     changes.push(tempPet.dog ? '🐶狗已显示' : '🐶狗已隐藏');
+                }
+                if (!arraysEqual(tempPet.catPages, initialPet.catPages)) {
+                    const pageNames = tempPet.catPages.map(id => {
+                        const p = ALL_PAGES.find(pg => pg.id === id);
+                        return p ? p.label.replace(/[^\w\u4e00-\u9fa5]/g, '').trim() : id;
+                    });
+                    changes.push('🐱猫页面：' + (pageNames.length ? pageNames.join('、') : '无'));
+                }
+                if (!arraysEqual(tempPet.dogPages, initialPet.dogPages)) {
+                    const pageNames = tempPet.dogPages.map(id => {
+                        const p = ALL_PAGES.find(pg => pg.id === id);
+                        return p ? p.label.replace(/[^\w\u4e00-\u9fa5]/g, '').trim() : id;
+                    });
+                    changes.push('🐶狗页面：' + (pageNames.length ? pageNames.join('、') : '无'));
                 }
                 return changes;
             }
@@ -1423,17 +1884,29 @@
                         const parsed = JSON.parse(petSaved);
                         tempPet.cat = parsed.cat !== undefined ? parsed.cat : DEFAULTS.pet.cat;
                         tempPet.dog = parsed.dog !== undefined ? parsed.dog : DEFAULTS.pet.dog;
+                        tempPet.catPages = parsed.catPages || DEFAULTS.pet.catPages;
+                        tempPet.dogPages = parsed.dogPages || DEFAULTS.pet.dogPages;
                     } else {
                         tempPet = { ...DEFAULTS.pet };
                     }
                 } catch {
                     tempPet = { ...DEFAULTS.pet };
                 }
-                initialPet = { ...tempPet };
+                initialPet = {
+                    cat: tempPet.cat,
+                    dog: tempPet.dog,
+                    catPages: [...tempPet.catPages],
+                    dogPages: [...tempPet.dogPages]
+                };
+
+                // 渲染页面复选框
+                renderPageCheckboxes(catPagesContainer, tempPet.catPages);
+                renderPageCheckboxes(dogPagesContainer, tempPet.dogPages);
 
                 applySettings(false);
                 updateThemeUI();
                 updatePetUI();
+                updateLocationHint();
 
                 if (settings.theme === 'time') {
                     startTimeThemeTimer();
@@ -1443,7 +1916,12 @@
             // ---------- 保存 ----------
             function saveSettings() {
                 localStorage.setItem('webSettings', JSON.stringify({ theme: settings.theme }));
-                localStorage.setItem('petSettings', JSON.stringify(tempPet));
+                localStorage.setItem('petSettings', JSON.stringify({
+                    cat: tempPet.cat,
+                    dog: tempPet.dog,
+                    catPages: tempPet.catPages,
+                    dogPages: tempPet.dogPages
+                }));
             }
 
             // ---------- 通知其他页面 ----------
@@ -1529,14 +2007,27 @@
             function resetSettings() {
                 showConfirm(function() {
                     tempTheme = DEFAULTS.theme;
-                    tempPet = { ...DEFAULTS.pet };
+                    tempPet = {
+                        cat: DEFAULTS.pet.cat,
+                        dog: DEFAULTS.pet.dog,
+                        catPages: ALL_PAGES.map(p => p.id),
+                        dogPages: ALL_PAGES.map(p => p.id)
+                    };
                     settings = { ...DEFAULTS };
                     initialTheme = DEFAULTS.theme;
-                    initialPet = { ...DEFAULTS.pet };
+                    initialPet = {
+                        cat: tempPet.cat,
+                        dog: tempPet.dog,
+                        catPages: [...tempPet.catPages],
+                        dogPages: [...tempPet.dogPages]
+                    };
                     saveSettings();
                     applySettings(true);
                     updateThemeUI();
+                    updatePageCheckboxesUI(catPagesContainer, tempPet.catPages);
+                    updatePageCheckboxesUI(dogPagesContainer, tempPet.dogPages);
                     updatePetUI();
+                    updateLocationHint();
                     if (settings.theme !== 'time') stopTimeThemeTimer();
                     notifyPetChange();
                     showToast('🔄 已恢复默认设置');
@@ -1563,29 +2054,23 @@
                     });
                 });
 
-                // ============================================================
-                //  应用按钮 —— 根据实际变更生成提示
-                // ============================================================
+                // 应用按钮
                 document.getElementById('applyBtn').addEventListener('click', function() {
                     const themeChanged = hasThemeChanged();
                     const petChanged = hasPetChanged();
 
-                    // 没有任何变更
                     if (!themeChanged && !petChanged) {
                         showToast('💡 没有检测到任何变更');
                         return;
                     }
 
-                    // 保存设置
                     settings.theme = tempTheme;
                     saveSettings();
                     applySettings(true);
                     if (tempTheme !== 'time') stopTimeThemeTimer();
                     notifyPetChange();
 
-                    // 构建提示消息
                     const parts = [];
-
                     if (themeChanged) {
                         const themeNames = {
                             'light': '☀️ 亮色',
@@ -1595,14 +2080,12 @@
                         };
                         parts.push('主题：' + (themeNames[tempTheme] || tempTheme));
                     }
-
                     if (petChanged) {
                         const petChanges = getPetChangeSummary();
                         if (petChanges.length) {
-                            parts.push('宠物：' + petChanges.join('、'));
+                            parts.push('宠物：' + petChanges.join('；'));
                         }
                     }
-
                     showToast('✅ 已应用 · ' + parts.join('；'));
                 });
 
@@ -1622,7 +2105,6 @@
                         stopTimeThemeTimer();
                         updateThemeUI();
                         notifyPetChange();
-                        // 更新初始值，避免下次点击应用时误判
                         initialTheme = next;
                         showToast('✅ 已切换到 ' + (next === 'dark' ? '🌙 暗色' : '☀️ 亮色') + ' 模式');
                     });

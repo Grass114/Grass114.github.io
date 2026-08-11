@@ -1,39 +1,90 @@
 ﻿// ============================================================
 //  pet-loader.js - 统一的宠物加载器
-//  自动读取 localStorage 配置，控制猫和狗的显示
+//  根据 settings.html 的勾选，决定每个页面是否显示宠物
 // ============================================================
 
 (function() {
     'use strict';
 
-    // 防止重复加载
     if (window.__petLoaderLoaded) return;
     window.__petLoaderLoaded = true;
 
+    // ---------- 所有页面列表 ----------
+    const ALL_PAGES = [
+        'index', 'about', 'project', 'game',
+        'thankyou', 'mcskin3d', 'brick', 'minesweeper'
+    ];
+
     // ---------- 读取配置 ----------
     function getPetSettings() {
-        const defaults = { cat: true, dog: true };
+        const defaults = {
+            cat: true,
+            dog: true,
+            catPages: ALL_PAGES,
+            dogPages: ALL_PAGES
+        };
         try {
             const saved = localStorage.getItem('petSettings');
             if (saved) {
                 const parsed = JSON.parse(saved);
                 return {
                     cat: parsed.cat !== undefined ? parsed.cat : defaults.cat,
-                    dog: parsed.dog !== undefined ? parsed.dog : defaults.dog
+                    dog: parsed.dog !== undefined ? parsed.dog : defaults.dog,
+                    catPages: parsed.catPages || defaults.catPages,
+                    dogPages: parsed.dogPages || defaults.dogPages
                 };
             }
-        } catch (e) {}
+        } catch (e) {
+            console.warn('宠物配置读取失败，使用默认值', e);
+        }
         return defaults;
     }
 
-    // ---------- 加载/更新宠物 iframe ----------
+    // ---------- 获取当前页面 ----------
+    function getCurrentPage() {
+        const pathname = window.location.pathname;
+        const page = pathname.split('/').pop() || 'index.html';
+        return page.replace('.html', '');
+    }
+
+    // ---------- 判断是否显示 ----------
+    function shouldShowPet(petType, settings) {
+        if (petType === 'cat' && !settings.cat) return false;
+        if (petType === 'dog' && !settings.dog) return false;
+
+        const currentPage = getCurrentPage();
+        if (currentPage === 'settings') return false;
+
+        const pages = petType === 'cat' ? settings.catPages : settings.dogPages;
+        if (!pages || pages.length === 0) return false;
+
+        return pages.includes(currentPage);
+    }
+
+    // ---------- 加载宠物 ----------
     let iframe = null;
+    let currentShown = false;
 
     function loadPet() {
         const settings = getPetSettings();
+        const catShown = shouldShowPet('cat', settings);
+        const dogShown = shouldShowPet('dog', settings);
+        const shouldShow = catShown || dogShown;
 
-        // 如果猫和狗都隐藏，移除 iframe
-        if (!settings.cat && !settings.dog) {
+        if (shouldShow === currentShown && iframe) {
+            const params = new URLSearchParams();
+            params.set('cat', catShown ? 'true' : 'false');
+            params.set('dog', dogShown ? 'true' : 'false');
+            const newSrc = 'pet.html?' + params.toString();
+            if (iframe && iframe.src !== newSrc) {
+                iframe.src = newSrc;
+            }
+            return;
+        }
+
+        currentShown = shouldShow;
+
+        if (!shouldShow) {
             if (iframe) {
                 iframe.remove();
                 iframe = null;
@@ -41,19 +92,16 @@
             return;
         }
 
-        // 构建 URL 参数
         const params = new URLSearchParams();
-        params.set('cat', settings.cat ? 'true' : 'false');
-        params.set('dog', settings.dog ? 'true' : 'false');
+        params.set('cat', catShown ? 'true' : 'false');
+        params.set('dog', dogShown ? 'true' : 'false');
         const src = 'pet.html?' + params.toString();
 
-        // 如果 iframe 已存在，更新 src
         if (iframe) {
             iframe.src = src;
             return;
         }
 
-        // 创建新的 iframe（pointer-events: auto 允许事件穿透到宠物）
         iframe = document.createElement('iframe');
         iframe.src = src;
         iframe.style.cssText =
@@ -62,33 +110,31 @@
         document.body.appendChild(iframe);
     }
 
-    // ---------- 监听配置变化（跨标签页同步） ----------
+    // ---------- 监听变化 ----------
     window.addEventListener('storage', function(e) {
-        if (e.key === 'petSettings') {
-            loadPet();
+        if (e.key === 'petSettings' || e.key === 'petSettings_trigger') {
+            setTimeout(loadPet, 50);
         }
     });
 
-    // ---------- 监听设置页面发来的消息（同标签页内同步） ----------
     window.addEventListener('message', function(e) {
         if (e.data && e.data.type === 'petSettingsChanged') {
-            loadPet();
+            setTimeout(loadPet, 50);
         }
     });
 
-    // ---------- 页面可见性变化时重新检查 ----------
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
-            loadPet();
+            setTimeout(loadPet, 50);
         }
     });
 
-    // ---------- 初始化加载 ----------
+    // ---------- 启动 ----------
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadPet);
     } else {
-        loadPet();
+        setTimeout(loadPet, 100);
     }
 
-    console.log('🐱🐶 宠物加载器已启动，猫和狗可由设置页控制');
+    console.log('🐱🐶 宠物加载器已启动（按页面勾选显示）');
 })();
