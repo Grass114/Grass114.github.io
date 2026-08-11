@@ -53,11 +53,11 @@
             return;
         }
 
-        // 创建新的 iframe
+        // 创建新的 iframe（pointer-events: auto 允许事件穿透到宠物）
         iframe = document.createElement('iframe');
         iframe.src = src;
         iframe.style.cssText =
-            'position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:9999;pointer-events:none;background:transparent;';
+            'position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:9999;pointer-events:auto;background:transparent;';
         iframe.scrolling = 'no';
         document.body.appendChild(iframe);
     }
@@ -76,7 +76,7 @@
         }
     });
 
-    // ---------- 页面可见性变化时重新检查（用户从设置页切回来） ----------
+    // ---------- 页面可见性变化时重新检查 ----------
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
             loadPet();
@@ -84,7 +84,6 @@
     });
 
     // ---------- 初始化加载 ----------
-    // 等待 DOM 就绪
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', loadPet);
     } else {
