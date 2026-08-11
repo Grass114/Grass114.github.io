@@ -507,7 +507,6 @@
 
     <div class="main">
 
-        <!-- ===== 标题行：左文右时间 ===== -->
         <div class="hero">
             <div class="hero-left">
                 <span class="line">欢迎</span>
@@ -519,7 +518,6 @@
             </div>
         </div>
 
-        <!-- ===== 正文内容（居中） ===== -->
         <div class="intro">
             <p>
                 我是 <span class="highlight">BlueCat114</span>，一名热爱 Minecraft 生态的
@@ -530,7 +528,6 @@
             </p>
         </div>
 
-        <!-- ===== 按钮区（居中） ===== -->
         <div class="actions">
             <a href="https://github.com/grass114" target="_blank">🐙 GitHub</a>
         </div>
@@ -559,67 +556,140 @@
             document.getElementById('timeDisplay').textContent = hours + ':' + minutes + ':' + seconds;
         }
 
-        // 立即更新一次，然后每秒更新
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
-        // ===== 时钟 + 主题控制 =====
+        // ============================================================
+        //  统一的主题控制（读取 localStorage + 时间自动模式）
+        // ============================================================
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
 
         let isAutoMode = true;
         let currentTheme = 'light';
+        let savedThemeMode = 'auto';
+        let timeThemeTimer = null;
 
         function getThemeByHour() {
             const h = new Date().getHours();
             return (h >= 6 && h < 18) ? 'light' : 'dark';
         }
 
-        function updateClock() {
+        function applyTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            toggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+            currentTheme = theme;
+        }
+
+        function loadSavedTheme() {
+            const saved = localStorage.getItem('webSettings');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    savedThemeMode = parsed.theme || 'auto';
+                } catch {
+                    savedThemeMode = 'auto';
+                }
+            } else {
+                savedThemeMode = 'auto';
+            }
+            return savedThemeMode;
+        }
+
+        function applyThemeFromMode(mode) {
+            if (mode === 'auto') {
+                const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(isDark ? 'dark' : 'light');
+                isAutoMode = true;
+                stopTimeThemeTimer();
+            } else if (mode === 'time') {
+                applyTheme(getThemeByHour());
+                isAutoMode = false;
+                startTimeThemeTimer();
+            } else if (mode === 'light' || mode === 'dark') {
+                applyTheme(mode);
+                isAutoMode = false;
+                stopTimeThemeTimer();
+            } else {
+                // 默认自动
+                const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(isDark ? 'dark' : 'light');
+                isAutoMode = true;
+                stopTimeThemeTimer();
+            }
+        }
+
+        function startTimeThemeTimer() {
+            stopTimeThemeTimer();
+            timeThemeTimer = setInterval(() => {
+                const target = getThemeByHour();
+                if (target !== currentTheme) {
+                    applyTheme(target);
+                }
+            }, 60000);
+        }
+
+        function stopTimeThemeTimer() {
+            if (timeThemeTimer) {
+                clearInterval(timeThemeTimer);
+                timeThemeTimer = null;
+            }
+        }
+
+        function initTheme() {
+            const mode = loadSavedTheme();
+            applyThemeFromMode(mode);
+        }
+
+        // 双击时钟恢复自动模式
+        clockDisplay.addEventListener('dblclick', function() {
+            savedThemeMode = 'auto';
+            localStorage.setItem('webSettings', JSON.stringify({ theme: 'auto' }));
+            applyThemeFromMode('auto');
+        });
+
+        // 手动切换主题（导航栏按钮）
+        toggle.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            savedThemeMode = next;
+            localStorage.setItem('webSettings', JSON.stringify({ theme: next }));
+            applyThemeFromMode(next);
+        });
+
+        // 监听系统主题变化（仅当设置为 auto 时）
+        if (window.matchMedia) {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            media.addEventListener('change', function(e) {
+                const mode = loadSavedTheme();
+                if (mode === 'auto') {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        }
+
+        // 监听 localStorage 变化（当 settings.html 修改时同步）
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'webSettings') {
+                const mode = loadSavedTheme();
+                applyThemeFromMode(mode);
+            }
+        });
+
+        // 初始化
+        initTheme();
+
+        // 时钟显示（导航栏右上角）
+        function updateClockDisplay() {
             const now = new Date();
             const h = String(now.getHours()).padStart(2, '0');
             const m = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
             clockDisplay.textContent = h + ':' + m + ':' + s;
-
-            if (isAutoMode) {
-                const target = getThemeByHour();
-                if (target !== currentTheme) {
-                    currentTheme = target;
-                    html.setAttribute('data-theme', target);
-                    toggle.textContent = target === 'dark' ? '🌙' : '☀️';
-                }
-            }
         }
-
-        // 双击时钟恢复自动模式
-        clockDisplay.addEventListener('dblclick', function() {
-            isAutoMode = true;
-            const target = getThemeByHour();
-            currentTheme = target;
-            html.setAttribute('data-theme', target);
-            toggle.textContent = target === 'dark' ? '🌙' : '☀️';
-            updateClock();
-        });
-
-        // 手动切换主题
-        toggle.addEventListener('click', function() {
-            isAutoMode = false;
-            const current = html.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            currentTheme = next;
-            html.setAttribute('data-theme', next);
-            toggle.textContent = next === 'dark' ? '🌙' : '☀️';
-        });
-
-        // 初始化
-        const initTheme = getThemeByHour();
-        currentTheme = initTheme;
-        html.setAttribute('data-theme', initTheme);
-        toggle.textContent = initTheme === 'dark' ? '🌙' : '☀️';
-        updateClock();
-        setInterval(updateClock, 1000);
+        updateClockDisplay();
+        setInterval(updateClockDisplay, 1000);
     </script>
 
 </body>
