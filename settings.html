@@ -227,57 +227,72 @@
         }
 
         /* ============================================================
-           Toast 提示
+           Toast 提示条 —— 居中显示
         ============================================================ */
         .toast-container {
             position: fixed;
-            top: 62px;
-            left: 0;
-            right: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             z-index: 1500;
-            padding: 0 24px;
             pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .toast {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 12px 24px;
-            border-radius: 12px;
+            max-width: 420px;
+            width: auto;
+            min-width: 200px;
+            padding: 14px 24px;
+            border-radius: 14px;
             background: var(--toast-bg);
             color: var(--toast-text);
             font-size: 15px;
             font-weight: 500;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            transform: translateY(-20px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+            transform: scale(0.8);
             opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
             text-align: center;
             pointer-events: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
+
         .toast.show {
-            transform: translateY(0);
+            transform: scale(1);
             opacity: 1;
         }
+
         .toast .toast-icon {
             font-size: 20px;
+            flex-shrink: 0;
         }
+
+        .toast .toast-message {
+            flex: 1;
+            min-width: 60px;
+            word-break: break-word;
+        }
+
         .toast .toast-close {
             background: none;
             border: none;
             color: rgba(255, 255, 255, 0.7);
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
             padding: 0 4px;
             line-height: 1;
             transition: color 0.2s;
             font-family: inherit;
-            margin-left: 8px;
+            flex-shrink: 0;
         }
+
         .toast .toast-close:hover {
             color: #ffffff;
         }
@@ -836,6 +851,18 @@
             body {
                 padding: 66px 16px 16px 16px;
             }
+
+            .toast {
+                max-width: 90%;
+                padding: 12px 18px;
+                font-size: 14px;
+                border-radius: 12px;
+                min-width: 140px;
+            }
+            .toast .toast-icon {
+                font-size: 18px;
+            }
+
             .settings-card {
                 flex-direction: column;
                 min-height: auto;
@@ -928,14 +955,6 @@
                 font-size: 18px;
                 padding: 3px 6px;
             }
-            .toast-container {
-                padding: 0 16px;
-                top: 58px;
-            }
-            .toast {
-                font-size: 13px;
-                padding: 10px 16px;
-            }
             .confirm-box {
                 padding: 24px 20px 20px 20px;
             }
@@ -951,6 +970,21 @@
         }
 
         @media (max-width: 480px) {
+            .toast {
+                max-width: 92%;
+                padding: 10px 14px;
+                font-size: 13px;
+                border-radius: 10px;
+                min-width: 100px;
+                gap: 6px;
+            }
+            .toast .toast-icon {
+                font-size: 16px;
+            }
+            .toast .toast-close {
+                font-size: 16px;
+            }
+
             .settings-sidebar {
                 padding: 6px 8px;
                 gap: 3px;
@@ -1048,15 +1082,6 @@
                 font-size: 12px;
                 padding: 16px 0 18px 0;
             }
-            .toast-container {
-                padding: 0 12px;
-                top: 54px;
-            }
-            .toast {
-                font-size: 12px;
-                padding: 8px 12px;
-                border-radius: 10px;
-            }
             .confirm-box {
                 padding: 20px 16px 16px 16px;
             }
@@ -1108,11 +1133,11 @@
         </div>
     </div>
 
-    <!-- ===== Toast 提示 ===== -->
+    <!-- ===== Toast 提示条（居中） ===== -->
     <div class="toast-container" id="toastContainer">
         <div class="toast" id="toast">
             <span class="toast-icon">✅</span>
-            <span id="toastMessage">应用已生效！</span>
+            <span class="toast-message" id="toastMessage">应用已生效！</span>
             <button class="toast-close" id="toastClose">✕</button>
         </div>
     </div>
@@ -1245,6 +1270,10 @@
             let tempPet = { cat: true, dog: true };
             let timeThemeTimer = null;
 
+            // 记录初始值，用于判断哪些设置被修改了
+            let initialTheme = 'auto';
+            let initialPet = { cat: true, dog: true };
+
             // ---------- DOM 引用 ----------
             const sidebarItems = document.querySelectorAll('.sidebar-item');
             const panels = {
@@ -1270,7 +1299,7 @@
                 clearTimeout(toast._hideTimer);
                 toast._hideTimer = setTimeout(() => {
                     toast.classList.remove('show');
-                }, 3500);
+                }, 3000);
             }
 
             function hideToast() {
@@ -1309,11 +1338,9 @@
 
             // ---------- 侧边栏切换 ----------
             function switchPanel(panelId) {
-                // 更新侧边栏
                 sidebarItems.forEach(item => {
                     item.classList.toggle('active', item.dataset.panel === panelId);
                 });
-                // 更新面板
                 Object.keys(panels).forEach(key => {
                     panels[key].classList.toggle('active', key === panelId);
                 });
@@ -1321,8 +1348,7 @@
 
             sidebarItems.forEach(item => {
                 item.addEventListener('click', function() {
-                    const panelId = this.dataset.panel;
-                    switchPanel(panelId);
+                    switchPanel(this.dataset.panel);
                 });
             });
 
@@ -1355,6 +1381,26 @@
                 return (h >= 6 && h < 18) ? 'light' : 'dark';
             }
 
+            // ---------- 检测变更 ----------
+            function hasThemeChanged() {
+                return tempTheme !== initialTheme;
+            }
+
+            function hasPetChanged() {
+                return tempPet.cat !== initialPet.cat || tempPet.dog !== initialPet.dog;
+            }
+
+            function getPetChangeSummary() {
+                const changes = [];
+                if (tempPet.cat !== initialPet.cat) {
+                    changes.push(tempPet.cat ? '🐱猫已显示' : '🐱猫已隐藏');
+                }
+                if (tempPet.dog !== initialPet.dog) {
+                    changes.push(tempPet.dog ? '🐶狗已显示' : '🐶狗已隐藏');
+                }
+                return changes;
+            }
+
             // ---------- 加载设置 ----------
             function loadSettings() {
                 const saved = localStorage.getItem('webSettings');
@@ -1369,6 +1415,7 @@
                     settings = { ...DEFAULTS };
                 }
                 tempTheme = settings.theme;
+                initialTheme = settings.theme;
 
                 try {
                     const petSaved = localStorage.getItem('petSettings');
@@ -1382,6 +1429,7 @@
                 } catch {
                     tempPet = { ...DEFAULTS.pet };
                 }
+                initialPet = { ...tempPet };
 
                 applySettings(false);
                 updateThemeUI();
@@ -1483,6 +1531,8 @@
                     tempTheme = DEFAULTS.theme;
                     tempPet = { ...DEFAULTS.pet };
                     settings = { ...DEFAULTS };
+                    initialTheme = DEFAULTS.theme;
+                    initialPet = { ...DEFAULTS.pet };
                     saveSettings();
                     applySettings(true);
                     updateThemeUI();
@@ -1513,18 +1563,47 @@
                     });
                 });
 
-                // 应用按钮
+                // ============================================================
+                //  应用按钮 —— 根据实际变更生成提示
+                // ============================================================
                 document.getElementById('applyBtn').addEventListener('click', function() {
+                    const themeChanged = hasThemeChanged();
+                    const petChanged = hasPetChanged();
+
+                    // 没有任何变更
+                    if (!themeChanged && !petChanged) {
+                        showToast('💡 没有检测到任何变更');
+                        return;
+                    }
+
+                    // 保存设置
                     settings.theme = tempTheme;
                     saveSettings();
                     applySettings(true);
                     if (tempTheme !== 'time') stopTimeThemeTimer();
                     notifyPetChange();
-                    const petList = [];
-                    if (tempPet.cat) petList.push('🐱猫');
-                    if (tempPet.dog) petList.push('🐶狗');
-                    const petText = petList.length ? petList.join('、') : '（已全部隐藏）';
-                    showToast('✅ 已应用 · ' + petText);
+
+                    // 构建提示消息
+                    const parts = [];
+
+                    if (themeChanged) {
+                        const themeNames = {
+                            'light': '☀️ 亮色',
+                            'dark': '🌙 暗色',
+                            'auto': '🔄 跟随系统',
+                            'time': '⏰ 跟随时间'
+                        };
+                        parts.push('主题：' + (themeNames[tempTheme] || tempTheme));
+                    }
+
+                    if (petChanged) {
+                        const petChanges = getPetChangeSummary();
+                        if (petChanges.length) {
+                            parts.push('宠物：' + petChanges.join('、'));
+                        }
+                    }
+
+                    showToast('✅ 已应用 · ' + parts.join('；'));
                 });
 
                 // 重置
@@ -1543,7 +1622,9 @@
                         stopTimeThemeTimer();
                         updateThemeUI();
                         notifyPetChange();
-                        showToast('✅ 已切换到 ' + (next === 'dark' ? '暗色' : '亮色') + ' 模式');
+                        // 更新初始值，避免下次点击应用时误判
+                        initialTheme = next;
+                        showToast('✅ 已切换到 ' + (next === 'dark' ? '🌙 暗色' : '☀️ 亮色') + ' 模式');
                     });
                 }
 
