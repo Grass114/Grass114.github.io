@@ -8,6 +8,9 @@
     <style>
         /* ===== 颜色变量 ===== */
         :root {
+            --theme-color: #6c63ff;
+            --theme-color-rgb: 108, 99, 255;
+
             --bg-start: #f5f9ff;
             --bg-end: #e6edf7;
             --card-bg: rgba(255, 255, 255, 0.7);
@@ -21,8 +24,8 @@
             --topbar-bg: rgba(255, 255, 255, 0.6);
             --topbar-border: rgba(255, 255, 255, 0.8);
             --footer-border: rgba(255, 255, 255, 0.6);
-            --link-color: #6c63ff;
-            --link-hover: #4a42b8;
+            --link-color: var(--theme-color, #6c63ff);
+            --link-hover: var(--theme-color, #4a42b8);
             --clock-color: var(--text-muted);
             --btn-shadow: rgba(108, 99, 255, 0.25);
             --btn-hover-shadow: rgba(108, 99, 255, 0.35);
@@ -44,8 +47,8 @@
             --topbar-bg: rgba(15, 23, 36, 0.8);
             --topbar-border: rgba(71, 85, 105, 0.5);
             --footer-border: rgba(71, 85, 105, 0.4);
-            --link-color: #818cf8;
-            --link-hover: #a5b4fc;
+            --link-color: var(--theme-color, #818cf8);
+            --link-hover: var(--theme-color, #a5b4fc);
             --clock-color: #94a3b8;
             --btn-shadow: rgba(108, 99, 255, 0.15);
             --btn-hover-shadow: rgba(108, 99, 255, 0.25);
@@ -85,7 +88,6 @@
             left: 0;
             width: 100%;
             z-index: 10000;
-            /* ⬅️ 改这里：1000 → 10000 */
             padding: 12px 28px;
             background: #ffffff;
             border-bottom: 1px solid #e9edf2;
@@ -337,7 +339,7 @@
             align-items: center;
             gap: 8px;
             padding: 14px 36px;
-            background: #6c63ff;
+            background: var(--link-color);
             color: white;
             text-decoration: none;
             border-radius: 60px;
@@ -349,7 +351,7 @@
         }
 
         .actions a:hover {
-            background: #5a52d5;
+            background: var(--link-hover);
             transform: scale(1.04);
             box-shadow: 0 8px 28px var(--btn-hover-shadow);
         }
@@ -543,7 +545,7 @@
 
     </div>
 
-    <!-- ===== 小宠物（由设置页控制显示） ===== -->
+    <!-- ===== 主题色 + 宠物加载器 ===== -->
     <script src="pet-loader.js"></script>
 
     <script>
