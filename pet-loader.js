@@ -145,7 +145,6 @@
             setTimeout(loadPet, 50);
         }
         if (e.key === 'themeColor') {
-            // 主题色变化时立即应用
             setTimeout(applyThemeColor, 20);
         }
     });
@@ -155,14 +154,12 @@
             setTimeout(loadPet, 50);
         }
         if (e.data && e.data.type === 'themeColorChanged') {
-            // 其他页面发来的主题色变更通知
             setTimeout(applyThemeColor, 20);
         }
     });
 
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
-            // 页面重新可见时刷新主题色（可能在其他标签页改了）
             setTimeout(applyThemeColor, 50);
             setTimeout(loadPet, 100);
         }
