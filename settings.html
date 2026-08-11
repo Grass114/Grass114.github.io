@@ -1655,6 +1655,7 @@
                     dogPages: ALL_PAGES.map(p => p.id)
                 }
             };
+            const DEFAULT_COLOR = '#6c63ff';
 
             let settings = {};
             let tempTheme = 'auto';
@@ -1664,6 +1665,7 @@
                 catPages: ALL_PAGES.map(p => p.id),
                 dogPages: ALL_PAGES.map(p => p.id)
             };
+            let tempColor = DEFAULT_COLOR;
             let timeThemeTimer = null;
 
             // 记录初始值
@@ -1674,6 +1676,7 @@
                 catPages: ALL_PAGES.map(p => p.id),
                 dogPages: ALL_PAGES.map(p => p.id)
             };
+            let initialColor = DEFAULT_COLOR;
 
             // ---------- DOM 引用 ----------
             const sidebarItems = document.querySelectorAll('.sidebar-item');
@@ -1936,8 +1939,12 @@
             }
 
             // ---------- 检测变更 ----------
-            function hasThemeChanged() {
+            function hasThemeModeChanged() {
                 return tempTheme !== initialTheme;
+            }
+
+            function hasColorChanged() {
+                return tempColor !== initialColor;
             }
 
             function arraysEqual(a, b) {
@@ -2017,9 +2024,21 @@
                     dogPages: [...tempPet.dogPages]
                 };
 
+                // 加载主题色
+                const savedColor = localStorage.getItem('themeColor');
+                if (savedColor) {
+                    tempColor = savedColor;
+                } else {
+                    tempColor = DEFAULT_COLOR;
+                }
+                initialColor = tempColor;
+
                 // 渲染页面复选框
                 renderPageCheckboxes(catPagesContainer, tempPet.catPages);
                 renderPageCheckboxes(dogPagesContainer, tempPet.dogPages);
+
+                // 应用主题色到当前页面
+                setThemeColor(tempColor, false);
 
                 applySettings(false);
                 updateThemeUI();
@@ -2040,6 +2059,7 @@
                     catPages: tempPet.catPages,
                     dogPages: tempPet.dogPages
                 }));
+                localStorage.setItem('themeColor', tempColor);
             }
 
             // ---------- 通知其他页面 ----------
@@ -2080,6 +2100,40 @@
                     saveSettings();
                     notifyPetChange();
                 }
+            }
+
+            // ---------- 设置主题色 ----------
+            function setThemeColor(color, updateInitial = true) {
+                if (!color) return;
+                // 应用到当前页面
+                document.documentElement.style.setProperty('--theme-color', color);
+                const rgb = hexToRgb(color);
+                document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+                // 更新选择器的值
+                themeColorPicker.value = color;
+                // 更新色块的高亮状态
+                colorSwatches.forEach(swatch => {
+                    const isActive = swatch.dataset.color === color;
+                    swatch.classList.toggle('active', isActive);
+                    swatch.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
+                });
+                // 更新临时变量
+                tempColor = color;
+                if (updateInitial) {
+                    initialColor = color;
+                }
+            }
+
+            function hexToRgb(hex) {
+                if (hex && hex.startsWith('#')) {
+                    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                    return result ? {
+                        r: parseInt(result[1], 16),
+                        g: parseInt(result[2], 16),
+                        b: parseInt(result[3], 16)
+                    } : { r: 108, g: 99, b: 255 };
+                }
+                return { r: 108, g: 99, b: 255 };
             }
 
             // ---------- 主题定时器 ----------
@@ -2131,6 +2185,7 @@
                         catPages: ALL_PAGES.map(p => p.id),
                         dogPages: ALL_PAGES.map(p => p.id)
                     };
+                    tempColor = DEFAULT_COLOR;
                     settings = { ...DEFAULTS };
                     initialTheme = DEFAULTS.theme;
                     initialPet = {
@@ -2139,6 +2194,8 @@
                         catPages: [...tempPet.catPages],
                         dogPages: [...tempPet.dogPages]
                     };
+                    initialColor = DEFAULT_COLOR;
+
                     saveSettings();
                     applySettings(true);
                     updateThemeUI();
@@ -2148,14 +2205,12 @@
                     updateLocationHint();
 
                     // 重置主题色
-                    const defaultColor = '#6c63ff';
-                    localStorage.removeItem('themeColor');
-                    document.documentElement.style.setProperty('--theme-color', defaultColor);
+                    document.documentElement.style.setProperty('--theme-color', DEFAULT_COLOR);
                     document.documentElement.style.setProperty('--theme-color-rgb', '108, 99, 255');
-                    themeColorPicker.value = defaultColor;
+                    themeColorPicker.value = DEFAULT_COLOR;
                     colorSwatches.forEach(swatch => {
-                        swatch.classList.toggle('active', swatch.dataset.color === defaultColor);
-                        swatch.style.borderColor = swatch.dataset.color === defaultColor ? 'var(--text-primary)' :
+                        swatch.classList.toggle('active', swatch.dataset.color === DEFAULT_COLOR);
+                        swatch.style.borderColor = swatch.dataset.color === DEFAULT_COLOR ? 'var(--text-primary)' :
                             'transparent';
                     });
 
@@ -2163,71 +2218,6 @@
                     notifyPetChange();
                     showToast('🔄 已恢复默认设置');
                 });
-            }
-
-            // ============================================================
-            //  主题色逻辑
-            // ============================================================
-
-            function hexToRgb(hex) {
-                if (hex.startsWith('#')) {
-                    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                    return result ? {
-                        r: parseInt(result[1], 16),
-                        g: parseInt(result[2], 16),
-                        b: parseInt(result[3], 16)
-                    } : { r: 108, g: 99, b: 255 };
-                }
-                return { r: 108, g: 99, b: 255 };
-            }
-
-            function setThemeColor(color) {
-                if (!color) return;
-                // 应用到当前页面
-                document.documentElement.style.setProperty('--theme-color', color);
-                const rgb = hexToRgb(color);
-                document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
-                // 保存到 localStorage
-                localStorage.setItem('themeColor', color);
-                // 更新选择器的值
-                themeColorPicker.value = color;
-                // 更新色块的高亮状态
-                colorSwatches.forEach(swatch => {
-                    const isActive = swatch.dataset.color === color;
-                    swatch.classList.toggle('active', isActive);
-                    swatch.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
-                });
-            }
-
-            // 颜色选择器变化
-            themeColorPicker.addEventListener('input', function(e) {
-                setThemeColor(this.value);
-            });
-
-            // 预设色块点击
-            colorSwatches.forEach(swatch => {
-                swatch.addEventListener('click', function() {
-                    setThemeColor(this.dataset.color);
-                });
-            });
-
-            // 加载时初始化主题色
-            function loadThemeColor() {
-                const savedColor = localStorage.getItem('themeColor');
-                if (savedColor) {
-                    setThemeColor(savedColor);
-                } else {
-                    // 使用默认颜色
-                    const defaultColor = '#6c63ff';
-                    document.documentElement.style.setProperty('--theme-color', defaultColor);
-                    document.documentElement.style.setProperty('--theme-color-rgb', '108, 99, 255');
-                    themeColorPicker.value = defaultColor;
-                    colorSwatches.forEach(swatch => {
-                        const isActive = swatch.dataset.color === defaultColor;
-                        swatch.classList.toggle('active', isActive);
-                        swatch.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
-                    });
-                }
             }
 
             // ---------- 初始化 ----------
@@ -2250,24 +2240,77 @@
                     });
                 });
 
+                // 颜色选择器变化（实时预览，不保存）
+                themeColorPicker.addEventListener('input', function(e) {
+                    const color = this.value;
+                    // 实时预览到页面
+                    document.documentElement.style.setProperty('--theme-color', color);
+                    const rgb = hexToRgb(color);
+                    document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+                    // 更新色块高亮
+                    colorSwatches.forEach(swatch => {
+                        const isActive = swatch.dataset.color === color;
+                        swatch.classList.toggle('active', isActive);
+                        swatch.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
+                    });
+                    // 保存到临时变量（等待点击应用才真正保存）
+                    tempColor = color;
+                });
+
+                // 预设色块点击（实时预览，不保存）
+                colorSwatches.forEach(swatch => {
+                    swatch.addEventListener('click', function() {
+                        const color = this.dataset.color;
+                        // 实时预览到页面
+                        document.documentElement.style.setProperty('--theme-color', color);
+                        const rgb = hexToRgb(color);
+                        document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+                        // 更新色块高亮
+                        colorSwatches.forEach(s => {
+                            const isActive = s.dataset.color === color;
+                            s.classList.toggle('active', isActive);
+                            s.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
+                        });
+                        themeColorPicker.value = color;
+                        // 保存到临时变量（等待点击应用才真正保存）
+                        tempColor = color;
+                    });
+                });
+
                 // 应用按钮
                 document.getElementById('applyBtn').addEventListener('click', function() {
-                    const themeChanged = hasThemeChanged();
+                    const themeModeChanged = hasThemeModeChanged();
                     const petChanged = hasPetChanged();
+                    const colorChanged = hasColorChanged();
 
-                    if (!themeChanged && !petChanged) {
+                    if (!themeModeChanged && !petChanged && !colorChanged) {
                         showToast('💡 没有检测到任何变更');
                         return;
                     }
 
+                    // 保存主题色
+                    if (colorChanged) {
+                        localStorage.setItem('themeColor', tempColor);
+                        initialColor = tempColor;
+                    }
+
+                    // 保存主题模式
                     settings.theme = tempTheme;
                     saveSettings();
+
+                    // 应用主题模式
                     applySettings(true);
+
+                    // 如果颜色变了，也应用到页面
+                    if (colorChanged) {
+                        setThemeColor(tempColor, true);
+                    }
+
                     if (tempTheme !== 'time') stopTimeThemeTimer();
                     notifyPetChange();
 
                     const parts = [];
-                    if (themeChanged) {
+                    if (themeModeChanged) {
                         const themeNames = {
                             'light': '☀️ 亮色',
                             'dark': '🌙 暗色',
@@ -2275,6 +2318,9 @@
                             'time': '⏰ 跟随时间'
                         };
                         parts.push('主题：' + (themeNames[tempTheme] || tempTheme));
+                    }
+                    if (colorChanged) {
+                        parts.push('🎨 主题色：' + tempColor);
                     }
                     if (petChanged) {
                         const petChanges = getPetChangeSummary();
@@ -2333,10 +2379,7 @@
                     setInterval(updateClock, 1000);
                 }
 
-                // 加载主题色
-                loadThemeColor();
-
-                // 加载其他设置
+                // 加载设置
                 loadSettings();
 
                 console.log('⚙️ 设置页面已加载');
