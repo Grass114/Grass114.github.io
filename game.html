@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,6 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>游戏中心 · BlueCat114</title>
     <style>
-        /* ===== 颜色变量 ===== */
         :root {
             --theme-color: #6c63ff;
             --theme-color-rgb: 108, 99, 255;
@@ -60,7 +59,6 @@
             --game-card-border: rgba(71, 85, 105, 0.4);
         }
 
-        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -84,7 +82,6 @@
             color: var(--text-primary);
         }
 
-        /* ===== 导航条（实色） ===== */
         .top-bar {
             position: fixed;
             top: 0;
@@ -175,7 +172,6 @@
             border-bottom-color: var(--link-color);
         }
 
-        /* ===== 时钟显示 ===== */
         .clock-display {
             font-size: 16px;
             font-weight: 500;
@@ -193,7 +189,6 @@
             color: var(--link-color);
         }
 
-        /* ===== 主题切换按钮 ===== */
         .theme-toggle {
             background: none;
             border: none;
@@ -219,7 +214,6 @@
             transform: scale(1.1);
         }
 
-        /* ===== 主容器 ===== */
         .main {
             flex: 1;
             display: flex;
@@ -232,7 +226,6 @@
             position: relative;
         }
 
-        /* ===== 页面标题 ===== */
         .page-title {
             text-align: center;
             margin: 30px 0 24px 0;
@@ -254,7 +247,6 @@
             transition: color 0.4s;
         }
 
-        /* ===== 选项卡栏 ===== */
         .tab-bar {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -304,7 +296,6 @@
             font-size: 13px;
         }
 
-        /* ===== 占位游戏卡片 ===== */
         .placeholder-game {
             display: flex;
             flex-direction: column;
@@ -338,7 +329,6 @@
             transition: color 0.4s;
         }
 
-        /* ===== 页脚 ===== */
         .footer {
             text-align: center;
             font-size: 14px;
@@ -363,7 +353,6 @@
             text-decoration: underline;
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 820px) {
             .tab-bar {
                 grid-template-columns: repeat(5, 1fr);
@@ -472,7 +461,6 @@
 </head>
 <body>
 
-    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
@@ -488,7 +476,6 @@
         </div>
     </div>
 
-    <!-- ===== 主要内容 ===== -->
     <div class="main">
 
         <div class="page-title">
@@ -496,7 +483,6 @@
             <p>选一个游戏，开始玩吧</p>
         </div>
 
-        <!-- 选项卡栏：第二个已换成扫雷 -->
         <div class="tab-bar">
             <a href="brick.html" class="tab-btn active">
                 <span class="tab-icon">🧱</span>
@@ -524,7 +510,7 @@
             <div class="placeholder-game">
                 <div class="big-icon">🎮</div>
                 <h2>选择上面的游戏开始</h2>
-                <p>点击“打砖块”或“扫雷”进入游戏，其他游戏正在开发中，敬请期待！</p>
+                <p>点击"打砖块"或"扫雷"进入游戏，其他游戏正在开发中，敬请期待！</p>
             </div>
         </div>
 
@@ -534,13 +520,22 @@
 
     </div>
 
-    <!-- ===== 主题色 + 宠物加载器 ===== -->
     <script src="pet-loader.js"></script>
 
     <script>
+        // ===== 人机验证检查 =====
+        (function() {
+            const verified = localStorage.getItem('verified');
+            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
+            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
+            if (window.location.pathname.includes('verify.html')) return;
+            if (!verified || Date.now() - verifiedTime > EXPIRY) {
+                window.location.href = 'verify.html';
+            }
+        })();
+
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // ===== 时钟 + 主题控制 =====
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;

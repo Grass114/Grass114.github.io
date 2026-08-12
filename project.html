@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,6 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>项目 · BlueCat114</title>
     <style>
-        /* ===== 颜色变量 ===== */
         :root {
             --theme-color: #6c63ff;
             --theme-color-rgb: 108, 99, 255;
@@ -58,7 +57,6 @@
             --tag-count: #f472b6;
         }
 
-        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -82,7 +80,6 @@
             color: var(--text-primary);
         }
 
-        /* ===== 导航条 ===== */
         .top-bar {
             position: fixed;
             top: 0;
@@ -161,7 +158,6 @@
             border-bottom-color: var(--link-color);
         }
 
-        /* ===== 时钟显示 ===== */
         .clock-display {
             font-size: 16px;
             font-weight: 500;
@@ -179,7 +175,6 @@
             color: var(--link-color);
         }
 
-        /* ===== 主题切换按钮 ===== */
         .theme-toggle {
             background: none;
             border: none;
@@ -199,7 +194,6 @@
             transform: scale(1.1);
         }
 
-        /* ===== 主容器 ===== */
         .main {
             flex: 1;
             display: flex;
@@ -212,7 +206,6 @@
             padding: 20px 0;
         }
 
-        /* ===== 页面标题 ===== */
         .page-header {
             text-align: center;
             margin-bottom: 36px;
@@ -234,7 +227,6 @@
             transition: color 0.4s;
         }
 
-        /* ===== 项目列表 ===== */
         .project-list {
             display: flex;
             flex-direction: column;
@@ -308,10 +300,6 @@
             cursor: default;
         }
 
-        .project-item .tags span:hover {
-            transform: scale(1.06);
-        }
-
         .project-item .tags span.lang {
             background: linear-gradient(135deg, var(--tag-lang), #34d399);
             color: #064e3b;
@@ -367,7 +355,6 @@
             box-shadow: 0 2px 12px rgba(236, 72, 153, 0.35);
         }
 
-        /* ===== 返回首页按钮 ===== */
         .back-link {
             margin-top: 32px;
         }
@@ -389,7 +376,6 @@
             border-bottom-color: var(--link-hover);
         }
 
-        /* ===== 页脚 ===== */
         .footer {
             text-align: center;
             font-size: 14px;
@@ -414,7 +400,6 @@
             text-decoration: underline;
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 700px) {
             body {
                 padding: 66px 16px 16px 16px;
@@ -488,7 +473,6 @@
 </head>
 <body>
 
-    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
@@ -513,7 +497,6 @@
 
         <div class="project-list">
 
-            <!-- 项目1：MCSkin3D 多语言版 -->
             <a href="mcskin3d.html" class="project-item">
                 <h3>
                     ⛏️ MCSkin3D 多语言增强版
@@ -531,7 +514,6 @@
 
         </div>
 
-        <!-- 返回首页 -->
         <div class="back-link">
             <a href="index.html">← 返回首页</a>
         </div>
@@ -542,10 +524,20 @@
 
     </div>
 
-    <!-- ===== 主题色 + 宠物加载器 ===== -->
     <script src="pet-loader.js"></script>
 
     <script>
+        // ===== 人机验证检查 =====
+        (function() {
+            const verified = localStorage.getItem('verified');
+            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
+            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
+            if (window.location.pathname.includes('verify.html')) return;
+            if (!verified || Date.now() - verifiedTime > EXPIRY) {
+                window.location.href = 'verify.html';
+            }
+        })();
+
         document.getElementById('year').textContent = new Date().getFullYear();
 
         const clockDisplay = document.getElementById('clockDisplay');

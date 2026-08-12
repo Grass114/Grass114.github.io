@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,6 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>MCSkin3D 的详细资料及下载</title>
     <style>
-        /* ===== 颜色变量 ===== */
         :root {
             --theme-color: #6c63ff;
             --theme-color-rgb: 108, 99, 255;
@@ -62,7 +61,6 @@
             --info-border: rgba(71, 85, 105, 0.25);
         }
 
-        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -86,7 +84,6 @@
             color: var(--text-primary);
         }
 
-        /* ===== 导航条 ===== */
         .top-bar {
             position: fixed;
             top: 0;
@@ -177,7 +174,6 @@
             border-bottom-color: var(--link-color);
         }
 
-        /* ===== 时钟显示 ===== */
         .clock-display {
             font-size: 16px;
             font-weight: 500;
@@ -195,7 +191,6 @@
             color: var(--link-color);
         }
 
-        /* ===== 主题切换按钮 ===== */
         .theme-toggle {
             background: none;
             border: none;
@@ -221,7 +216,6 @@
             transform: scale(1.1);
         }
 
-        /* ===== 主容器 ===== */
         .main {
             flex: 1;
             display: flex;
@@ -233,7 +227,6 @@
             padding: 20px 0;
         }
 
-        /* ===== 项目信息（图标 + 标题） ===== */
         .info-section {
             text-align: center;
             width: 100%;
@@ -259,7 +252,6 @@
             color: #e2e8f0;
         }
 
-        /* ===== 原作者与版权 + Paril（合并） ===== */
         .credit-section {
             width: 100%;
             margin-top: 24px;
@@ -364,7 +356,6 @@
             border-bottom-color: var(--link-hover);
         }
 
-        /* ===== 关于本修改版 + 下载链接（合并） ===== */
         .combined-card {
             width: 100%;
             margin-top: 16px;
@@ -515,7 +506,6 @@
             box-shadow: 0 4px 16px rgba(108, 99, 255, 0.25);
         }
 
-        /* ===== 返回链接 ===== */
         .back-link {
             margin-top: 28px;
         }
@@ -537,7 +527,6 @@
             border-bottom-color: var(--link-hover);
         }
 
-        /* ===== 页脚 ===== */
         .footer {
             text-align: center;
             font-size: 14px;
@@ -562,7 +551,6 @@
             text-decoration: underline;
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 700px) {
             body {
                 padding: 66px 16px 16px 16px;
@@ -689,7 +677,6 @@
 </head>
 <body>
 
-    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
@@ -705,16 +692,13 @@
         </div>
     </div>
 
-    <!-- ===== 主要内容 ===== -->
     <div class="main">
 
-        <!-- 项目信息（图标+标题） -->
         <div class="info-section">
             <img class="info-icon" src="mcskin3d.ico" alt="MCSkin3D" />
             <h1 class="info-title">MCSkin3D 的详细资料及下载</h1>
         </div>
 
-        <!-- 原作者与版权 + Paril -->
         <div class="credit-section">
             <div class="credit-title">原作者与版权 · Paril</div>
             <div class="credit-body">
@@ -823,7 +807,6 @@
             </div>
         </div>
 
-        <!-- ===== 关于本修改版 + 下载链接（合并） ===== -->
         <div class="combined-card">
             <div class="card-title">📦 关于本修改版</div>
             <div class="card-body">
@@ -873,7 +856,6 @@
                     欢迎反馈问题或提出建议。
                 </div>
 
-                <!-- ===== 下载区域 ===== -->
                 <div class="download-section">
                     <div class="download-title">📥 下载</div>
 
@@ -909,28 +891,32 @@
             </div>
         </div>
 
-        <!-- 返回项目列表 -->
         <div class="back-link">
             <a href="project.html">← 返回项目列表</a>
         </div>
 
-        <!-- 页脚 -->
         <div class="footer">
             © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
 
     </div>
 
-    <!-- ===== 主题色 + 宠物加载器 ===== -->
     <script src="pet-loader.js"></script>
 
     <script>
-        // ===== 年份自动更新 =====
+        // ===== 人机验证检查 =====
+        (function() {
+            const verified = localStorage.getItem('verified');
+            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
+            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
+            if (window.location.pathname.includes('verify.html')) return;
+            if (!verified || Date.now() - verifiedTime > EXPIRY) {
+                window.location.href = 'verify.html';
+            }
+        })();
+
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // ============================================================
-        //  统一的主题控制（读取 localStorage + 时间自动模式）
-        // ============================================================
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;

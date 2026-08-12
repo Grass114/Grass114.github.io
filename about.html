@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -549,6 +549,17 @@
     <script src="pet-loader.js"></script>
 
     <script>
+        // ===== 人机验证检查 =====
+        (function() {
+            const verified = localStorage.getItem('verified');
+            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
+            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
+            if (window.location.pathname.includes('verify.html')) return;
+            if (!verified || Date.now() - verifiedTime > EXPIRY) {
+                window.location.href = 'verify.html';
+            }
+        })();
+
         // ===== 年份自动更新 =====
         document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -632,14 +643,12 @@
             applyThemeFromMode(mode);
         }
 
-        // 双击时钟恢复自动模式
         clockDisplay.addEventListener('dblclick', function() {
             savedThemeMode = 'auto';
             localStorage.setItem('webSettings', JSON.stringify({ theme: 'auto' }));
             applyThemeFromMode('auto');
         });
 
-        // 手动切换主题
         toggle.addEventListener('click', function() {
             const current = html.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -648,7 +657,6 @@
             applyThemeFromMode(next);
         });
 
-        // 监听系统主题变化
         if (window.matchMedia) {
             const media = window.matchMedia('(prefers-color-scheme: dark)');
             media.addEventListener('change', function(e) {
@@ -659,7 +667,6 @@
             });
         }
 
-        // 监听 localStorage 变化（跨标签页同步）
         window.addEventListener('storage', function(e) {
             if (e.key === 'webSettings') {
                 const mode = loadSavedTheme();
@@ -667,7 +674,6 @@
             }
         });
 
-        // 初始化
         initTheme();
 
         function updateClockDisplay() {

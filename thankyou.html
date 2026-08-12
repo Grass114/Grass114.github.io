@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,6 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>致谢 · BlueCat114</title>
     <style>
-        /* ===== 颜色变量 ===== */
         :root {
             --theme-color: #6c63ff;
             --theme-color-rgb: 108, 99, 255;
@@ -48,7 +47,6 @@
             --clock-color: #94a3b8;
         }
 
-        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -75,7 +73,6 @@
             background: linear-gradient(145deg, #0f1724 0%, #1a2332 100%);
         }
 
-        /* ===== 导航条（实色） ===== */
         .top-bar {
             position: fixed;
             top: 0;
@@ -211,7 +208,6 @@
             transform: scale(1.1);
         }
 
-        /* ===== 主内容 ===== */
         .main {
             flex: 1;
             max-width: 700px;
@@ -263,7 +259,6 @@
             font-weight: 600;
         }
 
-        /* ===== 致谢卡片列表 ===== */
         .thanks-list {
             display: flex;
             flex-wrap: wrap;
@@ -373,7 +368,6 @@
             margin-bottom: 6px;
         }
 
-        /* ===== 页脚 ===== */
         .footer {
             text-align: center;
             font-size: 14px;
@@ -401,7 +395,6 @@
             text-decoration: underline;
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 700px) {
             .main {
                 padding: 80px 18px 30px 18px;
@@ -515,7 +508,6 @@
 </head>
 <body>
 
-    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
@@ -531,7 +523,6 @@
         </div>
     </div>
 
-    <!-- ===== 主要内容 ===== -->
     <div class="main">
 
         <div class="thanks-content">
@@ -541,10 +532,7 @@
                 感谢每一位帮助过 <span class="highlight">BlueCat114</span> 的人。
             </p>
 
-            <!-- ===== 致谢人列表 ===== -->
             <div class="thanks-list">
-
-                <!-- huise25 -->
                 <div class="thanks-card">
                     <img class="avatar" src="huise25.jpg" alt="huise25" />
                     <div class="info">
@@ -552,33 +540,36 @@
                         <span class="badge">❤️ 感谢支持</span>
                     </div>
                 </div>
-
             </div>
 
-            <!-- 空状态提示 -->
             <div class="empty-state">
                 <span class="emoji">🌱</span>
                 如果你曾帮助过我，欢迎告诉我，我会把你写在这里 ❤️
             </div>
         </div>
 
-        <!-- ===== 页脚 ===== -->
         <div class="footer">
             © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
 
     </div>
 
-    <!-- ===== 主题色 + 宠物加载器 ===== -->
     <script src="pet-loader.js"></script>
 
     <script>
-        // ===== 年份自动更新 =====
+        // ===== 人机验证检查 =====
+        (function() {
+            const verified = localStorage.getItem('verified');
+            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
+            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
+            if (window.location.pathname.includes('verify.html')) return;
+            if (!verified || Date.now() - verifiedTime > EXPIRY) {
+                window.location.href = 'verify.html';
+            }
+        })();
+
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // ============================================================
-        //  统一的主题控制（读取 localStorage + 时间自动模式）
-        // ============================================================
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
@@ -658,14 +649,12 @@
             applyThemeFromMode(mode);
         }
 
-        // 双击时钟恢复自动模式
         clockDisplay.addEventListener('dblclick', function() {
             savedThemeMode = 'auto';
             localStorage.setItem('webSettings', JSON.stringify({ theme: 'auto' }));
             applyThemeFromMode('auto');
         });
 
-        // 手动切换主题
         toggle.addEventListener('click', function() {
             const current = html.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -674,7 +663,6 @@
             applyThemeFromMode(next);
         });
 
-        // 监听系统主题变化
         if (window.matchMedia) {
             const media = window.matchMedia('(prefers-color-scheme: dark)');
             media.addEventListener('change', function(e) {
@@ -685,7 +673,6 @@
             });
         }
 
-        // 监听 localStorage 变化（跨标签页同步）
         window.addEventListener('storage', function(e) {
             if (e.key === 'webSettings') {
                 const mode = loadSavedTheme();
@@ -693,7 +680,6 @@
             }
         });
 
-        // 初始化
         initTheme();
 
         function updateClockDisplay() {

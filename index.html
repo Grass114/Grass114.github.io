@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -510,7 +510,6 @@
 
     <div class="main">
 
-        <!-- ===== 标题行：左文右时间 ===== -->
         <div class="hero">
             <div class="hero-left">
                 <span class="line">欢迎</span>
@@ -522,7 +521,6 @@
             </div>
         </div>
 
-        <!-- ===== 正文内容（居中） ===== -->
         <div class="intro">
             <p>
                 我是 <span class="highlight">BlueCat114</span>，一名热爱 Minecraft 生态的
@@ -533,12 +531,10 @@
             </p>
         </div>
 
-        <!-- ===== 按钮区（居中） ===== -->
         <div class="actions">
             <a href="https://github.com/grass114" target="_blank">🐙 GitHub</a>
         </div>
 
-        <!-- ===== 页脚 ===== -->
         <div class="footer">
             © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
@@ -549,6 +545,17 @@
     <script src="pet-loader.js"></script>
 
     <script>
+        // ===== 人机验证检查 =====
+        (function() {
+            const verified = localStorage.getItem('verified');
+            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
+            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
+            if (window.location.pathname.includes('verify.html')) return;
+            if (!verified || Date.now() - verifiedTime > EXPIRY) {
+                window.location.href = 'verify.html';
+            }
+        })();
+
         // ===== 年份自动更新 =====
         document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -566,12 +573,11 @@
             document.getElementById('timeDisplay').textContent = hours + ':' + minutes + ':' + seconds;
         }
 
-        // 立即更新一次，然后每秒更新
         updateDateTime();
         setInterval(updateDateTime, 1000);
 
         // ============================================================
-        //  统一的主题控制（读取 localStorage + 时间自动模式）
+        //  统一的主题控制
         // ============================================================
         const clockDisplay = document.getElementById('clockDisplay');
         const toggle = document.getElementById('themeToggle');
@@ -652,14 +658,12 @@
             applyThemeFromMode(mode);
         }
 
-        // 双击时钟恢复自动模式
         clockDisplay.addEventListener('dblclick', function() {
             savedThemeMode = 'auto';
             localStorage.setItem('webSettings', JSON.stringify({ theme: 'auto' }));
             applyThemeFromMode('auto');
         });
 
-        // 手动切换主题
         toggle.addEventListener('click', function() {
             const current = html.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -668,7 +672,6 @@
             applyThemeFromMode(next);
         });
 
-        // 监听系统主题变化
         if (window.matchMedia) {
             const media = window.matchMedia('(prefers-color-scheme: dark)');
             media.addEventListener('change', function(e) {
@@ -679,7 +682,6 @@
             });
         }
 
-        // 监听 localStorage 变化（跨标签页同步）
         window.addEventListener('storage', function(e) {
             if (e.key === 'webSettings') {
                 const mode = loadSavedTheme();
@@ -687,7 +689,6 @@
             }
         });
 
-        // 初始化
         initTheme();
 
         function updateClockDisplay() {

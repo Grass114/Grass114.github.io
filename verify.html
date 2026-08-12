@@ -1,0 +1,595 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.png" type="image/png" />
+    <title>人机验证 · BlueCat114</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(145deg, #f5f9ff 0%, #e6edf7 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px;
+            transition: background 0.4s ease;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(145deg, #0f1724 0%, #1a2332 100%);
+        }
+
+        .verify-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .verify-header .icon {
+            font-size: 52px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .verify-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0b1e33;
+            letter-spacing: -0.3px;
+            transition: color 0.4s;
+        }
+
+        [data-theme="dark"] .verify-header h1 {
+            color: #e2e8f0;
+        }
+
+        .verify-header p {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 2px;
+            transition: color 0.4s;
+        }
+
+        [data-theme="dark"] .verify-header p {
+            color: #94a3b8;
+        }
+
+        .verify-header .highlight {
+            color: #6c63ff;
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .verify-header .highlight {
+            color: #818cf8;
+        }
+
+        .slider-wrapper {
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+            border-radius: 30px;
+            overflow: hidden;
+            border: 2px solid rgba(0, 0, 0, 0.06);
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: border-color 0.4s, background 0.4s;
+            position: relative;
+            height: 56px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            touch-action: none;
+        }
+
+        [data-theme="dark"] .slider-wrapper {
+            background: rgba(30, 41, 59, 0.5);
+            border-color: rgba(71, 85, 105, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-wrapper.verified {
+            border-color: #22c55e;
+            background: rgba(34, 197, 94, 0.06);
+        }
+
+        [data-theme="dark"] .slider-wrapper.verified {
+            background: rgba(34, 197, 94, 0.08);
+            border-color: #22c55e;
+        }
+
+        .slider-wrapper .slider-bg-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            color: #94a3b8;
+            font-weight: 500;
+            pointer-events: none;
+            transition: opacity 0.3s, color 0.4s;
+            white-space: nowrap;
+        }
+
+        [data-theme="dark"] .slider-wrapper .slider-bg-text {
+            color: #64748b;
+        }
+
+        .slider-wrapper.verified .slider-bg-text {
+            opacity: 0;
+        }
+
+        .slider-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+
+        .slider-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: rgba(108, 99, 255, 0.12);
+            border-radius: 30px;
+            transition: width 0.05s linear;
+            pointer-events: none;
+        }
+
+        [data-theme="dark"] .slider-fill {
+            background: rgba(129, 140, 248, 0.15);
+        }
+
+        .slider-fill.success {
+            background: rgba(34, 197, 94, 0.2);
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            left: 4px;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #6c63ff;
+            color: white;
+            border: none;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.25);
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            touch-action: none;
+            z-index: 2;
+            will-change: left;
+        }
+
+        [data-theme="dark"] .slider-btn {
+            background: #818cf8;
+            box-shadow: 0 4px 16px rgba(129, 140, 248, 0.25);
+        }
+
+        .slider-btn:active {
+            cursor: grabbing;
+            transform: translateY(-50%) scale(1.06);
+            box-shadow: 0 6px 24px rgba(108, 99, 255, 0.35);
+        }
+
+        [data-theme="dark"] .slider-btn:active {
+            box-shadow: 0 6px 24px rgba(129, 140, 248, 0.35);
+        }
+
+        .slider-btn.success {
+            background: #22c55e;
+            cursor: default;
+            box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25);
+            left: calc(100% - 52px) !important;
+        }
+
+        .slider-btn.error {
+            background: #ef4444;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateY(-50%) translateX(0);
+            }
+            25% {
+                transform: translateY(-50%) translateX(-10px);
+            }
+            75% {
+                transform: translateY(-50%) translateX(10px);
+            }
+        }
+
+        .slider-status {
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            margin-top: 14px;
+            text-align: center;
+            transition: color 0.3s;
+            min-height: 22px;
+        }
+
+        [data-theme="dark"] .slider-status {
+            color: #94a3b8;
+        }
+
+        .slider-status.success {
+            color: #22c55e;
+        }
+        .slider-status.error {
+            color: #ef4444;
+        }
+
+        .slider-hint {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+            text-align: center;
+            transition: color 0.3s;
+            min-height: 20px;
+        }
+
+        [data-theme="dark"] .slider-hint {
+            color: #64748b;
+        }
+
+        .slider-hint.success {
+            color: #22c55e;
+        }
+        .slider-hint.error {
+            color: #ef4444;
+        }
+
+        .enter-btn {
+            display: none;
+            margin-top: 24px;
+            padding: 12px 44px;
+            border: none;
+            border-radius: 30px;
+            background: #6c63ff;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-family: inherit;
+            box-shadow: 0 4px 16px rgba(108, 99, 255, 0.25);
+        }
+
+        [data-theme="dark"] .enter-btn {
+            background: #818cf8;
+            box-shadow: 0 4px 16px rgba(129, 140, 248, 0.25);
+        }
+
+        .enter-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 8px 28px rgba(108, 99, 255, 0.35);
+        }
+
+        [data-theme="dark"] .enter-btn:hover {
+            box-shadow: 0 8px 28px rgba(129, 140, 248, 0.35);
+        }
+
+        .enter-btn.show {
+            display: inline-block;
+        }
+
+        .footer {
+            margin-top: 32px;
+            font-size: 13px;
+            color: #94a3b8;
+            text-align: center;
+            transition: color 0.4s;
+        }
+
+        [data-theme="dark"] .footer {
+            color: #64748b;
+        }
+
+        .footer a {
+            color: #6c63ff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        [data-theme="dark"] .footer a {
+            color: #818cf8;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .verify-header .icon {
+                font-size: 44px;
+            }
+            .verify-header h1 {
+                font-size: 22px;
+            }
+            .verify-header p {
+                font-size: 13px;
+            }
+            .slider-wrapper {
+                height: 50px;
+                max-width: 100%;
+            }
+            .slider-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 16px;
+                left: 3px;
+            }
+            .slider-btn.success {
+                left: calc(100% - 46px) !important;
+            }
+            .slider-wrapper .slider-bg-text {
+                font-size: 13px;
+            }
+            .enter-btn {
+                font-size: 14px;
+                padding: 10px 32px;
+            }
+            .slider-status {
+                font-size: 13px;
+            }
+            .slider-hint {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .verify-header .icon {
+                font-size: 36px;
+            }
+            .verify-header h1 {
+                font-size: 19px;
+            }
+            .slider-wrapper {
+                height: 44px;
+            }
+            .slider-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 14px;
+                left: 3px;
+            }
+            .slider-btn.success {
+                left: calc(100% - 40px) !important;
+            }
+            .slider-wrapper .slider-bg-text {
+                font-size: 12px;
+            }
+            .enter-btn {
+                font-size: 13px;
+                padding: 8px 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="verify-header">
+        <span class="icon">🛡️</span>
+        <h1>人机验证</h1>
+        <p>拖动滑块到最右侧，验证您是 <span class="highlight">真人</span></p>
+    </div>
+
+    <div class="slider-wrapper" id="sliderWrapper">
+        <div class="slider-track" id="sliderTrack">
+            <div class="slider-fill" id="sliderFill"></div>
+            <button class="slider-btn" id="sliderBtn">→</button>
+        </div>
+        <span class="slider-bg-text" id="sliderBgText">👉 拖动滑块验证</span>
+    </div>
+
+    <div class="slider-status" id="sliderStatus">请完成验证</div>
+    <div class="slider-hint" id="sliderHint">将滑块拖到最右侧</div>
+
+    <button class="enter-btn" id="enterBtn">🚪 进入网站</button>
+
+    <div class="footer">
+        © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a>
+    </div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // ---------- 主题 ----------
+        function applyTheme() {
+            const saved = localStorage.getItem('webSettings');
+            let theme = 'auto';
+            if (saved) {
+                try { const parsed = JSON.parse(saved);
+                    theme = parsed.theme || 'auto'; } catch (e) {}
+            }
+            const html = document.documentElement;
+            if (theme === 'auto') {
+                const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            } else if (theme === 'time') {
+                const h = new Date().getHours();
+                html.setAttribute('data-theme', (h >= 6 && h < 18) ? 'light' : 'dark');
+            } else {
+                html.setAttribute('data-theme', theme);
+            }
+        }
+        applyTheme();
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+        }
+
+        // ---------- DOM ----------
+        const sliderWrapper = document.getElementById('sliderWrapper');
+        const sliderBtn = document.getElementById('sliderBtn');
+        const sliderFill = document.getElementById('sliderFill');
+        const sliderStatus = document.getElementById('sliderStatus');
+        const sliderHint = document.getElementById('sliderHint');
+        const sliderBgText = document.getElementById('sliderBgText');
+        const enterBtn = document.getElementById('enterBtn');
+
+        let isVerified = false;
+        let isDragging = false;
+        let startX = 0;
+        let currentLeft = 4;
+        let maxLeft = 0;
+
+        // ---------- 计算最大偏移 ----------
+        function getMaxLeft() {
+            const trackWidth = sliderTrack.getBoundingClientRect().width;
+            const btnWidth = sliderBtn.getBoundingClientRect().width;
+            maxLeft = trackWidth - btnWidth - 8; // 左右各留4px
+            return maxLeft;
+        }
+
+        // ---------- 重置 ----------
+        function resetSlider() {
+            isVerified = false;
+            currentLeft = 4;
+            sliderBtn.style.left = '4px';
+            sliderFill.style.width = '0%';
+            sliderBtn.classList.remove('success', 'error');
+            sliderWrapper.classList.remove('verified');
+            sliderStatus.textContent = '请完成验证';
+            sliderStatus.className = 'slider-status';
+            sliderHint.textContent = '将滑块拖到最右侧';
+            sliderHint.className = 'slider-hint';
+            sliderBgText.style.opacity = '1';
+            enterBtn.classList.remove('show');
+            sliderBtn.textContent = '→';
+            isDragging = false;
+            getMaxLeft();
+        }
+
+        // ---------- 验证成功 ----------
+        function onVerifySuccess() {
+            if (isVerified) return;
+            isVerified = true;
+            sliderBtn.classList.add('success');
+            sliderBtn.textContent = '✓';
+            sliderFill.classList.add('success');
+            sliderFill.style.width = '100%';
+            sliderWrapper.classList.add('verified');
+            sliderStatus.textContent = '✅ 验证成功！';
+            sliderStatus.className = 'slider-status success';
+            sliderHint.textContent = '🎉 点击下方按钮进入网站';
+            sliderHint.className = 'slider-hint success';
+            sliderBgText.style.opacity = '0';
+            enterBtn.classList.add('show');
+            isDragging = false;
+        }
+
+        // ---------- 验证失败 ----------
+        function onVerifyFail() {
+            sliderBtn.classList.add('error');
+            sliderStatus.textContent = '❌ 请重新拖动';
+            sliderStatus.className = 'slider-status error';
+            sliderHint.textContent = '⚠️ 需要拖到最右侧才能通过';
+            sliderHint.className = 'slider-hint error';
+            setTimeout(() => {
+                sliderBtn.classList.remove('error');
+                if (!isVerified) resetSlider();
+            }, 800);
+        }
+
+        // ---------- 核心拖动逻辑（指针事件统一处理） ----------
+        function onPointerDown(e) {
+            if (isVerified) return;
+            e.preventDefault();
+            isDragging = true;
+            const rect = sliderBtn.getBoundingClientRect();
+            startX = e.clientX;
+            currentLeft = parseFloat(sliderBtn.style.left) || 4;
+            sliderBtn.style.cursor = 'grabbing';
+            sliderStatus.textContent = '拖动中...';
+            sliderStatus.className = 'slider-status';
+            // 设置指针捕获，防止丢事件
+            sliderBtn.setPointerCapture(e.pointerId);
+        }
+
+        function onPointerMove(e) {
+            if (!isDragging || isVerified) return;
+            e.preventDefault();
+
+            const dx = e.clientX - startX;
+            const newLeft = Math.max(4, Math.min(currentLeft + dx, getMaxLeft()));
+            sliderBtn.style.left = newLeft + 'px';
+
+            const progress = (newLeft - 4) / (maxLeft - 4);
+            sliderFill.style.width = Math.min(100, Math.max(0, progress * 100)) + '%';
+
+            // 检测是否到达终点（允许2px误差）
+            if (newLeft >= maxLeft - 2) {
+                onVerifySuccess();
+            }
+        }
+
+        function onPointerUp(e) {
+            if (!isDragging || isVerified) return;
+            isDragging = false;
+            sliderBtn.style.cursor = 'grab';
+            const left = parseFloat(sliderBtn.style.left) || 4;
+            if (left >= maxLeft - 2) {
+                onVerifySuccess();
+            } else if (left < maxLeft - 10) {
+                onVerifyFail();
+            } else {
+                // 接近终点自动吸附
+                sliderBtn.style.left = maxLeft + 'px';
+                sliderFill.style.width = '100%';
+                onVerifySuccess();
+            }
+        }
+
+        // ---------- 绑定指针事件 ----------
+        sliderBtn.addEventListener('pointerdown', onPointerDown);
+        document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointerup', onPointerUp);
+
+        // ---------- 窗口变化 ----------
+        window.addEventListener('resize', function() {
+            if (!isVerified) resetSlider();
+        });
+
+        // ---------- 进入网站 ----------
+        enterBtn.addEventListener('click', function() {
+            localStorage.setItem('verified', 'true');
+            localStorage.setItem('verifiedTime', Date.now().toString());
+            window.location.href = 'index.html';
+        });
+
+        // ---------- 初始化 ----------
+        resetSlider();
+        // 确保初始位置正确
+        requestAnimationFrame(() => {
+            getMaxLeft();
+            sliderBtn.style.left = '4px';
+        });
+    </script>
+
+</body>
+</html>

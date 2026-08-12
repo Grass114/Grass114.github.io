@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,6 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>💣 扫雷 · BlueCat114</title>
     <style>
-        /* ===== 颜色变量 ===== */
         :root {
             --theme-color: #6c63ff;
             --theme-color-rgb: 108, 99, 255;
@@ -60,7 +59,6 @@
             --mine-color: #e2e8f0;
         }
 
-        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -85,7 +83,6 @@
             color: var(--text-primary);
         }
 
-        /* ===== 导航条（实色） ===== */
         .top-bar {
             position: fixed;
             top: 0;
@@ -176,7 +173,6 @@
             border-bottom-color: var(--link-color);
         }
 
-        /* ===== 时钟显示 ===== */
         .clock-display {
             font-size: 16px;
             font-weight: 500;
@@ -194,7 +190,6 @@
             color: var(--link-color);
         }
 
-        /* ===== 主题切换按钮 ===== */
         .theme-toggle {
             background: none;
             border: none;
@@ -220,7 +215,6 @@
             transform: scale(1.1);
         }
 
-        /* ===== 主容器 ===== */
         .main {
             flex: 1;
             display: flex;
@@ -233,7 +227,6 @@
             padding: 80px 16px 24px 16px;
         }
 
-        /* ===== 返回游戏中心 ===== */
         .back-link {
             align-self: flex-start;
             margin-bottom: 16px;
@@ -256,7 +249,6 @@
             border-bottom-color: var(--link-hover);
         }
 
-        /* ===== 游戏标题 ===== */
         .game-title {
             text-align: center;
             margin-bottom: 16px;
@@ -277,7 +269,6 @@
             transition: color 0.4s;
         }
 
-        /* ===== 游戏信息栏 ===== */
         .game-info {
             display: flex;
             justify-content: space-between;
@@ -314,7 +305,6 @@
             color: #27ae60;
         }
 
-        /* ===== 难度选择 ===== */
         .difficulty-bar {
             display: flex;
             gap: 10px;
@@ -348,7 +338,6 @@
             border-color: var(--link-color);
         }
 
-        /* ===== 扫雷网格（响应式） ===== */
         .board-wrapper {
             background: var(--card-bg);
             border-radius: 16px;
@@ -433,7 +422,6 @@
         [data-theme="dark"] .cell .num-4 { color: #a29bfe; }
         [data-theme="dark"] .cell .num-7 { color: #a29bfe; }
 
-        /* ===== 游戏结束遮罩 ===== */
         .game-overlay {
             position: absolute;
             inset: 0;
@@ -482,7 +470,6 @@
             box-shadow: 0 4px 16px rgba(108, 99, 255, 0.3);
         }
 
-        /* ===== 页脚 ===== */
         .footer {
             text-align: center;
             font-size: 14px;
@@ -507,7 +494,6 @@
             text-decoration: underline;
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 700px) {
             body {
                 padding: 66px 16px 16px 16px;
@@ -637,7 +623,6 @@
 </head>
 <body>
 
-    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
@@ -653,21 +638,17 @@
         </div>
     </div>
 
-    <!-- ===== 主要内容 ===== -->
     <div class="main">
 
-        <!-- 返回游戏中心 -->
         <div class="back-link">
             <a href="game.html">← 返回游戏中心</a>
         </div>
 
-        <!-- 游戏标题 -->
         <div class="game-title">
             <h1>💣 扫雷</h1>
             <p>左键翻开 · 右键标记 · 别踩雷！</p>
         </div>
 
-        <!-- 难度选择 -->
         <div class="difficulty-bar">
             <button class="diff-btn" data-rows="8" data-cols="8" data-mines="10">🟢 简单</button>
             <button class="diff-btn active" data-rows="12" data-cols="12" data-mines="20">🟡 中等</button>
@@ -675,14 +656,12 @@
             <button class="diff-btn" data-rows="20" data-cols="20" data-mines="80">💀 专家</button>
         </div>
 
-        <!-- 信息栏 -->
         <div class="game-info">
             <span class="info-item">💣 剩余：<span class="num red" id="mineCount">20</span></span>
             <span class="info-item">⏱️ <span class="num" id="timerDisplay">0</span>s</span>
             <button class="info-item" id="resetBtn" style="background:none;border:none;cursor:pointer;font-size:18px;padding:0 8px;">🔄</button>
         </div>
 
-        <!-- 棋盘 -->
         <div class="board-wrapper">
             <div class="board" id="board"></div>
             <div class="game-overlay" id="gameOverlay">
@@ -692,22 +671,30 @@
             </div>
         </div>
 
-        <!-- 页脚 -->
         <div class="footer">
             © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
 
     </div>
 
-    <!-- ===== 主题色 + 宠物加载器 ===== -->
     <script src="pet-loader.js"></script>
 
     <script>
+        // ===== 人机验证检查 =====
+        (function() {
+            const verified = localStorage.getItem('verified');
+            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
+            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
+            if (window.location.pathname.includes('verify.html')) return;
+            if (!verified || Date.now() - verifiedTime > EXPIRY) {
+                window.location.href = 'verify.html';
+            }
+        })();
+
         // ============================================================
         //  扫雷游戏
         // ============================================================
 
-        // ---------- 状态 ----------
         let boardData = [];
         let rows = 12,
             cols = 12,
@@ -719,7 +706,6 @@
         let timer = 0;
         let timerInterval = null;
 
-        // DOM
         const boardEl = document.getElementById('board');
         const mineCountEl = document.getElementById('mineCount');
         const timerDisplay = document.getElementById('timerDisplay');
@@ -730,7 +716,6 @@
         const overlayBtn = document.getElementById('overlayBtn');
         const diffBtns = document.querySelectorAll('.diff-btn');
 
-        // ---------- 工具 ----------
         function getNeighbors(r, c) {
             const dirs = [
                 [-1, -1], [-1, 0], [-1, 1],
@@ -756,7 +741,6 @@
             return count;
         }
 
-        // ---------- 创建棋盘 ----------
         function createBoard() {
             boardData = [];
             for (let r = 0; r < rows; r++) {
@@ -800,7 +784,6 @@
             }
         }
 
-        // ---------- 渲染 ----------
         function render() {
             boardEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
             boardEl.innerHTML = '';
@@ -860,7 +843,6 @@
             mineCountEl.textContent = remaining >= 0 ? remaining : 0;
         }
 
-        // ---------- 游戏逻辑 ----------
         function handleClick(r, c) {
             if (gameOver) return;
             const data = boardData[r][c];
@@ -949,7 +931,6 @@
             render();
         }
 
-        // ---------- 遮罩 ----------
         function showOverlay(won) {
             if (won) {
                 overlayText.textContent = '🎉 你赢了！';
@@ -961,7 +942,6 @@
             gameOverlay.classList.add('show');
         }
 
-        // ---------- 重置 ----------
         function resetGame() {
             createBoard();
             render();
@@ -971,7 +951,6 @@
             timerDisplay.textContent = '0';
         }
 
-        // ---------- 切换难度 ----------
         function setDifficulty(btn) {
             diffBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -981,7 +960,6 @@
             resetGame();
         }
 
-        // ---------- 事件绑定 ----------
         resetBtn.addEventListener('click', resetGame);
         overlayBtn.addEventListener('click', resetGame);
 
@@ -989,7 +967,6 @@
             btn.addEventListener('click', () => setDifficulty(btn));
         });
 
-        // ---------- 初始化 ----------
         function init() {
             rows = 12;
             cols = 12;
@@ -1001,7 +978,7 @@
         init();
 
         // ============================================================
-        //  网站主题控制（统一的 localStorage + 时间自动模式）
+        //  网站主题控制
         // ============================================================
         document.getElementById('year').textContent = new Date().getFullYear();
 
