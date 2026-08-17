@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -27,8 +27,6 @@
             --link-color: var(--theme-color, #6c63ff);
             --link-hover: var(--theme-color, #4a42b8);
             --clock-color: var(--text-muted);
-            --toast-bg: var(--theme-color, #22c55e);
-            --toast-text: #ffffff;
             --switch-on: var(--theme-color, #6c63ff);
             --switch-off: #cbd5e1;
             --switch-knob: #ffffff;
@@ -45,6 +43,8 @@
             --check-checked: var(--theme-color, #6c63ff);
             --apply-btn-shadow: rgba(var(--theme-color-rgb, 108, 99, 255), 0.25);
             --apply-btn-hover-shadow: rgba(var(--theme-color-rgb, 108, 99, 255), 0.35);
+            --toast-bg: var(--theme-color, #22c55e);
+            --toast-text: #ffffff;
         }
 
         [data-theme="dark"] {
@@ -64,8 +64,6 @@
             --link-color: var(--theme-color, #818cf8);
             --link-hover: var(--theme-color, #a5b4fc);
             --clock-color: #94a3b8;
-            --toast-bg: var(--theme-color, #22c55e);
-            --toast-text: #ffffff;
             --switch-on: var(--theme-color, #818cf8);
             --switch-off: #3a4a5a;
             --switch-knob: #e2e8f0;
@@ -82,6 +80,8 @@
             --check-checked: var(--theme-color, #818cf8);
             --apply-btn-shadow: rgba(var(--theme-color-rgb, 129, 140, 248), 0.15);
             --apply-btn-hover-shadow: rgba(var(--theme-color-rgb, 129, 140, 248), 0.25);
+            --toast-bg: var(--theme-color, #22c55e);
+            --toast-text: #ffffff;
         }
 
         /* ===== 全局重置 ===== */
@@ -286,13 +286,11 @@
             font-size: 20px;
             flex-shrink: 0;
         }
-
         .toast .toast-message {
             flex: 1;
             min-width: 60px;
             word-break: break-word;
         }
-
         .toast .toast-close {
             background: none;
             border: none;
@@ -305,7 +303,6 @@
             font-family: inherit;
             flex-shrink: 0;
         }
-
         .toast .toast-close:hover {
             color: #ffffff;
         }
@@ -407,7 +404,6 @@
             font-size: 18px;
             flex-shrink: 0;
         }
-
         .sidebar-item .label {
             font-size: 13px;
         }
@@ -711,7 +707,6 @@
             color: var(--text-light);
         }
 
-        /* 每个宠物的页面选择行 */
         .pet-location-row {
             display: flex;
             align-items: flex-start;
@@ -794,7 +789,6 @@
             font-size: 11px;
         }
 
-        /* 全选/清空 按钮 */
         .location-actions {
             display: flex;
             gap: 8px;
@@ -843,6 +837,164 @@
             font-style: normal;
         }
 
+        /* ============================================================
+           离线模式
+        ============================================================ */
+        .offline-section {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--card-border);
+            transition: border-color 0.4s;
+        }
+
+        .offline-section .offline-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.4s;
+        }
+
+        .offline-switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: var(--content-bg);
+            border-radius: 10px;
+            border: 1px solid var(--option-border);
+            transition: background 0.4s, border-color 0.4s;
+        }
+
+        .offline-switch-row .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .offline-switch-row .left .icon {
+            font-size: 20px;
+        }
+
+        .offline-switch-row .left .info .title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: color 0.4s;
+        }
+
+        .offline-switch-row .left .info .status {
+            font-size: 12px;
+            color: var(--text-muted);
+            transition: color 0.4s;
+        }
+
+        .offline-switch-row .left .info .status.online {
+            color: #22c55e;
+        }
+        .offline-switch-row .left .info .status.offline {
+            color: #ef4444;
+        }
+
+        .offline-switch-row .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+            background: var(--switch-off);
+            border-radius: 30px;
+            transition: background 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+        }
+
+        .offline-switch-row .switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: var(--switch-knob);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        .offline-switch-row .switch.on {
+            background: var(--switch-on);
+        }
+
+        .offline-switch-row .switch.on::after {
+            transform: translateX(20px);
+        }
+
+        .offline-status-detail {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            margin-top: 10px;
+            padding: 10px 14px;
+            background: var(--content-bg);
+            border-radius: 10px;
+            border: 1px solid var(--option-border);
+            font-size: 13px;
+            color: var(--text-muted);
+            transition: background 0.4s, border-color 0.4s, color 0.4s;
+        }
+
+        .offline-status-detail .item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .offline-status-detail .item .num {
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: color 0.4s;
+        }
+
+        .offline-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .offline-actions .offline-btn {
+            padding: 6px 16px;
+            border: 1.5px solid var(--option-border);
+            border-radius: 30px;
+            background: var(--content-bg);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .offline-actions .offline-btn:hover {
+            border-color: var(--link-color);
+            color: var(--link-color);
+            background: var(--option-hover);
+        }
+
+        .offline-actions .offline-btn.danger:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.04);
+        }
+
+        .offline-actions .offline-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
         /* ===== 底部按钮 ===== */
         .settings-footer {
             display: flex;
@@ -873,12 +1025,18 @@
             gap: 8px;
         }
 
-        .apply-btn:hover {
+        .apply-btn:hover:not(:disabled) {
             transform: scale(1.02);
             box-shadow: 0 6px 24px var(--apply-btn-hover-shadow);
         }
-        .apply-btn:active {
+        .apply-btn:active:not(:disabled) {
             transform: scale(0.97);
+        }
+
+        .apply-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         .settings-reset {
@@ -1197,6 +1355,18 @@
                 height: 28px;
             }
 
+            .offline-switch-row .left .info .title {
+                font-size: 13px;
+            }
+            .offline-status-detail {
+                font-size: 12px;
+                gap: 10px 16px;
+            }
+            .offline-actions .offline-btn {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+
             .top-bar {
                 padding: 10px 18px;
                 flex-wrap: wrap;
@@ -1353,6 +1523,36 @@
                 border-width: 2px;
             }
 
+            .offline-switch-row {
+                padding: 8px 12px;
+            }
+            .offline-switch-row .left .info .title {
+                font-size: 12px;
+            }
+            .offline-switch-row .left .info .status {
+                font-size: 10px;
+            }
+            .offline-switch-row .switch {
+                width: 36px;
+                height: 20px;
+            }
+            .offline-switch-row .switch::after {
+                width: 16px;
+                height: 16px;
+            }
+            .offline-switch-row .switch.on::after {
+                transform: translateX(16px);
+            }
+            .offline-status-detail {
+                font-size: 11px;
+                padding: 8px 10px;
+                gap: 6px 12px;
+            }
+            .offline-actions .offline-btn {
+                font-size: 10px;
+                padding: 3px 10px;
+            }
+
             .apply-btn {
                 font-size: 13px;
                 padding: 10px 16px;
@@ -1427,6 +1627,10 @@
                 width: 20px;
                 height: 20px;
             }
+            .offline-status-detail {
+                flex-direction: column;
+                gap: 4px;
+            }
         }
     </style>
 </head>
@@ -1448,7 +1652,7 @@
         </div>
     </div>
 
-    <!-- ===== Toast 提示条（居中） ===== -->
+    <!-- ===== Toast 提示 ===== -->
     <div class="toast-container" id="toastContainer">
         <div class="toast" id="toast">
             <span class="toast-icon">✅</span>
@@ -1467,7 +1671,6 @@
 
         <div class="settings-card">
 
-            <!-- ===== 左侧：分类列表（父级） ===== -->
             <div class="settings-sidebar" id="sidebar">
                 <button class="sidebar-item active" data-panel="theme">
                     <span class="icon">🌓</span>
@@ -1477,9 +1680,12 @@
                     <span class="icon">🐾</span>
                     <span class="label">宠物</span>
                 </button>
+                <button class="sidebar-item" data-panel="offline">
+                    <span class="icon">📶</span>
+                    <span class="label">离线模式</span>
+                </button>
             </div>
 
-            <!-- ===== 右侧：内容区（子级） ===== -->
             <div class="settings-content">
 
                 <!-- 面板：主题 -->
@@ -1503,7 +1709,6 @@
                         </button>
                     </div>
 
-                    <!-- ===== 主题色 ===== -->
                     <div class="theme-color-section">
                         <div class="color-label">
                             🎨 主题色
@@ -1531,7 +1736,6 @@
                     </div>
                     <div class="section-desc">控制猫和狗在网页上的显示</div>
 
-                    <!-- ===== 宠物开关 ===== -->
                     <div class="pet-grid">
                         <div class="pet-card" id="catCard">
                             <div class="pet-avatar cat">🐱</div>
@@ -1551,7 +1755,6 @@
                         </div>
                     </div>
 
-                    <!-- ===== 显示位置（自由勾选页面） ===== -->
                     <div class="location-section" id="locationSection">
                         <div class="location-label">
                             📌 显示位置
@@ -1559,21 +1762,18 @@
                             <span class="sub">— 为每个宠物选择要显示的页面</span>
                         </div>
 
-                        <!-- 猫的位置选择 -->
                         <div class="pet-location-row" id="catLocationRow">
                             <span class="row-icon">🐱</span>
                             <span class="row-name">猫</span>
                             <div class="page-checkboxes" id="catPages"></div>
                         </div>
 
-                        <!-- 狗的位置选择 -->
                         <div class="pet-location-row" id="dogLocationRow">
                             <span class="row-icon">🐶</span>
                             <span class="row-name">狗</span>
                             <div class="page-checkboxes" id="dogPages"></div>
                         </div>
 
-                        <!-- 快捷操作 -->
                         <div class="location-actions">
                             <button class="action-btn" id="selectAllPages">✅ 全选所有</button>
                             <button class="action-btn" id="deselectAllPages">⬜ 清空所有</button>
@@ -1586,28 +1786,57 @@
 
                 </div>
 
-                <!-- ===== 底部：应用 + 重置 ===== -->
+                <!-- 面板：离线模式 -->
+                <div class="content-panel" id="panel-offline">
+                    <div class="section-title">
+                        <span class="icon">📶</span> 离线模式
+                    </div>
+                    <div class="section-desc">开启后断网也能访问已缓存的页面</div>
+
+                    <div class="offline-section">
+                        <div class="offline-switch-row">
+                            <div class="left">
+                                <span class="icon">📡</span>
+                                <div class="info">
+                                    <div class="title">离线模式</div>
+                                    <div class="status" id="offlineStatus">已关闭</div>
+                                </div>
+                            </div>
+                            <div class="switch" id="offlineSwitch"></div>
+                        </div>
+
+                        <div class="offline-status-detail" id="offlineStatusDetail">
+                            <span class="item">📄 已缓存：<span class="num" id="cacheCount">0</span> 个页面</span>
+                            <span class="item">💾 缓存大小：<span class="num" id="cacheSize">0</span> KB</span>
+                            <span class="item" id="networkStatus">🌐 状态：<span class="num" style="color:#22c55e;">在线</span></span>
+                        </div>
+
+                        <div class="offline-actions">
+                            <button class="offline-btn" id="refreshCacheBtn">🔄 刷新缓存</button>
+                            <button class="offline-btn danger" id="clearCacheBtn">🗑️ 清理缓存</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== 底部 ===== -->
                 <div class="settings-footer">
-                    <button class="apply-btn" id="applyBtn">✅ 应用</button>
+                    <button class="apply-btn" id="applyBtn" disabled>🔒 请先完成验证</button>
                     <button class="settings-reset" id="settingsReset">🔄 恢复默认设置</button>
                 </div>
 
             </div>
         </div>
 
-        <!-- 返回首页 -->
         <div class="back-link">
             <a href="index.html">← 返回首页</a>
         </div>
 
-        <!-- 页脚 -->
         <div class="footer">
             © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
 
     </div>
 
-    <!-- ===== 确认弹窗 ===== -->
     <div class="confirm-overlay" id="confirmOverlay">
         <div class="confirm-box">
             <div class="confirm-title">⚠️ 确认重置</div>
@@ -1619,12 +1848,24 @@
         </div>
     </div>
 
-    <!-- ===== 小宠物加载器（统一主题色） ===== -->
     <script src="pet-loader.js"></script>
 
     <script>
         // ============================================================
-        //  设置页面
+        //  人机验证检查
+        // ============================================================
+        (function() {
+            const verified = localStorage.getItem('verified');
+            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
+            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
+            if (window.location.pathname.includes('verify.html')) return;
+            if (!verified || Date.now() - verifiedTime > EXPIRY) {
+                window.location.href = 'verify.html';
+            }
+        })();
+
+        // ============================================================
+        //  设置页面主逻辑
         // ============================================================
 
         (function() {
@@ -1643,6 +1884,9 @@
                 { id: 'mcskin3d', label: '⛏️ MCSkin3D' },
                 { id: 'brick', label: '🧱 打砖块' },
                 { id: 'minesweeper', label: '💣 扫雷' },
+                { id: 'settings', label: '⚙️ 设置' },
+                { id: 'search', label: '🔍 搜索' },
+                { id: 'verify', label: '🛡️ 验证' },
             ];
 
             // ---------- 默认设置 ----------
@@ -1653,7 +1897,8 @@
                     dog: true,
                     catPages: ALL_PAGES.map(p => p.id),
                     dogPages: ALL_PAGES.map(p => p.id)
-                }
+                },
+                offline: false
             };
             const DEFAULT_COLOR = '#6c63ff';
 
@@ -1666,9 +1911,9 @@
                 dogPages: ALL_PAGES.map(p => p.id)
             };
             let tempColor = DEFAULT_COLOR;
+            let tempOffline = false;
             let timeThemeTimer = null;
 
-            // 记录初始值
             let initialTheme = 'auto';
             let initialPet = {
                 cat: true,
@@ -1677,12 +1922,14 @@
                 dogPages: ALL_PAGES.map(p => p.id)
             };
             let initialColor = DEFAULT_COLOR;
+            let initialOffline = false;
 
-            // ---------- DOM 引用 ----------
+            // ---------- DOM ----------
             const sidebarItems = document.querySelectorAll('.sidebar-item');
             const panels = {
                 theme: document.getElementById('panel-theme'),
-                pet: document.getElementById('panel-pet')
+                pet: document.getElementById('panel-pet'),
+                offline: document.getElementById('panel-offline')
             };
 
             const catCard = document.getElementById('catCard');
@@ -1699,11 +1946,20 @@
             const catPagesContainer = document.getElementById('catPages');
             const dogPagesContainer = document.getElementById('dogPages');
 
-            // ---------- 主题色 ----------
+            // 离线模式
+            const offlineSwitch = document.getElementById('offlineSwitch');
+            const offlineStatus = document.getElementById('offlineStatus');
+            const cacheCount = document.getElementById('cacheCount');
+            const cacheSize = document.getElementById('cacheSize');
+            const networkStatus = document.getElementById('networkStatus');
+            const refreshCacheBtn = document.getElementById('refreshCacheBtn');
+            const clearCacheBtn = document.getElementById('clearCacheBtn');
+
+            // 主题色
             const themeColorPicker = document.getElementById('themeColorPicker');
             const colorSwatches = document.querySelectorAll('.color-swatch');
 
-            // ---------- Toast ----------
+            // Toast
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
             const toastClose = document.getElementById('toastClose');
@@ -1751,7 +2007,7 @@
                 if (e.key === 'Escape' && confirmOverlay.classList.contains('open')) hideConfirm();
             });
 
-            // ---------- 侧边栏切换 ----------
+            // ---------- 侧边栏 ----------
             function switchPanel(panelId) {
                 sidebarItems.forEach(item => {
                     item.classList.toggle('active', item.dataset.panel === panelId);
@@ -1767,7 +2023,7 @@
                 });
             });
 
-            // ---------- 生成页面复选框 ----------
+            // ---------- 页面复选框 ----------
             function renderPageCheckboxes(container, selectedPages) {
                 container.innerHTML = '';
                 ALL_PAGES.forEach(page => {
@@ -1793,7 +2049,6 @@
                     label.appendChild(icon);
                     label.appendChild(name);
 
-                    // 点击切换
                     label.addEventListener('click', function(e) {
                         e.preventDefault();
                         const pageId = this.dataset.page;
@@ -1803,7 +2058,6 @@
                         } else {
                             selectedPages.push(pageId);
                         }
-                        // 更新UI
                         updatePageCheckboxesUI(container, selectedPages);
                         updateLocationHint();
                     });
@@ -1853,7 +2107,6 @@
                 locationHint.innerHTML = '💡 ' + parts.join(' · ');
             }
 
-            // ---------- 更新位置区域锁定状态 ----------
             function updateLocationState() {
                 const anyEnabled = tempPet.cat || tempPet.dog;
 
@@ -1877,14 +2130,12 @@
                 dogSwitch.classList.toggle('on', tempPet.dog);
                 dogStatus.textContent = tempPet.dog ? '已显示 ✅' : '已隐藏 ❌';
 
-                // 猫的页面复选框启用/禁用
                 const catChecks = catPagesContainer.querySelectorAll('.page-check');
                 catChecks.forEach(el => {
                     el.style.pointerEvents = tempPet.cat ? 'auto' : 'none';
                     el.style.opacity = tempPet.cat ? '1' : '0.5';
                 });
 
-                // 狗的页面复选框启用/禁用
                 const dogChecks = dogPagesContainer.querySelectorAll('.page-check');
                 dogChecks.forEach(el => {
                     el.style.pointerEvents = tempPet.dog ? 'auto' : 'none';
@@ -1962,6 +2213,10 @@
                 return false;
             }
 
+            function hasOfflineChanged() {
+                return tempOffline !== initialOffline;
+            }
+
             function getPetChangeSummary() {
                 const changes = [];
                 if (tempPet.cat !== initialPet.cat) {
@@ -1985,6 +2240,227 @@
                     changes.push('🐶狗页面：' + (pageNames.length ? pageNames.join('、') : '无'));
                 }
                 return changes;
+            }
+
+            // ============================================================
+            //  离线模式
+            // ============================================================
+
+            // 检查 Service Worker 是否支持
+            function isSWSupported() {
+                return 'serviceWorker' in navigator;
+            }
+
+            // 注册 Service Worker
+            function registerSW() {
+                if (!isSWSupported()) {
+                    console.warn('⚠️ 当前浏览器不支持 Service Worker');
+                    return Promise.reject('不支持 Service Worker');
+                }
+                return navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('✅ Service Worker 注册成功');
+                        return registration;
+                    })
+                    .catch(function(err) {
+                        console.warn('⚠️ Service Worker 注册失败:', err);
+                        return Promise.reject(err);
+                    });
+            }
+
+            // 获取缓存状态
+            function getCacheStatus() {
+                if (!isSWSupported()) {
+                    return Promise.resolve({ count: 0, size: 0 });
+                }
+
+                return new Promise(function(resolve) {
+                    try {
+                        navigator.serviceWorker.ready.then(function(registration) {
+                            const messageChannel = new MessageChannel();
+                            messageChannel.port1.onmessage = function(event) {
+                                resolve(event.data || { count: 0, size: 0 });
+                            };
+                            registration.active.postMessage(
+                                { type: 'getCacheStatus' },
+                                [messageChannel.port2]
+                            );
+                            // 超时处理
+                            setTimeout(function() {
+                                resolve({ count: 0, size: 0 });
+                            }, 2000);
+                        }).catch(function() {
+                            resolve({ count: 0, size: 0 });
+                        });
+                    } catch (e) {
+                        resolve({ count: 0, size: 0 });
+                    }
+                });
+            }
+
+            // 更新缓存状态显示
+            function updateCacheDisplay() {
+                getCacheStatus().then(function(data) {
+                    const count = data.count || 0;
+                    const size = data.size || 0;
+                    cacheCount.textContent = count;
+
+                    if (size < 1024) {
+                        cacheSize.textContent = size.toFixed(0);
+                    } else if (size < 1024 * 1024) {
+                        cacheSize.textContent = (size / 1024).toFixed(1) + ' MB';
+                    } else {
+                        cacheSize.textContent = (size / (1024 * 1024)).toFixed(1) + ' MB';
+                    }
+                }).catch(function() {
+                    cacheCount.textContent = '0';
+                    cacheSize.textContent = '0 KB';
+                });
+            }
+
+            // 更新网络状态
+            function updateNetworkStatus() {
+                const online = navigator.onLine;
+                if (online) {
+                    networkStatus.innerHTML = '🌐 状态：<span class="num" style="color:#22c55e;">在线</span>';
+                } else {
+                    networkStatus.innerHTML = '📡 状态：<span class="num" style="color:#ef4444;">离线</span>';
+                }
+            }
+
+            // 更新离线模式 UI
+            function updateOfflineUI() {
+                const isEnabled = tempOffline;
+                offlineSwitch.classList.toggle('on', isEnabled);
+                offlineStatus.textContent = isEnabled ? '✅ 已开启' : '已关闭';
+                offlineStatus.style.color = isEnabled ? '#22c55e' : 'var(--text-muted)';
+
+                if (isEnabled) {
+                    // 尝试注册 SW
+                    registerSW().then(function() {
+                        // 延迟一会再获取缓存状态
+                        setTimeout(updateCacheDisplay, 500);
+                    }).catch(function() {
+                        // 注册失败，但状态已保存
+                    });
+                } else {
+                    // 关闭时只更新状态显示
+                    cacheCount.textContent = '0';
+                    cacheSize.textContent = '0 KB';
+                }
+            }
+
+            // ---------- 离线模式事件 ----------
+            offlineSwitch.addEventListener('click', function() {
+                tempOffline = !tempOffline;
+                updateOfflineUI();
+
+                if (tempOffline) {
+                    showToast('📶 正在开启离线模式...');
+                    // 注册 SW 并缓存
+                    registerSW().then(function() {
+                        setTimeout(function() {
+                            updateCacheDisplay();
+                            showToast('✅ 离线模式已开启');
+                        }, 1000);
+                    }).catch(function() {
+                        showToast('⚠️ 离线模式开启失败，请检查网络');
+                        // 回退
+                        tempOffline = false;
+                        updateOfflineUI();
+                    });
+                } else {
+                    showToast('📶 离线模式已关闭');
+                }
+            });
+
+            // 刷新缓存
+            refreshCacheBtn.addEventListener('click', function() {
+                if (!tempOffline) {
+                    showToast('⚠️ 请先开启离线模式');
+                    return;
+                }
+                showToast('⏳ 正在刷新缓存...');
+                registerSW().then(function() {
+                    setTimeout(function() {
+                        updateCacheDisplay();
+                        showToast('✅ 缓存已刷新');
+                    }, 1000);
+                }).catch(function() {
+                    showToast('⚠️ 刷新失败');
+                });
+            });
+
+            // 清理缓存
+            clearCacheBtn.addEventListener('click', function() {
+                if (!tempOffline) {
+                    showToast('⚠️ 请先开启离线模式');
+                    return;
+                }
+                showConfirm(function() {
+                    if (isSWSupported()) {
+                        navigator.serviceWorker.ready.then(function(registration) {
+                            if (registration.active) {
+                                registration.active.postMessage({ type: 'clearCache' });
+                            }
+                        }).catch(function() {});
+                    }
+                    // 同时清除 caches API
+                    if ('caches' in window) {
+                        caches.keys().then(function(keys) {
+                            keys.forEach(function(key) {
+                                caches.delete(key);
+                            });
+                        }).catch(function() {});
+                    }
+                    setTimeout(function() {
+                        updateCacheDisplay();
+                        showToast('🗑️ 缓存已清理');
+                    }, 500);
+                });
+            });
+
+            // 网络状态变化
+            window.addEventListener('online', function() {
+                updateNetworkStatus();
+                if (tempOffline) {
+                    updateCacheDisplay();
+                }
+            });
+
+            window.addEventListener('offline', function() {
+                updateNetworkStatus();
+            });
+
+            // ---------- 主题色 ----------
+            function setThemeColor(color, updateInitial) {
+                updateInitial = updateInitial !== undefined ? updateInitial : true;
+                if (!color) return;
+                document.documentElement.style.setProperty('--theme-color', color);
+                const rgb = hexToRgb(color);
+                document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+                themeColorPicker.value = color;
+                colorSwatches.forEach(swatch => {
+                    const isActive = swatch.dataset.color === color;
+                    swatch.classList.toggle('active', isActive);
+                    swatch.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
+                });
+                tempColor = color;
+                if (updateInitial) {
+                    initialColor = color;
+                }
+            }
+
+            function hexToRgb(hex) {
+                if (hex && hex.startsWith('#')) {
+                    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                    return result ? {
+                        r: parseInt(result[1], 16),
+                        g: parseInt(result[2], 16),
+                        b: parseInt(result[3], 16)
+                    } : { r: 108, g: 99, b: 255 };
+                }
+                return { r: 108, g: 99, b: 255 };
             }
 
             // ---------- 加载设置 ----------
@@ -2033,6 +2509,11 @@
                 }
                 initialColor = tempColor;
 
+                // 加载离线模式状态
+                const offlineSaved = localStorage.getItem('offlineMode');
+                tempOffline = offlineSaved === 'true';
+                initialOffline = tempOffline;
+
                 // 渲染页面复选框
                 renderPageCheckboxes(catPagesContainer, tempPet.catPages);
                 renderPageCheckboxes(dogPagesContainer, tempPet.dogPages);
@@ -2044,6 +2525,20 @@
                 updateThemeUI();
                 updatePetUI();
                 updateLocationHint();
+
+                // 离线模式
+                updateOfflineUI();
+                updateNetworkStatus();
+                if (tempOffline) {
+                    setTimeout(updateCacheDisplay, 800);
+                }
+
+                // 定时更新缓存状态（每 30 秒）
+                setInterval(function() {
+                    if (tempOffline) {
+                        updateCacheDisplay();
+                    }
+                }, 30000);
 
                 if (settings.theme === 'time') {
                     startTimeThemeTimer();
@@ -2060,6 +2555,7 @@
                     dogPages: tempPet.dogPages
                 }));
                 localStorage.setItem('themeColor', tempColor);
+                localStorage.setItem('offlineMode', tempOffline ? 'true' : 'false');
             }
 
             // ---------- 通知其他页面 ----------
@@ -2069,7 +2565,6 @@
                 } catch (e) {}
                 localStorage.setItem('petSettings_trigger', Date.now().toString());
                 localStorage.removeItem('petSettings_trigger');
-                // 通知其他页面主题色已变化
                 try {
                     window.postMessage({ type: 'themeColorChanged' }, '*');
                 } catch (e) {}
@@ -2104,40 +2599,6 @@
                     saveSettings();
                     notifyPetChange();
                 }
-            }
-
-            // ---------- 设置主题色 ----------
-            function setThemeColor(color, updateInitial = true) {
-                if (!color) return;
-                // 应用到当前页面
-                document.documentElement.style.setProperty('--theme-color', color);
-                const rgb = hexToRgb(color);
-                document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
-                // 更新选择器的值
-                themeColorPicker.value = color;
-                // 更新色块的高亮状态
-                colorSwatches.forEach(swatch => {
-                    const isActive = swatch.dataset.color === color;
-                    swatch.classList.toggle('active', isActive);
-                    swatch.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
-                });
-                // 更新临时变量
-                tempColor = color;
-                if (updateInitial) {
-                    initialColor = color;
-                }
-            }
-
-            function hexToRgb(hex) {
-                if (hex && hex.startsWith('#')) {
-                    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                    return result ? {
-                        r: parseInt(result[1], 16),
-                        g: parseInt(result[2], 16),
-                        b: parseInt(result[3], 16)
-                    } : { r: 108, g: 99, b: 255 };
-                }
-                return { r: 108, g: 99, b: 255 };
             }
 
             // ---------- 主题定时器 ----------
@@ -2190,6 +2651,7 @@
                         dogPages: ALL_PAGES.map(p => p.id)
                     };
                     tempColor = DEFAULT_COLOR;
+                    tempOffline = false;
                     settings = { ...DEFAULTS };
                     initialTheme = DEFAULTS.theme;
                     initialPet = {
@@ -2199,6 +2661,7 @@
                         dogPages: [...tempPet.dogPages]
                     };
                     initialColor = DEFAULT_COLOR;
+                    initialOffline = false;
 
                     saveSettings();
                     applySettings(true);
@@ -2218,182 +2681,236 @@
                             'transparent';
                     });
 
+                    // 重置离线模式
+                    updateOfflineUI();
+                    localStorage.setItem('offlineMode', 'false');
+                    if ('caches' in window) {
+                        caches.keys().then(function(keys) {
+                            keys.forEach(function(key) {
+                                caches.delete(key);
+                            });
+                        }).catch(function() {});
+                    }
+
                     if (settings.theme !== 'time') stopTimeThemeTimer();
                     notifyPetChange();
                     showToast('🔄 已恢复默认设置');
                 });
             }
 
-            // ---------- 初始化 ----------
-            function initSettings() {
-                // 主题按钮
-                document.querySelectorAll('.theme-grid .opt-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const value = this.dataset.value;
-                        tempTheme = value;
-                        if (value === 'time') {
-                            const html = document.documentElement;
-                            const target = getThemeByHour();
-                            html.setAttribute('data-theme', target);
-                            const toggle = document.getElementById('themeToggle');
-                            if (toggle) toggle.textContent = target === 'dark' ? '🌙' : '☀️';
-                        } else {
-                            applySettings(false);
-                        }
-                        updateThemeUI();
-                    });
-                });
+            // ============================================================
+            //  应用按钮（人机验证 + 保存）
+            // ============================================================
 
-                // 颜色选择器变化（实时预览，不保存）
-                themeColorPicker.addEventListener('input', function(e) {
-                    const color = this.value;
-                    // 实时预览到页面
+            let isVerified = false;
+            const applyBtn = document.getElementById('applyBtn');
+
+            // 人机验证状态（由 verify.html 控制）
+            // 这里简化：如果 localStorage 有 verified，则启用按钮
+            function checkVerification() {
+                const verified = localStorage.getItem('verified');
+                if (verified) {
+                    applyBtn.disabled = false;
+                    applyBtn.textContent = '✅ 应用';
+                } else {
+                    applyBtn.disabled = true;
+                    applyBtn.textContent = '🔒 请先完成验证';
+                }
+            }
+
+            // 监听验证状态变化
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'verified') {
+                    checkVerification();
+                }
+            });
+
+            // 页面加载时检查
+            checkVerification();
+
+            applyBtn.addEventListener('click', function() {
+                if (this.disabled) return;
+
+                const themeModeChanged = hasThemeModeChanged();
+                const petChanged = hasPetChanged();
+                const colorChanged = hasColorChanged();
+                const offlineChanged = hasOfflineChanged();
+
+                if (!themeModeChanged && !petChanged && !colorChanged && !offlineChanged) {
+                    showToast('💡 没有检测到任何变更');
+                    return;
+                }
+
+                // 保存主题色
+                if (colorChanged) {
+                    localStorage.setItem('themeColor', tempColor);
+                    initialColor = tempColor;
+                }
+
+                // 保存离线模式
+                if (offlineChanged) {
+                    localStorage.setItem('offlineMode', tempOffline ? 'true' : 'false');
+                    initialOffline = tempOffline;
+                    if (tempOffline) {
+                        registerSW().then(function() {
+                            setTimeout(updateCacheDisplay, 500);
+                        }).catch(function() {});
+                    } else {
+                        if ('caches' in window) {
+                            caches.keys().then(function(keys) {
+                                keys.forEach(function(key) {
+                                    caches.delete(key);
+                                });
+                            }).catch(function() {});
+                        }
+                    }
+                }
+
+                // 保存主题模式
+                settings.theme = tempTheme;
+                saveSettings();
+
+                // 应用主题模式
+                applySettings(true);
+
+                // 如果颜色变了，也应用到页面
+                if (colorChanged) {
+                    setThemeColor(tempColor, true);
+                }
+
+                if (tempTheme !== 'time') stopTimeThemeTimer();
+                notifyPetChange();
+
+                const parts = [];
+                if (themeModeChanged) {
+                    const themeNames = {
+                        'light': '☀️ 亮色',
+                        'dark': '🌙 暗色',
+                        'auto': '🔄 跟随系统',
+                        'time': '⏰ 跟随时间'
+                    };
+                    parts.push('主题：' + (themeNames[tempTheme] || tempTheme));
+                }
+                if (colorChanged) {
+                    parts.push('🎨 主题色：' + tempColor);
+                }
+                if (petChanged) {
+                    const petChanges = getPetChangeSummary();
+                    if (petChanges.length) {
+                        parts.push('宠物：' + petChanges.join('；'));
+                    }
+                }
+                if (offlineChanged) {
+                    parts.push('📶 离线模式：' + (tempOffline ? '已开启' : '已关闭'));
+                }
+                showToast('✅ 已应用 · ' + parts.join('；'));
+            });
+
+            // ============================================================
+            //  初始化
+            // ============================================================
+
+            // 主题按钮
+            document.querySelectorAll('.theme-grid .opt-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const value = this.dataset.value;
+                    tempTheme = value;
+                    if (value === 'time') {
+                        const html = document.documentElement;
+                        const target = getThemeByHour();
+                        html.setAttribute('data-theme', target);
+                        const toggle = document.getElementById('themeToggle');
+                        if (toggle) toggle.textContent = target === 'dark' ? '🌙' : '☀️';
+                    } else {
+                        applySettings(false);
+                    }
+                    updateThemeUI();
+                });
+            });
+
+            // 颜色选择器
+            themeColorPicker.addEventListener('input', function(e) {
+                const color = this.value;
+                document.documentElement.style.setProperty('--theme-color', color);
+                const rgb = hexToRgb(color);
+                document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+                colorSwatches.forEach(swatch => {
+                    const isActive = swatch.dataset.color === color;
+                    swatch.classList.toggle('active', isActive);
+                    swatch.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
+                });
+                tempColor = color;
+            });
+
+            colorSwatches.forEach(swatch => {
+                swatch.addEventListener('click', function() {
+                    const color = this.dataset.color;
                     document.documentElement.style.setProperty('--theme-color', color);
                     const rgb = hexToRgb(color);
                     document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
-                    // 更新色块高亮
-                    colorSwatches.forEach(swatch => {
-                        const isActive = swatch.dataset.color === color;
-                        swatch.classList.toggle('active', isActive);
-                        swatch.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
+                    colorSwatches.forEach(s => {
+                        const isActive = s.dataset.color === color;
+                        s.classList.toggle('active', isActive);
+                        s.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
                     });
-                    // 保存到临时变量（等待点击应用才真正保存）
+                    themeColorPicker.value = color;
                     tempColor = color;
                 });
+            });
 
-                // 预设色块点击（实时预览，不保存）
-                colorSwatches.forEach(swatch => {
-                    swatch.addEventListener('click', function() {
-                        const color = this.dataset.color;
-                        // 实时预览到页面
-                        document.documentElement.style.setProperty('--theme-color', color);
-                        const rgb = hexToRgb(color);
-                        document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
-                        // 更新色块高亮
-                        colorSwatches.forEach(s => {
-                            const isActive = s.dataset.color === color;
-                            s.classList.toggle('active', isActive);
-                            s.style.borderColor = isActive ? 'var(--text-primary)' : 'transparent';
-                        });
-                        themeColorPicker.value = color;
-                        // 保存到临时变量（等待点击应用才真正保存）
-                        tempColor = color;
-                    });
-                });
+            // 重置
+            document.getElementById('settingsReset').addEventListener('click', resetSettings);
 
-                // 应用按钮
-                document.getElementById('applyBtn').addEventListener('click', function() {
-                    const themeModeChanged = hasThemeModeChanged();
-                    const petChanged = hasPetChanged();
-                    const colorChanged = hasColorChanged();
-
-                    if (!themeModeChanged && !petChanged && !colorChanged) {
-                        showToast('💡 没有检测到任何变更');
-                        return;
-                    }
-
-                    // 保存主题色
-                    if (colorChanged) {
-                        localStorage.setItem('themeColor', tempColor);
-                        initialColor = tempColor;
-                    }
-
-                    // 保存主题模式
-                    settings.theme = tempTheme;
+            // 导航栏主题切换
+            const toggle = document.getElementById('themeToggle');
+            if (toggle) {
+                toggle.addEventListener('click', function() {
+                    const current = document.documentElement.getAttribute('data-theme');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    tempTheme = next;
+                    settings.theme = next;
                     saveSettings();
-
-                    // 应用主题模式
                     applySettings(true);
-
-                    // 如果颜色变了，也应用到页面
-                    if (colorChanged) {
-                        setThemeColor(tempColor, true);
-                    }
-
-                    if (tempTheme !== 'time') stopTimeThemeTimer();
+                    stopTimeThemeTimer();
+                    updateThemeUI();
                     notifyPetChange();
-
-                    const parts = [];
-                    if (themeModeChanged) {
-                        const themeNames = {
-                            'light': '☀️ 亮色',
-                            'dark': '🌙 暗色',
-                            'auto': '🔄 跟随系统',
-                            'time': '⏰ 跟随时间'
-                        };
-                        parts.push('主题：' + (themeNames[tempTheme] || tempTheme));
-                    }
-                    if (colorChanged) {
-                        parts.push('🎨 主题色：' + tempColor);
-                    }
-                    if (petChanged) {
-                        const petChanges = getPetChangeSummary();
-                        if (petChanges.length) {
-                            parts.push('宠物：' + petChanges.join('；'));
-                        }
-                    }
-                    showToast('✅ 已应用 · ' + parts.join('；'));
+                    initialTheme = next;
+                    showToast('✅ 已切换到 ' + (next === 'dark' ? '🌙 暗色' : '☀️ 亮色') + ' 模式');
                 });
+            }
 
-                // 重置
-                document.getElementById('settingsReset').addEventListener('click', resetSettings);
-
-                // 导航栏主题切换
-                const toggle = document.getElementById('themeToggle');
-                if (toggle) {
-                    toggle.addEventListener('click', function() {
-                        const current = document.documentElement.getAttribute('data-theme');
-                        const next = current === 'dark' ? 'light' : 'dark';
-                        tempTheme = next;
-                        settings.theme = next;
-                        saveSettings();
-                        applySettings(true);
-                        stopTimeThemeTimer();
-                        updateThemeUI();
-                        notifyPetChange();
-                        initialTheme = next;
-                        showToast('✅ 已切换到 ' + (next === 'dark' ? '🌙 暗色' : '☀️ 亮色') + ' 模式');
-                    });
-                }
-
-                // 系统主题监听
-                if (window.matchMedia) {
-                    const media = window.matchMedia('(prefers-color-scheme: dark)');
-                    media.addEventListener('change', function(e) {
-                        if (settings.theme === 'auto') {
-                            const html = document.documentElement;
-                            html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-                            const toggle = document.getElementById('themeToggle');
-                            if (toggle) toggle.textContent = e.matches ? '🌙' : '☀️';
-                        }
-                    });
-                }
-
-                // 时钟
-                const clockDisplay = document.getElementById('clockDisplay');
-                if (clockDisplay) {
-                    function updateClock() {
-                        const now = new Date();
-                        const h = String(now.getHours()).padStart(2, '0');
-                        const m = String(now.getMinutes()).padStart(2, '0');
-                        const s = String(now.getSeconds()).padStart(2, '0');
-                        clockDisplay.textContent = h + ':' + m + ':' + s;
+            // 系统主题监听
+            if (window.matchMedia) {
+                const media = window.matchMedia('(prefers-color-scheme: dark)');
+                media.addEventListener('change', function(e) {
+                    if (settings.theme === 'auto') {
+                        const html = document.documentElement;
+                        html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+                        const toggle = document.getElementById('themeToggle');
+                        if (toggle) toggle.textContent = e.matches ? '🌙' : '☀️';
                     }
-                    updateClock();
-                    setInterval(updateClock, 1000);
+                });
+            }
+
+            // 时钟
+            const clockDisplay = document.getElementById('clockDisplay');
+            if (clockDisplay) {
+                function updateClock() {
+                    const now = new Date();
+                    const h = String(now.getHours()).padStart(2, '0');
+                    const m = String(now.getMinutes()).padStart(2, '0');
+                    const s = String(now.getSeconds()).padStart(2, '0');
+                    clockDisplay.textContent = h + ':' + m + ':' + s;
                 }
-
-                // 加载设置
-                loadSettings();
-
-                console.log('⚙️ 设置页面已加载');
+                updateClock();
+                setInterval(updateClock, 1000);
             }
 
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initSettings);
-            } else {
-                initSettings();
-            }
+            // 加载设置
+            loadSettings();
+
+            console.log('⚙️ 设置页面已加载');
+            console.log('📶 离线模式状态:', tempOffline ? '已开启' : '已关闭');
 
         })();
     </script>

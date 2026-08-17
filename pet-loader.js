@@ -1,181 +1,165 @@
-﻿// ============================================================
-//  pet-loader.js - 统一的宠物加载器 + 主题色应用
-//  自动读取 localStorage 配置，控制猫和狗的显示
-//  同时应用用户自定义的主题色（所有页面同步）
+// ============================================================
+//  离线模式（无网模式）
 // ============================================================
 
 (function() {
     'use strict';
 
-    if (window.__petLoaderLoaded) return;
-    window.__petLoaderLoaded = true;
+    // ---------- 检测是否支持 Service Worker ----------
+    function isSWSupported() {
+        return 'serviceWorker' in navigator;
+    }
 
-    // ---------- 所有页面列表 ----------
-    const ALL_PAGES = [
-        'index', 'about', 'project', 'game',
-        'thankyou', 'mcskin3d', 'brick', 'minesweeper'
-    ];
+    // ---------- 注册 Service Worker ----------
+    function registerSW() {
+        if (!isSWSupported()) return;
+        // 只在离线模式开启时注册
+        const offlineMode = localStorage.getItem('offlineMode') === 'true';
+        if (!offlineMode) return;
 
-    // ---------- 读取配置 ----------
-    function getPetSettings() {
-        const defaults = {
-            cat: true,
-            dog: true,
-            catPages: ALL_PAGES,
-            dogPages: ALL_PAGES
-        };
-        try {
-            const saved = localStorage.getItem('petSettings');
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                return {
-                    cat: parsed.cat !== undefined ? parsed.cat : defaults.cat,
-                    dog: parsed.dog !== undefined ? parsed.dog : defaults.dog,
-                    catPages: parsed.catPages || defaults.catPages,
-                    dogPages: parsed.dogPages || defaults.dogPages
-                };
-            }
-        } catch (e) {
-            console.warn('宠物配置读取失败，使用默认值', e);
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                console.log('[离线模式] Service Worker 注册成功');
+            })
+            .catch(function(err) {
+                console.warn('[离线模式] Service Worker 注册失败:', err);
+            });
+    }
+
+    // ---------- 创建离线横幅 ----------
+    function createOfflineBanner() {
+        // 检查是否已存在
+        if (document.querySelector('.offline-banner')) return;
+
+        const banner = document.createElement('div');
+        banner.className = 'offline-banner';
+        banner.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 99999;
+            background: #f59e0b;
+            color: #1a1a2e;
+            padding: 8px 16px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: none;
+            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.3);
+            letter-spacing: 0.3px;
+            pointer-events: none;
+        `;
+        banner.id = 'offlineBanner';
+        banner.innerHTML = '📡 离线模式 · 当前显示缓存内容';
+
+        // 暗色模式适配
+        if (document.documentElement.getAttribute('data-theme') === 'dark') {
+            banner.style.background = '#b45309';
+            banner.style.color = '#fef3c7';
         }
-        return defaults;
+
+        document.body.appendChild(banner);
+        return banner;
     }
 
-    // ---------- 获取当前页面 ----------
-    function getCurrentPage() {
-        const pathname = window.location.pathname;
-        const page = pathname.split('/').pop() || 'index.html';
-        return page.replace('.html', '');
-    }
+    // ---------- 更新横幅状态 ----------
+    function updateOfflineBanner() {
+        const banner = document.getElementById('offlineBanner');
+        if (!banner) return;
 
-    // ---------- 判断是否显示 ----------
-    function shouldShowPet(petType, settings) {
-        if (petType === 'cat' && !settings.cat) return false;
-        if (petType === 'dog' && !settings.dog) return false;
+        const offlineMode = localStorage.getItem('offlineMode') === 'true';
 
-        const currentPage = getCurrentPage();
-        if (currentPage === 'settings') return false;
-
-        const pages = petType === 'cat' ? settings.catPages : settings.dogPages;
-        if (!pages || pages.length === 0) return false;
-
-        return pages.includes(currentPage);
-    }
-
-    // ---------- 主题色工具 ----------
-    function hexToRgb(hex) {
-        if (hex && hex.startsWith('#')) {
-            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16),
-                g: parseInt(result[2], 16),
-                b: parseInt(result[3], 16)
-            } : { r: 108, g: 99, b: 255 };
+        // 如果离线模式未开启，隐藏横幅
+        if (!offlineMode) {
+            banner.style.display = 'none';
+            return;
         }
-        return { r: 108, g: 99, b: 255 };
-    }
 
-    function applyThemeColor() {
-        const color = localStorage.getItem('themeColor');
-        if (color) {
-            document.documentElement.style.setProperty('--theme-color', color);
-            const rgb = hexToRgb(color);
-            document.documentElement.style.setProperty('--theme-color-rgb', `${rgb.r}, ${rgb.g}, ${rgb.b}`);
-            console.log('🎨 主题色已应用:', color);
+        // 检测网络状态
+        const isOffline = !navigator.onLine;
+
+        // 检测是否从缓存加载（通过 Service Worker 的响应头判断，这里简化：断网时显示）
+        if (isOffline) {
+            banner.style.display = 'block';
         } else {
-            // 如果没有保存的主题色，使用默认紫色
-            const defaultColor = '#6c63ff';
-            document.documentElement.style.setProperty('--theme-color', defaultColor);
-            document.documentElement.style.setProperty('--theme-color-rgb', '108, 99, 255');
+            // 联网时隐藏横幅
+            banner.style.display = 'none';
         }
     }
 
-    // ---------- 加载宠物 ----------
-    let iframe = null;
-    let currentShown = false;
+    // ---------- 监听网络变化 ----------
+    function initOfflineMode() {
+        // 创建横幅
+        const banner = createOfflineBanner();
 
-    function loadPet() {
-        const settings = getPetSettings();
-        const catShown = shouldShowPet('cat', settings);
-        const dogShown = shouldShowPet('dog', settings);
-        const shouldShow = catShown || dogShown;
+        // 注册 Service Worker
+        registerSW();
 
-        if (shouldShow === currentShown && iframe) {
-            const params = new URLSearchParams();
-            params.set('cat', catShown ? 'true' : 'false');
-            params.set('dog', dogShown ? 'true' : 'false');
-            const newSrc = 'pet.html?' + params.toString();
-            if (iframe && iframe.src !== newSrc) {
-                iframe.src = newSrc;
+        // 初始更新
+        setTimeout(updateOfflineBanner, 500);
+
+        // 监听网络变化
+        window.addEventListener('online', function() {
+            updateOfflineBanner();
+        });
+
+        window.addEventListener('offline', function() {
+            updateOfflineBanner();
+        });
+
+        // 监听 localStorage 变化（跨标签页同步离线模式状态）
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'offlineMode') {
+                updateOfflineBanner();
+                if (e.newValue === 'true') {
+                    registerSW();
+                }
             }
-            return;
-        }
+        });
 
-        currentShown = shouldShow;
-
-        if (!shouldShow) {
-            if (iframe) {
-                iframe.remove();
-                iframe = null;
+        // 监听来自设置页的消息
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'offlineModeChanged') {
+                updateOfflineBanner();
             }
-            return;
-        }
+        });
 
-        const params = new URLSearchParams();
-        params.set('cat', catShown ? 'true' : 'false');
-        params.set('dog', dogShown ? 'true' : 'false');
-        const src = 'pet.html?' + params.toString();
+        // 页面可见性变化时重新检查
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                setTimeout(updateOfflineBanner, 200);
+            }
+        });
 
-        if (iframe) {
-            iframe.src = src;
-            return;
-        }
+        // 主题变化时更新横幅颜色
+        const observer = new MutationObserver(function() {
+            const banner = document.getElementById('offlineBanner');
+            if (!banner) return;
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                banner.style.background = '#b45309';
+                banner.style.color = '#fef3c7';
+            } else {
+                banner.style.background = '#f59e0b';
+                banner.style.color = '#1a1a2e';
+            }
+        });
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme']
+        });
 
-        iframe = document.createElement('iframe');
-        iframe.src = src;
-        iframe.style.cssText =
-            'position:fixed;top:0;left:0;width:100%;height:100%;border:none;z-index:9999;pointer-events:auto;background:transparent;';
-        iframe.scrolling = 'no';
-        document.body.appendChild(iframe);
+        console.log('📶 离线模式已初始化');
     }
 
-    // ---------- 监听变化 ----------
-    window.addEventListener('storage', function(e) {
-        if (e.key === 'petSettings' || e.key === 'petSettings_trigger') {
-            setTimeout(loadPet, 50);
-        }
-        if (e.key === 'themeColor') {
-            setTimeout(applyThemeColor, 20);
-        }
-    });
-
-    window.addEventListener('message', function(e) {
-        if (e.data && e.data.type === 'petSettingsChanged') {
-            setTimeout(loadPet, 50);
-        }
-        if (e.data && e.data.type === 'themeColorChanged') {
-            setTimeout(applyThemeColor, 20);
-        }
-    });
-
-    document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-            setTimeout(applyThemeColor, 50);
-            setTimeout(loadPet, 100);
-        }
-    });
-
-    // ---------- 启动 ----------
-    // 先应用主题色
-    applyThemeColor();
-
-    // 再加载宠物
+    // ---------- 启动离线模式 ----------
+    // 等待 DOM 加载完成
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', loadPet);
+        document.addEventListener('DOMContentLoaded', initOfflineMode);
     } else {
-        setTimeout(loadPet, 100);
+        initOfflineMode();
     }
 
-    console.log('🐱🐶 宠物加载器已启动（按页面勾选显示）');
-    console.log('🎨 主题色自动同步已开启');
 })();
