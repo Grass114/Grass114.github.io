@@ -1,12 +1,14 @@
 // ============================================================
-//  Service Worker - 离线模式缓存
-//  缓存所有页面和资源，断网时从缓存加载
+//  Service Worker - 离线模式主动缓存
+//  开启后主动缓存所有页面，无需用户逐个访问
+//  缓存名称: bluecat-cache-v1
+//  需要缓存: 所有HTML页面 + 资源文件
 // ============================================================
 
 const CACHE_NAME = 'bluecat-cache-v1';
 
-// 需要缓存的页面列表
-const PAGES = [
+// ===== 需要主动缓存的所有页面 =====
+const ALL_PAGES = [
     '/',
     '/index.html',
     '/about.html',
@@ -20,9 +22,10 @@ const PAGES = [
     '/search.html',
     '/verify.html',
     '/pet.html',
+    '/404.html',
 ];
 
-// 需要缓存的资源
+// ===== 需要主动缓存的资源 =====
 const ASSETS = [
     '/favicon.png',
     '/mcskin3d.ico',
@@ -30,27 +33,53 @@ const ASSETS = [
     '/pet-loader.js',
 ];
 
-// 所有需要缓存的资源
-const CACHE_URLS = [...PAGES, ...ASSETS];
+// ===== 所有需要缓存的资源 =====
+const PRECACHE_URLS = [...ALL_PAGES, ...ASSETS];
+
+// 记录已缓存的 URL
+let cachedUrls = [];
 
 // ============================================================
-//  install 事件 - 缓存资源
+//  install 事件 - 主动预缓存所有资源
 // ============================================================
 self.addEventListener('install', function(event) {
+    console.log('[SW] 📦 开始主动缓存所有页面...');
+    console.log('[SW] 📄 需要缓存的页面:', ALL_PAGES.length, '个');
+    console.log('[SW] 📦 需要缓存的资源:', ASSETS.length, '个');
+    console.log('[SW] 📋 总计:', PRECACHE_URLS.length, '个文件');
+
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(function(cache) {
-                console.log('[SW] 开始缓存资源...');
-                // 逐个添加，失败的不影响整体
-                return Promise.allSettled(
-                    CACHE_URLS.map(function(url) {
-                        return cache.add(url).catch(function(err) {
-                            console.warn('[SW] 缓存失败:', url, err);
+                // 逐个添加，确保即使某个失败也不影响整体
+                const promises = PRECACHE_URLS.map(function(url) {
+                    return cache.add(url)
+                        .then(function() {
+                            console.log('[SW] ✅ 缓存成功:', url);
+                            cachedUrls.push(url);
+                            // 发送进度消息给页面
+                            self.clients.matchAll().then(function(clients) {
+                                clients.forEach(function(client) {
+                                    client.postMessage({
+                                        type: 'cacheProgress',
+                                        current: cachedUrls.length,
+                                        total: PRECACHE_URLS.length,
+                                        url: url
+                                    });
+                                });
+                            });
+                        })
+                        .catch(function(err) {
+                            console.warn('[SW] ⚠️ 缓存失败:', url, err);
                         });
-                    })
-                ).then(function() {
-                    console.log('[SW] 缓存完成');
                 });
+
+                return Promise.allSettled(promises)
+                    .then(function(results) {
+                        const successCount = results.filter(r => r.status === 'fulfilled').length;
+                        console.log('[SW] ✅ 预缓存完成，成功:', successCount, '/', PRECACHE_URLS.length);
+                        return cache;
+                    });
             })
             .then(function() {
                 // 强制激活，控制所有页面
@@ -68,7 +97,7 @@ self.addEventListener('activate', function(event) {
             return Promise.all(
                 cacheNames.map(function(cacheName) {
                     if (cacheName !== CACHE_NAME) {
-                        console.log('[SW] 删除旧缓存:', cacheName);
+                        console.log('[SW] 🗑️ 删除旧缓存:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -98,11 +127,14 @@ self.addEventListener('fetch', function(event) {
             caches.match(request)
                 .then(function(response) {
                     if (response) {
+                        console.log('[SW] 📄 从缓存返回:', url.pathname);
                         return response;
                     }
                     // 缓存中没有，尝试网络
+                    console.log('[SW] 🌐 网络请求:', url.pathname);
                     return fetch(request).catch(function() {
-                        // 网络失败，返回离线提示页
+                        // 网络失败，返回首页
+                        console.log('[SW] 📡 离线状态，返回首页');
                         return caches.match('/index.html');
                     });
                 })
@@ -119,7 +151,6 @@ self.addEventListener('fetch', function(event) {
                 }
                 // 缓存中没有，尝试网络并缓存
                 return fetch(request).then(function(networkResponse) {
-                    // 只缓存成功的响应
                     if (networkResponse && networkResponse.status === 200) {
                         const responseClone = networkResponse.clone();
                         caches.open(CACHE_NAME).then(function(cache) {
@@ -144,26 +175,6 @@ self.addEventListener('fetch', function(event) {
 self.addEventListener('message', function(event) {
     const data = event.data;
 
-    // 清理缓存
-    if (data && data.type === 'clearCache') {
-        event.waitUntil(
-            caches.delete(CACHE_NAME).then(function() {
-                console.log('[SW] 缓存已清理');
-                // 重新缓存
-                return caches.open(CACHE_NAME).then(function(cache) {
-                    return Promise.allSettled(
-                        CACHE_URLS.map(function(url) {
-                            return cache.add(url).catch(function(err) {
-                                console.warn('[SW] 重新缓存失败:', url, err);
-                            });
-                        })
-                    );
-                });
-            })
-        );
-        return;
-    }
-
     // 获取缓存状态
     if (data && data.type === 'getCacheStatus') {
         event.waitUntil(
@@ -171,7 +182,6 @@ self.addEventListener('message', function(event) {
                 return cache.keys();
             }).then(function(keys) {
                 const count = keys.length;
-                // 计算缓存大小（估算）
                 let totalSize = 0;
                 return Promise.all(
                     keys.map(function(request) {
@@ -184,7 +194,6 @@ self.addEventListener('message', function(event) {
                         });
                     })
                 ).then(function() {
-                    // 发送响应给页面
                     if (event.ports && event.ports.length) {
                         event.ports[0].postMessage({
                             count: count,
@@ -194,5 +203,57 @@ self.addEventListener('message', function(event) {
                 });
             })
         );
+        return;
+    }
+
+    // 清理缓存
+    if (data && data.type === 'clearCache') {
+        event.waitUntil(
+            caches.delete(CACHE_NAME).then(function() {
+                console.log('[SW] 🗑️ 缓存已清理');
+                // 重新预缓存
+                return caches.open(CACHE_NAME).then(function(cache) {
+                    const promises = PRECACHE_URLS.map(function(url) {
+                        return cache.add(url).catch(function(err) {
+                            console.warn('[SW] ⚠️ 重新缓存失败:', url, err);
+                        });
+                    });
+                    return Promise.allSettled(promises);
+                });
+            })
+        );
+        return;
+    }
+
+    // 主动缓存所有页面（手动触发）
+    if (data && data.type === 'precacheAll') {
+        event.waitUntil(
+            caches.open(CACHE_NAME).then(function(cache) {
+                const promises = PRECACHE_URLS.map(function(url) {
+                    return cache.add(url)
+                        .then(function() {
+                            console.log('[SW] ✅ 手动缓存成功:', url);
+                            // 通知页面进度
+                            self.clients.matchAll().then(function(clients) {
+                                clients.forEach(function(client) {
+                                    client.postMessage({
+                                        type: 'cacheProgress',
+                                        current: cachedUrls.length + 1,
+                                        total: PRECACHE_URLS.length,
+                                        url: url
+                                    });
+                                });
+                            });
+                        })
+                        .catch(function(err) {
+                            console.warn('[SW] ⚠️ 手动缓存失败:', url, err);
+                        });
+                });
+                return Promise.allSettled(promises);
+            })
+        );
+        return;
     }
 });
+
+console.log('[SW] 🚀 Service Worker 已加载');

@@ -6,7 +6,6 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>设置 · BlueCat114</title>
     <style>
-        /* ===== 颜色变量 ===== */
         :root {
             --theme-color: #6c63ff;
             --theme-color-rgb: 108, 99, 255;
@@ -84,7 +83,6 @@
             --toast-text: #ffffff;
         }
 
-        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -108,7 +106,6 @@
             color: var(--text-primary);
         }
 
-        /* ===== 导航条 ===== */
         .top-bar {
             position: fixed;
             top: 0;
@@ -239,9 +236,6 @@
             transform: scale(1.1);
         }
 
-        /* ============================================================
-           Toast 提示条 —— 居中显示
-        ============================================================ */
         .toast-container {
             position: fixed;
             top: 50%;
@@ -307,7 +301,6 @@
             color: #ffffff;
         }
 
-        /* ===== 主容器 ===== */
         .main {
             flex: 1;
             display: flex;
@@ -339,7 +332,6 @@
             transition: color 0.4s;
         }
 
-        /* ===== 设置卡片（左右分栏） ===== */
         .settings-card {
             background: var(--card-bg);
             backdrop-filter: blur(8px);
@@ -359,7 +351,6 @@
             box-shadow: 0 14px 40px var(--shadow-hover);
         }
 
-        /* ===== 左侧边栏（父级） ===== */
         .settings-sidebar {
             width: 140px;
             flex-shrink: 0;
@@ -408,7 +399,6 @@
             font-size: 13px;
         }
 
-        /* ===== 右侧内容区 ===== */
         .settings-content {
             flex: 1;
             padding: 20px 24px 20px 24px;
@@ -438,7 +428,6 @@
             transition: color 0.4s;
         }
 
-        /* ===== 内容面板（切换） ===== */
         .content-panel {
             display: none;
             animation: panelFadeIn 0.25s ease;
@@ -458,7 +447,6 @@
             }
         }
 
-        /* ===== 主题选项 ===== */
         .theme-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -500,7 +488,6 @@
             font-size: 15px;
         }
 
-        /* ===== 主题色 ===== */
         .theme-color-section {
             margin-top: 16px;
             padding-top: 14px;
@@ -563,7 +550,6 @@
             box-shadow: 0 0 0 2px var(--bg-start);
         }
 
-        /* ===== 宠物卡片 ===== */
         .pet-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -671,9 +657,6 @@
             background: var(--option-hover);
         }
 
-        /* ============================================================
-           显示位置 —— 每个宠物独立勾选页面
-        ============================================================ */
         .location-section {
             margin-top: 16px;
             padding-top: 14px;
@@ -847,17 +830,6 @@
             transition: border-color 0.4s;
         }
 
-        .offline-section .offline-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.4s;
-        }
-
         .offline-switch-row {
             display: flex;
             align-items: center;
@@ -995,7 +967,42 @@
             cursor: not-allowed;
         }
 
-        /* ===== 底部按钮 ===== */
+        /* 缓存进度 */
+        #cacheProgressContainer {
+            margin-top: 12px;
+        }
+
+        #cacheProgressContainer .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        #cacheProgressContainer .progress-track {
+            width: 100%;
+            height: 6px;
+            background: var(--option-border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        #cacheProgressContainer .progress-track .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--link-color);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+
+        #cacheCompleteStatus {
+            display: none;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #22c55e;
+        }
+
         .settings-footer {
             display: flex;
             flex-direction: column;
@@ -1063,7 +1070,6 @@
             background: rgba(239, 68, 68, 0.04);
         }
 
-        /* ===== 返回首页 ===== */
         .back-link {
             margin-top: 20px;
         }
@@ -1083,7 +1089,6 @@
             border-bottom-color: var(--link-hover);
         }
 
-        /* ===== 页脚 ===== */
         .footer {
             text-align: center;
             font-size: 14px;
@@ -1106,9 +1111,6 @@
             text-decoration: underline;
         }
 
-        /* ============================================================
-          确认弹窗
-        ============================================================ */
         .confirm-overlay {
             position: fixed;
             inset: 0;
@@ -1228,9 +1230,7 @@
             transform: scale(0.97);
         }
 
-        /* ============================================================
-          响应式
-        ============================================================ */
+        /* ===== 响应式 ===== */
         @media (max-width: 700px) {
             body {
                 padding: 66px 16px 16px 16px;
@@ -1636,7 +1636,6 @@
 </head>
 <body>
 
-    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
@@ -1652,7 +1651,6 @@
         </div>
     </div>
 
-    <!-- ===== Toast 提示 ===== -->
     <div class="toast-container" id="toastContainer">
         <div class="toast" id="toast">
             <span class="toast-icon">✅</span>
@@ -1661,7 +1659,6 @@
         </div>
     </div>
 
-    <!-- ===== 主要内容 ===== -->
     <div class="main">
 
         <div class="page-title">
@@ -1791,7 +1788,7 @@
                     <div class="section-title">
                         <span class="icon">📶</span> 离线模式
                     </div>
-                    <div class="section-desc">开启后断网也能访问已缓存的页面</div>
+                    <div class="section-desc">开启后自动缓存所有页面，断网也能访问</div>
 
                     <div class="offline-section">
                         <div class="offline-switch-row">
@@ -1806,19 +1803,32 @@
                         </div>
 
                         <div class="offline-status-detail" id="offlineStatusDetail">
-                            <span class="item">📄 已缓存：<span class="num" id="cacheCount">0</span> 个页面</span>
+                            <span class="item">📄 已缓存：<span class="num" id="cacheCount">0</span> / <span class="num" id="totalPages">14</span> 个页面</span>
                             <span class="item">💾 缓存大小：<span class="num" id="cacheSize">0</span> KB</span>
                             <span class="item" id="networkStatus">🌐 状态：<span class="num" style="color:#22c55e;">在线</span></span>
                         </div>
 
                         <div class="offline-actions">
-                            <button class="offline-btn" id="refreshCacheBtn">🔄 刷新缓存</button>
+                            <button class="offline-btn" id="precacheBtn">📥 立即缓存所有页面</button>
+                            <button class="offline-btn" id="refreshCacheBtn">🔄 刷新缓存状态</button>
                             <button class="offline-btn danger" id="clearCacheBtn">🗑️ 清理缓存</button>
                         </div>
+
+                        <div id="cacheProgressContainer" style="display:none; margin-top:12px;">
+                            <div class="progress-info">
+                                <span id="cacheProgressText">正在缓存页面...</span>
+                                <span id="cacheProgressPercent">0%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-bar" id="cacheProgressBar"></div>
+                            </div>
+                        </div>
+
+                        <div id="cacheCompleteStatus">✅ 所有页面已缓存完成！</div>
                     </div>
                 </div>
 
-                <!-- ===== 底部 ===== -->
+                <!-- 底部 -->
                 <div class="settings-footer">
                     <button class="apply-btn" id="applyBtn" disabled>🔒 请先完成验证</button>
                     <button class="settings-reset" id="settingsReset">🔄 恢复默认设置</button>
@@ -1851,9 +1861,7 @@
     <script src="pet-loader.js"></script>
 
     <script>
-        // ============================================================
-        //  人机验证检查
-        // ============================================================
+        // ===== 人机验证检查 =====
         (function() {
             const verified = localStorage.getItem('verified');
             const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
@@ -1871,10 +1879,8 @@
         (function() {
             'use strict';
 
-            // ---------- 年份 ----------
             document.getElementById('year').textContent = new Date().getFullYear();
 
-            // ---------- 所有页面列表 ----------
             const ALL_PAGES = [
                 { id: 'index', label: '🏠 首页' },
                 { id: 'about', label: '👤 关于我' },
@@ -1887,9 +1893,10 @@
                 { id: 'settings', label: '⚙️ 设置' },
                 { id: 'search', label: '🔍 搜索' },
                 { id: 'verify', label: '🛡️ 验证' },
+                { id: 'pet', label: '🐱 宠物' },
+                { id: '404', label: '❓ 404' },
             ];
 
-            // ---------- 默认设置 ----------
             const DEFAULTS = {
                 theme: 'auto',
                 pet: {
@@ -1924,7 +1931,7 @@
             let initialColor = DEFAULT_COLOR;
             let initialOffline = false;
 
-            // ---------- DOM ----------
+            // DOM
             const sidebarItems = document.querySelectorAll('.sidebar-item');
             const panels = {
                 theme: document.getElementById('panel-theme'),
@@ -1951,9 +1958,18 @@
             const offlineStatus = document.getElementById('offlineStatus');
             const cacheCount = document.getElementById('cacheCount');
             const cacheSize = document.getElementById('cacheSize');
+            const totalPages = document.getElementById('totalPages');
             const networkStatus = document.getElementById('networkStatus');
             const refreshCacheBtn = document.getElementById('refreshCacheBtn');
             const clearCacheBtn = document.getElementById('clearCacheBtn');
+            const precacheBtn = document.getElementById('precacheBtn');
+            const cacheProgressContainer = document.getElementById('cacheProgressContainer');
+            const cacheProgressBar = document.getElementById('cacheProgressBar');
+            const cacheProgressText = document.getElementById('cacheProgressText');
+            const cacheProgressPercent = document.getElementById('cacheProgressPercent');
+            const cacheCompleteStatus = document.getElementById('cacheCompleteStatus');
+
+            let isCaching = false;
 
             // 主题色
             const themeColorPicker = document.getElementById('themeColorPicker');
@@ -1979,7 +1995,7 @@
             }
             toastClose.addEventListener('click', hideToast);
 
-            // ---------- 确认弹窗 ----------
+            // 确认弹窗
             const confirmOverlay = document.getElementById('confirmOverlay');
             let confirmCallback = null;
 
@@ -2007,7 +2023,6 @@
                 if (e.key === 'Escape' && confirmOverlay.classList.contains('open')) hideConfirm();
             });
 
-            // ---------- 侧边栏 ----------
             function switchPanel(panelId) {
                 sidebarItems.forEach(item => {
                     item.classList.toggle('active', item.dataset.panel === panelId);
@@ -2023,7 +2038,7 @@
                 });
             });
 
-            // ---------- 页面复选框 ----------
+            // 页面复选框
             function renderPageCheckboxes(container, selectedPages) {
                 container.innerHTML = '';
                 ALL_PAGES.forEach(page => {
@@ -2081,7 +2096,6 @@
                 });
             }
 
-            // ---------- 更新位置提示 ----------
             function updateLocationHint() {
                 const anyEnabled = tempPet.cat || tempPet.dog;
                 if (!anyEnabled) {
@@ -2091,16 +2105,16 @@
 
                 const catCount = tempPet.catPages.length;
                 const dogCount = tempPet.dogPages.length;
-                const totalPages = ALL_PAGES.length;
+                const total = ALL_PAGES.length;
 
                 let parts = [];
                 if (tempPet.cat) {
-                    parts.push('🐱猫：' + catCount + '/' + totalPages + ' 页');
+                    parts.push('🐱猫：' + catCount + '/' + total + ' 页');
                 } else {
                     parts.push('🐱猫：已关闭');
                 }
                 if (tempPet.dog) {
-                    parts.push('🐶狗：' + dogCount + '/' + totalPages + ' 页');
+                    parts.push('🐶狗：' + dogCount + '/' + total + ' 页');
                 } else {
                     parts.push('🐶狗：已关闭');
                 }
@@ -2120,7 +2134,6 @@
                 updateLocationHint();
             }
 
-            // ---------- 宠物开关 ----------
             function updatePetUI() {
                 catCard.classList.toggle('on', tempPet.cat);
                 catSwitch.classList.toggle('on', tempPet.cat);
@@ -2157,7 +2170,6 @@
                 updatePetUI();
             });
 
-            // ---------- 全选/清空 ----------
             document.getElementById('selectAllPages').addEventListener('click', function() {
                 const allIds = ALL_PAGES.map(p => p.id);
                 if (tempPet.cat) {
@@ -2183,13 +2195,11 @@
                 updateLocationHint();
             });
 
-            // ---------- 主题 ----------
             function getThemeByHour() {
                 const h = new Date().getHours();
                 return (h >= 6 && h < 18) ? 'light' : 'dark';
             }
 
-            // ---------- 检测变更 ----------
             function hasThemeModeChanged() {
                 return tempTheme !== initialTheme;
             }
@@ -2246,12 +2256,10 @@
             //  离线模式
             // ============================================================
 
-            // 检查 Service Worker 是否支持
             function isSWSupported() {
                 return 'serviceWorker' in navigator;
             }
 
-            // 注册 Service Worker
             function registerSW() {
                 if (!isSWSupported()) {
                     console.warn('⚠️ 当前浏览器不支持 Service Worker');
@@ -2268,7 +2276,6 @@
                     });
             }
 
-            // 获取缓存状态
             function getCacheStatus() {
                 if (!isSWSupported()) {
                     return Promise.resolve({ count: 0, size: 0 });
@@ -2285,10 +2292,9 @@
                                 { type: 'getCacheStatus' },
                                 [messageChannel.port2]
                             );
-                            // 超时处理
                             setTimeout(function() {
                                 resolve({ count: 0, size: 0 });
-                            }, 2000);
+                            }, 3000);
                         }).catch(function() {
                             resolve({ count: 0, size: 0 });
                         });
@@ -2298,7 +2304,6 @@
                 });
             }
 
-            // 更新缓存状态显示
             function updateCacheDisplay() {
                 getCacheStatus().then(function(data) {
                     const count = data.count || 0;
@@ -2306,11 +2311,21 @@
                     cacheCount.textContent = count;
 
                     if (size < 1024) {
-                        cacheSize.textContent = size.toFixed(0);
+                        cacheSize.textContent = size.toFixed(0) + ' KB';
                     } else if (size < 1024 * 1024) {
                         cacheSize.textContent = (size / 1024).toFixed(1) + ' MB';
                     } else {
                         cacheSize.textContent = (size / (1024 * 1024)).toFixed(1) + ' MB';
+                    }
+
+                    const total = parseInt(totalPages.textContent) || 14;
+                    if (count >= total && total > 0) {
+                        cacheCompleteStatus.style.display = 'block';
+                        if (cacheProgressContainer) cacheProgressContainer.style.display = 'none';
+                    } else if (isCaching) {
+                        cacheCompleteStatus.style.display = 'none';
+                    } else {
+                        cacheCompleteStatus.style.display = 'none';
                     }
                 }).catch(function() {
                     cacheCount.textContent = '0';
@@ -2318,7 +2333,116 @@
                 });
             }
 
-            // 更新网络状态
+            function precacheAllPages() {
+                if (!isSWSupported()) {
+                    showToast('⚠️ 当前浏览器不支持离线模式');
+                    return;
+                }
+
+                if (isCaching) {
+                    showToast('⏳ 正在缓存中，请稍候...');
+                    return;
+                }
+
+                isCaching = true;
+                cacheProgressContainer.style.display = 'block';
+                cacheCompleteStatus.style.display = 'none';
+                precacheBtn.disabled = true;
+                precacheBtn.textContent = '⏳ 缓存中...';
+
+                navigator.serviceWorker.ready.then(function(registration) {
+                    if (registration.active) {
+                        registration.active.postMessage({ type: 'precacheAll' });
+                        showToast('📥 开始主动缓存所有页面...');
+                    }
+                }).catch(function() {
+                    registerSW().then(function() {
+                        setTimeout(function() {
+                            navigator.serviceWorker.ready.then(function(registration) {
+                                if (registration.active) {
+                                    registration.active.postMessage({ type: 'precacheAll' });
+                                    showToast('📥 开始主动缓存所有页面...');
+                                }
+                            });
+                        }, 1000);
+                    }).catch(function() {
+                        showToast('⚠️ 缓存启动失败');
+                        isCaching = false;
+                        precacheBtn.disabled = false;
+                        precacheBtn.textContent = '📥 立即缓存所有页面';
+                    });
+                });
+
+                let progress = 0;
+                const progressInterval = setInterval(function() {
+                    if (progress < 90) {
+                        progress += 5 + Math.random() * 10;
+                        if (progress > 90) progress = 90;
+                        updateProgress(progress);
+                    }
+                }, 800);
+
+                setTimeout(function() {
+                    clearInterval(progressInterval);
+                    updateCacheDisplay();
+                    getCacheStatus().then(function(data) {
+                        const count = data.count || 0;
+                        const total = parseInt(totalPages.textContent) || 14;
+                        const pct = Math.min(100, Math.round((count / total) * 100));
+                        updateProgress(pct);
+                        if (count >= total) {
+                            updateProgress(100);
+                            cacheCompleteStatus.style.display = 'block';
+                            showToast('✅ 所有页面已缓存完成！');
+                        } else {
+                            showToast('✅ 缓存已完成，已缓存 ' + count + ' 个页面');
+                        }
+                    });
+                    isCaching = false;
+                    precacheBtn.disabled = false;
+                    precacheBtn.textContent = '📥 立即缓存所有页面';
+                    setTimeout(function() {
+                        if (cacheProgressContainer) cacheProgressContainer.style.display = 'none';
+                    }, 3000);
+                }, 8000);
+            }
+
+            function updateProgress(percent) {
+                const p = Math.min(100, Math.max(0, percent));
+                if (cacheProgressBar) cacheProgressBar.style.width = p + '%';
+                if (cacheProgressPercent) cacheProgressPercent.textContent = Math.round(p) + '%';
+                if (cacheProgressText) {
+                    if (p < 100) {
+                        cacheProgressText.textContent = '正在缓存页面... ' + Math.round(p) + '%';
+                    } else {
+                        cacheProgressText.textContent = '✅ 缓存完成！';
+                    }
+                }
+            }
+
+            if (isSWSupported()) {
+                navigator.serviceWorker.addEventListener('message', function(event) {
+                    const data = event.data;
+                    if (data && data.type === 'cacheProgress') {
+                        const total = data.total || 14;
+                        const pct = Math.min(100, Math.round((data.current / total) * 100));
+                        updateProgress(pct);
+                        if (data.current >= total) {
+                            updateProgress(100);
+                            cacheCompleteStatus.style.display = 'block';
+                            setTimeout(function() {
+                                if (cacheProgressContainer) cacheProgressContainer.style.display = 'none';
+                            }, 2000);
+                            showToast('✅ 所有页面已缓存完成！');
+                            isCaching = false;
+                            precacheBtn.disabled = false;
+                            precacheBtn.textContent = '📥 立即缓存所有页面';
+                        }
+                        cacheCount.textContent = data.current;
+                    }
+                });
+            }
+
             function updateNetworkStatus() {
                 const online = navigator.onLine;
                 if (online) {
@@ -2328,7 +2452,6 @@
                 }
             }
 
-            // 更新离线模式 UI
             function updateOfflineUI() {
                 const isEnabled = tempOffline;
                 offlineSwitch.classList.toggle('on', isEnabled);
@@ -2336,36 +2459,31 @@
                 offlineStatus.style.color = isEnabled ? '#22c55e' : 'var(--text-muted)';
 
                 if (isEnabled) {
-                    // 尝试注册 SW
                     registerSW().then(function() {
-                        // 延迟一会再获取缓存状态
                         setTimeout(updateCacheDisplay, 500);
                     }).catch(function() {
-                        // 注册失败，但状态已保存
+                        // 注册失败
                     });
                 } else {
-                    // 关闭时只更新状态显示
                     cacheCount.textContent = '0';
                     cacheSize.textContent = '0 KB';
                 }
             }
 
-            // ---------- 离线模式事件 ----------
+            // 离线模式事件
             offlineSwitch.addEventListener('click', function() {
                 tempOffline = !tempOffline;
                 updateOfflineUI();
 
                 if (tempOffline) {
                     showToast('📶 正在开启离线模式...');
-                    // 注册 SW 并缓存
                     registerSW().then(function() {
                         setTimeout(function() {
                             updateCacheDisplay();
-                            showToast('✅ 离线模式已开启');
+                            showToast('✅ 离线模式已开启，点击「立即缓存所有页面」开始缓存');
                         }, 1000);
                     }).catch(function() {
                         showToast('⚠️ 离线模式开启失败，请检查网络');
-                        // 回退
                         tempOffline = false;
                         updateOfflineUI();
                     });
@@ -2374,29 +2492,14 @@
                 }
             });
 
-            // 刷新缓存
+            precacheBtn.addEventListener('click', precacheAllPages);
+
             refreshCacheBtn.addEventListener('click', function() {
-                if (!tempOffline) {
-                    showToast('⚠️ 请先开启离线模式');
-                    return;
-                }
-                showToast('⏳ 正在刷新缓存...');
-                registerSW().then(function() {
-                    setTimeout(function() {
-                        updateCacheDisplay();
-                        showToast('✅ 缓存已刷新');
-                    }, 1000);
-                }).catch(function() {
-                    showToast('⚠️ 刷新失败');
-                });
+                updateCacheDisplay();
+                showToast('🔄 缓存状态已刷新');
             });
 
-            // 清理缓存
             clearCacheBtn.addEventListener('click', function() {
-                if (!tempOffline) {
-                    showToast('⚠️ 请先开启离线模式');
-                    return;
-                }
                 showConfirm(function() {
                     if (isSWSupported()) {
                         navigator.serviceWorker.ready.then(function(registration) {
@@ -2405,7 +2508,6 @@
                             }
                         }).catch(function() {});
                     }
-                    // 同时清除 caches API
                     if ('caches' in window) {
                         caches.keys().then(function(keys) {
                             keys.forEach(function(key) {
@@ -2415,12 +2517,14 @@
                     }
                     setTimeout(function() {
                         updateCacheDisplay();
+                        cacheCount.textContent = '0';
+                        cacheSize.textContent = '0 KB';
+                        cacheCompleteStatus.style.display = 'none';
                         showToast('🗑️ 缓存已清理');
                     }, 500);
                 });
             });
 
-            // 网络状态变化
             window.addEventListener('online', function() {
                 updateNetworkStatus();
                 if (tempOffline) {
@@ -2500,7 +2604,6 @@
                     dogPages: [...tempPet.dogPages]
                 };
 
-                // 加载主题色
                 const savedColor = localStorage.getItem('themeColor');
                 if (savedColor) {
                     tempColor = savedColor;
@@ -2509,16 +2612,15 @@
                 }
                 initialColor = tempColor;
 
-                // 加载离线模式状态
                 const offlineSaved = localStorage.getItem('offlineMode');
                 tempOffline = offlineSaved === 'true';
                 initialOffline = tempOffline;
 
-                // 渲染页面复选框
+                totalPages.textContent = ALL_PAGES.length;
+
                 renderPageCheckboxes(catPagesContainer, tempPet.catPages);
                 renderPageCheckboxes(dogPagesContainer, tempPet.dogPages);
 
-                // 应用主题色到当前页面
                 setThemeColor(tempColor, false);
 
                 applySettings(false);
@@ -2526,14 +2628,12 @@
                 updatePetUI();
                 updateLocationHint();
 
-                // 离线模式
                 updateOfflineUI();
                 updateNetworkStatus();
                 if (tempOffline) {
                     setTimeout(updateCacheDisplay, 800);
                 }
 
-                // 定时更新缓存状态（每 30 秒）
                 setInterval(function() {
                     if (tempOffline) {
                         updateCacheDisplay();
@@ -2545,7 +2645,6 @@
                 }
             }
 
-            // ---------- 保存 ----------
             function saveSettings() {
                 localStorage.setItem('webSettings', JSON.stringify({ theme: settings.theme }));
                 localStorage.setItem('petSettings', JSON.stringify({
@@ -2558,7 +2657,6 @@
                 localStorage.setItem('offlineMode', tempOffline ? 'true' : 'false');
             }
 
-            // ---------- 通知其他页面 ----------
             function notifyPetChange() {
                 try {
                     window.postMessage({ type: 'petSettingsChanged' }, '*');
@@ -2570,7 +2668,6 @@
                 } catch (e) {}
             }
 
-            // ---------- 应用主题 ----------
             function applySettings(andSave) {
                 andSave = andSave !== undefined ? andSave : true;
                 const html = document.documentElement;
@@ -2601,7 +2698,6 @@
                 }
             }
 
-            // ---------- 主题定时器 ----------
             function startTimeThemeTimer() {
                 stopTimeThemeTimer();
                 applyTimeTheme();
@@ -2632,7 +2728,6 @@
                 if (toggle) toggle.textContent = target === 'dark' ? '🌙' : '☀️';
             }
 
-            // ---------- 更新UI ----------
             function updateThemeUI() {
                 const btns = document.querySelectorAll('.theme-grid .opt-btn');
                 btns.forEach(btn => {
@@ -2640,7 +2735,6 @@
                 });
             }
 
-            // ---------- 重置 ----------
             function resetSettings() {
                 showConfirm(function() {
                     tempTheme = DEFAULTS.theme;
@@ -2671,7 +2765,6 @@
                     updatePetUI();
                     updateLocationHint();
 
-                    // 重置主题色
                     document.documentElement.style.setProperty('--theme-color', DEFAULT_COLOR);
                     document.documentElement.style.setProperty('--theme-color-rgb', '108, 99, 255');
                     themeColorPicker.value = DEFAULT_COLOR;
@@ -2681,7 +2774,6 @@
                             'transparent';
                     });
 
-                    // 重置离线模式
                     updateOfflineUI();
                     localStorage.setItem('offlineMode', 'false');
                     if ('caches' in window) {
@@ -2699,14 +2791,12 @@
             }
 
             // ============================================================
-            //  应用按钮（人机验证 + 保存）
+            //  应用按钮
             // ============================================================
 
             let isVerified = false;
             const applyBtn = document.getElementById('applyBtn');
 
-            // 人机验证状态（由 verify.html 控制）
-            // 这里简化：如果 localStorage 有 verified，则启用按钮
             function checkVerification() {
                 const verified = localStorage.getItem('verified');
                 if (verified) {
@@ -2718,14 +2808,12 @@
                 }
             }
 
-            // 监听验证状态变化
             window.addEventListener('storage', function(e) {
                 if (e.key === 'verified') {
                     checkVerification();
                 }
             });
 
-            // 页面加载时检查
             checkVerification();
 
             applyBtn.addEventListener('click', function() {
@@ -2741,13 +2829,11 @@
                     return;
                 }
 
-                // 保存主题色
                 if (colorChanged) {
                     localStorage.setItem('themeColor', tempColor);
                     initialColor = tempColor;
                 }
 
-                // 保存离线模式
                 if (offlineChanged) {
                     localStorage.setItem('offlineMode', tempOffline ? 'true' : 'false');
                     initialOffline = tempOffline;
@@ -2766,14 +2852,10 @@
                     }
                 }
 
-                // 保存主题模式
                 settings.theme = tempTheme;
                 saveSettings();
-
-                // 应用主题模式
                 applySettings(true);
 
-                // 如果颜色变了，也应用到页面
                 if (colorChanged) {
                     setThemeColor(tempColor, true);
                 }
@@ -2810,7 +2892,6 @@
             //  初始化
             // ============================================================
 
-            // 主题按钮
             document.querySelectorAll('.theme-grid .opt-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const value = this.dataset.value;
@@ -2828,7 +2909,6 @@
                 });
             });
 
-            // 颜色选择器
             themeColorPicker.addEventListener('input', function(e) {
                 const color = this.value;
                 document.documentElement.style.setProperty('--theme-color', color);
@@ -2858,10 +2938,8 @@
                 });
             });
 
-            // 重置
             document.getElementById('settingsReset').addEventListener('click', resetSettings);
 
-            // 导航栏主题切换
             const toggle = document.getElementById('themeToggle');
             if (toggle) {
                 toggle.addEventListener('click', function() {
@@ -2879,7 +2957,6 @@
                 });
             }
 
-            // 系统主题监听
             if (window.matchMedia) {
                 const media = window.matchMedia('(prefers-color-scheme: dark)');
                 media.addEventListener('change', function(e) {
@@ -2892,7 +2969,6 @@
                 });
             }
 
-            // 时钟
             const clockDisplay = document.getElementById('clockDisplay');
             if (clockDisplay) {
                 function updateClock() {
@@ -2906,7 +2982,6 @@
                 setInterval(updateClock, 1000);
             }
 
-            // 加载设置
             loadSettings();
 
             console.log('⚙️ 设置页面已加载');
