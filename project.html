@@ -6,6 +6,7 @@
     <link rel="icon" href="favicon.png" type="image/png" />
     <title>项目 · BlueCat114</title>
     <style>
+        /* ===== 颜色变量 ===== */
         :root {
             --theme-color: #6c63ff;
             --theme-color-rgb: 108, 99, 255;
@@ -57,6 +58,7 @@
             --tag-count: #f472b6;
         }
 
+        /* ===== 全局重置 ===== */
         * {
             margin: 0;
             padding: 0;
@@ -80,6 +82,7 @@
             color: var(--text-primary);
         }
 
+        /* ===== 导航条 ===== */
         .top-bar {
             position: fixed;
             top: 0;
@@ -158,6 +161,7 @@
             border-bottom-color: var(--link-color);
         }
 
+        /* ===== 时钟显示 ===== */
         .clock-display {
             font-size: 16px;
             font-weight: 500;
@@ -175,6 +179,7 @@
             color: var(--link-color);
         }
 
+        /* ===== 主题切换按钮 ===== */
         .theme-toggle {
             background: none;
             border: none;
@@ -194,6 +199,7 @@
             transform: scale(1.1);
         }
 
+        /* ===== 主容器 ===== */
         .main {
             flex: 1;
             display: flex;
@@ -206,6 +212,7 @@
             padding: 20px 0;
         }
 
+        /* ===== 页面标题 ===== */
         .page-header {
             text-align: center;
             margin-bottom: 36px;
@@ -227,6 +234,7 @@
             transition: color 0.4s;
         }
 
+        /* ===== 项目列表 ===== */
         .project-list {
             display: flex;
             flex-direction: column;
@@ -252,7 +260,7 @@
         .project-item:hover {
             transform: translateY(-4px);
             box-shadow: 0 14px 40px var(--shadow-hover);
-            border-color: rgba(108, 99, 255, 0.2);
+            border-color: rgba(var(--theme-color-rgb), 0.2);
         }
 
         .project-item h3 {
@@ -273,6 +281,11 @@
             padding: 2px 12px;
             border-radius: 30px;
             margin-left: auto;
+        }
+
+        [data-theme="dark"] .project-item .status {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
         }
 
         .project-item p {
@@ -298,8 +311,16 @@
             border: 1px solid;
             transition: all 0.2s;
             cursor: default;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
+        .project-item .tags span:hover {
+            transform: scale(1.06);
+        }
+
+        /* ----- 各标签配色 ----- */
         .project-item .tags span.lang {
             background: linear-gradient(135deg, var(--tag-lang), #34d399);
             color: #064e3b;
@@ -355,6 +376,41 @@
             box-shadow: 0 2px 12px rgba(236, 72, 153, 0.35);
         }
 
+        /* 新增：Python 和 Java 专属配色 */
+        .project-item .tags span.python {
+            background: linear-gradient(135deg, #306998, #FFD43B);
+            color: white;
+            border-color: #306998;
+        }
+        .project-item .tags span.python:hover {
+            box-shadow: 0 2px 12px rgba(48, 105, 152, 0.4);
+        }
+
+        .project-item .tags span.java {
+            background: linear-gradient(135deg, #b07219, #d1a35c);
+            color: white;
+            border-color: #b07219;
+        }
+        .project-item .tags span.java:hover {
+            box-shadow: 0 2px 12px rgba(176, 114, 25, 0.4);
+        }
+
+        /* 新增：Star 标签 */
+        .project-item .tags span.star {
+            background: rgba(0, 0, 0, 0.04);
+            color: var(--text-secondary);
+            border-color: rgba(0, 0, 0, 0.08);
+        }
+        [data-theme="dark"] .project-item .tags span.star {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .project-item .tags span.star:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        /* ===== 返回首页按钮 ===== */
         .back-link {
             margin-top: 32px;
         }
@@ -376,6 +432,7 @@
             border-bottom-color: var(--link-hover);
         }
 
+        /* ===== 页脚 ===== */
         .footer {
             text-align: center;
             font-size: 14px;
@@ -400,6 +457,7 @@
             text-decoration: underline;
         }
 
+        /* ===== 响应式 ===== */
         @media (max-width: 700px) {
             body {
                 padding: 66px 16px 16px 16px;
@@ -473,6 +531,7 @@
 </head>
 <body>
 
+    <!-- ===== 导航条 ===== -->
     <div class="top-bar">
         <div class="top-bar-left">
             <a href="index.html" class="site-title">BlueCat114 官方网站</a>
@@ -497,23 +556,54 @@
 
         <div class="project-list">
 
+            <!-- 项目1：PixelCraft -->
+            <a href="https://github.com/Grass114/PixelCraft" target="_blank" class="project-item">
+                <h3>
+                    🎨 PixelCraft
+                    <span class="status">活跃维护</span>
+                </h3>
+                <p>将任意图片转换为像素画的桌面工具，支持拖拽、实时预览和复古色盘。</p>
+                <div class="tags">
+                    <span class="python">🐍 Python</span>
+                    <span class="star">⭐ 5</span>
+                    <span class="guide">🖼️ 像素画转换</span>
+                    <span class="tool">🎨 复古色盘</span>
+                </div>
+            </a>
+
+            <!-- 项目2：WinRun-For-Android -->
+            <a href="https://github.com/Grass114/WinRun-For-Android" target="_blank" class="project-item">
+                <h3>
+                    ⚡ WinRun-For-Android
+                    <span class="status">活跃维护</span>
+                </h3>
+                <p>Android 版“运行” — 像 Windows 一样快速启动应用、打开文件、访问网址。支持中文应用名、文件浏览、实时目录列表，轻量无广告。</p>
+                <div class="tags">
+                    <span class="java">☕ Java</span>
+                    <span class="star">⭐ 2</span>
+                    <span class="featured">🚀 快速启动</span>
+                    <span class="tool">📂 文件浏览</span>
+                </div>
+            </a>
+
+            <!-- 项目3：MCSkin3D 多语言版 -->
             <a href="mcskin3d.html" class="project-item">
                 <h3>
                     ⛏️ MCSkin3D 多语言增强版
                     <span class="status">活跃维护</span>
                 </h3>
-                <p>为 MCSkin3D 添加 11 种语言支持，包含文件完整性修复工具和错误对照表。</p>
+                <p>为 MCSkin3D 添加更多语言支持，让更多人能用上熟悉的语言进行皮肤创作。</p>
                 <div class="tags">
                     <span class="lang">🌐 多语言</span>
                     <span class="featured">🛠️ 修复工具</span>
                     <span class="guide">📖 使用教程</span>
-                    <span class="tool">📋 错误对照表</span>
-                    <span class="count">📁 11 种语言</span>
+                    <span class="count">📁 18 种语言</span>
                 </div>
             </a>
 
         </div>
 
+        <!-- 返回首页 -->
         <div class="back-link">
             <a href="index.html">← 返回首页</a>
         </div>
