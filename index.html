@@ -29,8 +29,6 @@
             --clock-color: var(--text-muted);
             --btn-shadow: rgba(108, 99, 255, 0.25);
             --btn-hover-shadow: rgba(108, 99, 255, 0.35);
-            --intro-bg: rgba(255, 255, 255, 0.65);
-            --intro-border: rgba(255, 255, 255, 0.8);
         }
 
         [data-theme="dark"] {
@@ -52,8 +50,6 @@
             --clock-color: #94a3b8;
             --btn-shadow: rgba(108, 99, 255, 0.15);
             --btn-hover-shadow: rgba(108, 99, 255, 0.25);
-            --intro-bg: rgba(30, 41, 59, 0.7);
-            --intro-border: rgba(71, 85, 105, 0.4);
         }
 
         /* ===== 全局重置 ===== */
@@ -226,102 +222,103 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px 0;
+            padding: 0 0 20px 0;
+            justify-content: flex-start;
+            padding-top: 30px;
         }
 
-        /* ===== 标题行（左文右时间） ===== */
+        /* ===== 天空场景容器（居中，透明背景） ===== */
         .hero {
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
             width: 100%;
+            margin-bottom: 0;
         }
 
-        .hero-left {
-            display: flex;
-            flex-direction: column;
+        .sky-scene {
+            width: 520px;
+            max-width: 100%;
+            position: relative;
+            background: transparent;
         }
 
-        .hero-left .line {
+        /* SVG 画布 */
+        .sky-svg {
             display: block;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            line-height: 1.05;
-            transition: color 0.4s;
+            width: 100%;
+            height: auto;
+            background: transparent;
+            overflow: visible;
         }
 
-        .hero-left .line:first-child {
-            font-size: 72px;
+        /* 弧线 */
+        .sky-svg .arc-path {
+            fill: none;
+            stroke: rgba(var(--theme-color-rgb, 108, 99, 255), 0.3);
+            stroke-width: 2;
+            stroke-dasharray: 6 6;
+            transition: stroke 0.4s ease;
         }
 
-        .hero-left .line:last-child {
-            font-size: 96px;
+        /* 天体组的过渡 */
+        #sunGroup,
+        #moonGroup {
+            transition: opacity 0.8s ease;
         }
 
-        .hero-left .line .highlight {
-            color: var(--link-color);
+        /* 天体上方的进度文字 */
+        .celestial-text {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-weight: 700;
+            fill: var(--text-primary, #0b1e33);
+            text-anchor: middle;
+            dominant-baseline: central;
+            pointer-events: none;
+            user-select: none;
+            transition: fill 0.4s ease;
         }
 
-        .hero-right {
-            flex-shrink: 0;
-            margin-left: 32px;
-            text-align: right;
-            line-height: 1.3;
+        [data-theme="dark"] .celestial-text {
+            fill: #e2e8f0;
         }
 
-        .hero-right .date {
-            font-size: 28px;
-            font-weight: 500;
-            color: var(--text-muted);
-            transition: color 0.4s;
+        /* 时间信息（圆弧下方） */
+        .sky-info {
+            position: relative;
+            padding: 0 0 8px 0;
+            margin-top: -20px;
+            text-align: center;
         }
 
-        .hero-right .time {
-            font-size: 48px;
+        .sky-info .time {
+            font-size: 42px;
             font-weight: 700;
             color: var(--text-primary);
-            transition: color 0.4s;
             font-variant-numeric: tabular-nums;
-        }
-
-        [data-theme="dark"] .hero-right .time {
-            color: #e2e8f0;
-        }
-
-        /* ===== 正文内容（居中） ===== */
-        .intro {
-            background: var(--intro-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: 16px;
-            padding: 20px 28px;
-            border: 1px solid var(--intro-border);
-            box-shadow: 0 4px 20px var(--shadow-color);
-            max-width: 560px;
-            width: 100%;
-            margin-top: 24px;
-            margin-left: auto;
-            margin-right: auto;
-            transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
-            text-align: left;
-        }
-
-        .intro p {
-            font-size: 17px;
-            line-height: 1.9;
-            color: var(--text-secondary);
+            line-height: 1.1;
+            letter-spacing: 1px;
             transition: color 0.4s;
         }
 
-        .intro .highlight {
-            color: var(--link-color);
-            font-weight: 600;
+        .sky-info .date-line {
+            font-size: 15px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            transition: color 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .sky-info .date-line .dot {
+            color: var(--text-light);
         }
 
         /* ===== 按钮区（居中） ===== */
@@ -330,7 +327,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 16px;
-            margin-top: 28px;
+            margin-top: 36px;
             width: 100%;
         }
 
@@ -339,7 +336,7 @@
             align-items: center;
             gap: 8px;
             padding: 14px 36px;
-            background: var(--link-color);
+            background: #6c63ff;
             color: white;
             text-decoration: none;
             border-radius: 60px;
@@ -351,7 +348,7 @@
         }
 
         .actions a:hover {
-            background: var(--link-hover);
+            background: #5a52d5;
             transform: scale(1.04);
             box-shadow: 0 8px 28px var(--btn-hover-shadow);
         }
@@ -386,24 +383,20 @@
             body {
                 padding: 66px 16px 16px 16px;
             }
-            .hero-left .line:first-child {
-                font-size: 48px;
+            .main {
+                padding-top: 20px;
             }
-            .hero-left .line:last-child {
-                font-size: 64px;
+            .sky-scene {
+                width: 400px;
             }
-            .hero-right .date {
-                font-size: 20px;
-            }
-            .hero-right .time {
+            .sky-info .time {
                 font-size: 34px;
             }
-            .intro {
-                padding: 16px 18px;
-                max-width: 100%;
+            .sky-info .date-line {
+                font-size: 13px;
             }
-            .intro p {
-                font-size: 15px;
+            .actions {
+                margin-top: 28px;
             }
             .actions a {
                 padding: 12px 28px;
@@ -430,34 +423,22 @@
             }
         }
 
-        @media (max-width: 400px) {
-            .hero {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
+        @media (max-width: 450px) {
+            .main {
+                padding-top: 16px;
             }
-            .hero-right {
-                margin-left: 0;
-                text-align: left;
-                width: 100%;
+            .sky-scene {
+                width: 300px;
             }
-            .hero-right .date {
-                font-size: 16px;
+            .sky-info .time {
+                font-size: 28px;
             }
-            .hero-right .time {
-                font-size: 26px;
+            .sky-info .date-line {
+                font-size: 12px;
+                gap: 5px;
             }
-            .hero-left .line:first-child {
-                font-size: 38px;
-            }
-            .hero-left .line:last-child {
-                font-size: 48px;
-            }
-            .intro {
-                padding: 14px 14px;
-            }
-            .intro p {
-                font-size: 14px;
+            .actions {
+                margin-top: 24px;
             }
             .actions a {
                 padding: 10px 20px;
@@ -510,31 +491,68 @@
 
     <div class="main">
 
+        <!-- ===== 天空场景（居中，透明背景） ===== -->
         <div class="hero">
-            <div class="hero-left">
-                <span class="line">欢迎</span>
-                <span class="line">回来！</span>
-            </div>
-            <div class="hero-right">
-                <div class="date" id="dateDisplay">----年--月--日</div>
-                <div class="time" id="timeDisplay">--:--:--</div>
+            <div class="sky-scene" id="skyScene">
+
+                <!-- SVG：弧线 + 太阳 + 月亮 + 进度文字 -->
+                <svg class="sky-svg" viewBox="0 0 520 280" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <radialGradient id="sunGrad" cx="38%" cy="35%" r="65%">
+                            <stop offset="0%" stop-color="#fff9d6"/>
+                            <stop offset="45%" stop-color="#ffd93d"/>
+                            <stop offset="100%" stop-color="#ff9500"/>
+                        </radialGradient>
+                        <radialGradient id="moonGrad" cx="38%" cy="35%" r="65%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="55%" stop-color="#dbe4ff"/>
+                            <stop offset="100%" stop-color="#a5b4fc"/>
+                        </radialGradient>
+                        <filter id="sunBlur" x="-60%" y="-60%" width="220%" height="220%">
+                            <feGaussianBlur stdDeviation="8"/>
+                        </filter>
+                        <filter id="moonBlur" x="-60%" y="-60%" width="220%" height="220%">
+                            <feGaussianBlur stdDeviation="7"/>
+                        </filter>
+                    </defs>
+
+                    <!-- 弧线轨迹（半圆，整体上移） -->
+                    <path class="arc-path" d="M 60 260 A 200 200 0 0 1 460 260"/>
+
+                    <!-- 太阳 -->
+                    <g id="sunGroup">
+                        <circle id="sunGlow" cx="260" cy="60" r="42" fill="#ffd93d" opacity="0.4" filter="url(#sunBlur)"/>
+                        <circle id="sunCircle" cx="260" cy="60" r="28" fill="url(#sunGrad)"/>
+                        <text id="sunText" class="celestial-text" x="260" y="18" font-size="15">0.0%</text>
+                    </g>
+
+                    <!-- 月亮 -->
+                    <g id="moonGroup" opacity="0">
+                        <circle id="moonGlow" cx="260" cy="60" r="42" fill="#a5b4fc" opacity="0.35" filter="url(#moonBlur)"/>
+                        <circle id="moonCircle" cx="260" cy="60" r="28" fill="url(#moonGrad)"/>
+                        <text id="moonText" class="celestial-text" x="260" y="18" font-size="15">0.0%</text>
+                    </g>
+                </svg>
+
+                <!-- 时间日期星期（圆弧下方） -->
+                <div class="sky-info">
+                    <div class="time" id="timeDisplay">--:--:--</div>
+                    <div class="date-line">
+                        <span id="dateDisplay">----年--月--日</span>
+                        <span class="dot">·</span>
+                        <span id="weekdayDisplay">星期-</span>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <div class="intro">
-            <p>
-                我是 <span class="highlight">BlueCat114</span>，一名热爱 Minecraft 生态的
-                <span class="highlight">模组工具开发者</span>。<br />
-                专注于 <span class="highlight">MCSkin3D 多语言增强</span>、
-                皮肤搜索工具、以及各种提升游戏体验的小工具。<br />
-                喜欢折腾代码，也乐于分享。
-            </p>
-        </div>
-
+        <!-- ===== 按钮区（居中） ===== -->
         <div class="actions">
             <a href="https://github.com/grass114" target="_blank">🐙 GitHub</a>
         </div>
 
+        <!-- ===== 页脚 ===== -->
         <div class="footer">
             © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
         </div>
@@ -559,22 +577,113 @@
         // ===== 年份自动更新 =====
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // ===== 日期时间更新 =====
-        function updateDateTime() {
+        // ============================================================
+        //  天空场景 - 太阳/月亮沿弧线移动 + 进度百分比
+        // ============================================================
+
+        const sunGroup = document.getElementById('sunGroup');
+        const moonGroup = document.getElementById('moonGroup');
+        const sunCircle = document.getElementById('sunCircle');
+        const sunGlow = document.getElementById('sunGlow');
+        const sunText = document.getElementById('sunText');
+        const moonCircle = document.getElementById('moonCircle');
+        const moonGlow = document.getElementById('moonGlow');
+        const moonText = document.getElementById('moonText');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const dateDisplay = document.getElementById('dateDisplay');
+        const weekdayDisplay = document.getElementById('weekdayDisplay');
+
+        const WEEKDAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+
+        // ===== SVG 坐标系（与 viewBox 一致）=====
+        const ARC_CX = 260;
+        const ARC_CY = 260;   // 弧线底边（整体上移）
+        const ARC_R = 200;    // 半径（配合上移）
+        const BODY_R = 28;
+
+        // 根据视口宽度调整进度文字字号
+        function getTextSize() {
+            const w = window.innerWidth;
+            if (w <= 450) return 11;
+            if (w <= 700) return 13;
+            return 15;
+        }
+
+        function updateCelestial() {
             const now = new Date();
+
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
 
-            document.getElementById('dateDisplay').textContent = year + '年' + month + '月' + day + '日';
-            document.getElementById('timeDisplay').textContent = hours + ':' + minutes + ':' + seconds;
+            // 更新时间文字
+            timeDisplay.textContent = `${hh}:${mm}:${ss}`;
+            dateDisplay.textContent = `${year}年${month}月${day}日`;
+            weekdayDisplay.textContent = WEEKDAYS[now.getDay()];
+
+            // 当前时间（小时为小数）
+            const hours = now.getHours() + now.getMinutes() / 60 + now.getSeconds() / 3600;
+
+            const isDay = hours >= 6 && hours < 18;
+
+            // 计算进度 0~1
+            let progress;
+            if (isDay) {
+                progress = (hours - 6) / 12;
+            } else {
+                let t = hours - 18;
+                if (t < 0) t += 24;
+                progress = t / 12;
+            }
+
+            // 百分比（一位小数，每秒都在变化）
+            const percent = Math.min(100, progress * 100);
+            const percentText = percent.toFixed(1) + '%';
+
+            // 角度：左侧 π → 右侧 0
+            const angle = Math.PI * (1 - progress);
+
+            // 天体中心坐标（精确在弧线上）
+            const x = ARC_CX + ARC_R * Math.cos(angle);
+            const y = ARC_CY - ARC_R * Math.sin(angle);
+
+            // 更新太阳坐标
+            sunCircle.setAttribute('cx', x);
+            sunCircle.setAttribute('cy', y);
+            sunGlow.setAttribute('cx', x);
+            sunGlow.setAttribute('cy', y);
+
+            // 更新月亮坐标
+            moonCircle.setAttribute('cx', x);
+            moonCircle.setAttribute('cy', y);
+            moonGlow.setAttribute('cx', x);
+            moonGlow.setAttribute('cy', y);
+
+            // 进度文字放在图标上方
+            const textY = y - BODY_R - 12;
+            const textSize = getTextSize();
+
+            sunText.setAttribute('x', x);
+            sunText.setAttribute('y', textY);
+            sunText.setAttribute('font-size', textSize);
+            sunText.textContent = percentText;
+
+            moonText.setAttribute('x', x);
+            moonText.setAttribute('y', textY);
+            moonText.setAttribute('font-size', textSize);
+            moonText.textContent = percentText;
+
+            // 显示/隐藏切换
+            sunGroup.style.opacity = isDay ? '1' : '0';
+            moonGroup.style.opacity = isDay ? '0' : '1';
         }
 
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
+        // 启动
+        updateCelestial();
+        setInterval(updateCelestial, 1000);
 
         // ============================================================
         //  统一的主题控制
