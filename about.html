@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 强制浏览器不使用本地缓存 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -40,7 +39,6 @@
             flex-direction: column;
         }
 
-        /* 背景特效层 */
         .aurora-bg {
             position: fixed;
             inset: 0;
@@ -102,7 +100,6 @@
             will-change: left, top;
         }
 
-        /* 顶部区域 */
         header {
             position: absolute;
             top: 0;
@@ -147,7 +144,6 @@
             animation: pulse 2s infinite;
         }
 
-        /* 主体内容 */
         main {
             position: relative;
             z-index: 5;
@@ -231,10 +227,7 @@
             margin-bottom: 24px;
         }
 
-        .bio strong {
-            color: #ffffff;
-            font-weight: 600;
-        }
+        .bio strong { color: #ffffff; font-weight: 600; }
 
         .signature {
             font-style: italic;
@@ -296,10 +289,7 @@
             100% { transform: translate(-10vw, -15vh) scale(1.1); }
         }
 
-        @keyframes enterUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        @keyframes enterUp { to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.8); }
@@ -369,22 +359,6 @@
     </main>
 
     <script>
-        // ===== 版本检测静默刷新逻辑 =====
-        (function() {
-            if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
-            
-            const currentVersion = "20261114_1"; 
-            
-            const savedVersion = localStorage.getItem('site_version');
-            if (savedVersion && savedVersion !== currentVersion) {
-                localStorage.setItem('site_version', currentVersion);
-                window.location.reload(true);
-            } else {
-                localStorage.setItem('site_version', currentVersion);
-            }
-        })();
-
-        // ===== 动态时钟 =====
         const clock = document.getElementById('clock');
         setInterval(() => {
             const now = new Date();
@@ -394,7 +368,6 @@
                 String(now.getSeconds()).padStart(2, '0');
         }, 1000);
 
-        // ===== 光晕阻尼平滑跟随 =====
         const glow = document.getElementById('glow');
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
@@ -418,7 +391,6 @@
 
                 requestAnimationFrame(animate);
             }
-            
             animate();
         }
     </script>
