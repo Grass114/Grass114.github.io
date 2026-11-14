@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.png" type="image/png" />
+    <!-- 强制浏览器不使用本地缓存，每次请求最新页面 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
     <title>Grass114</title>
     <style>
         :root {
@@ -36,8 +40,6 @@
         /* =========================================
            背景特效层：极光 + 网格 + 鼠标光晕
            ========================================= */
-        
-        /* 1. 缓慢流动的幽灵极光 */
         .aurora-bg {
             position: fixed;
             inset: 0;
@@ -57,7 +59,7 @@
         .blob-1 {
             width: 60vw;
             height: 60vw;
-            background: #0ea5e9; /* 幽蓝 */
+            background: #0ea5e9;
             top: -20%;
             left: -10%;
             animation: float1 25s infinite alternate ease-in-out;
@@ -66,13 +68,12 @@
         .blob-2 {
             width: 50vw;
             height: 50vw;
-            background: #8b5cf6; /* 暗紫 */
+            background: #8b5cf6;
             bottom: -20%;
             right: -10%;
             animation: float2 30s infinite alternate ease-in-out;
         }
 
-        /* 2. 极简科技网格 */
         .grid-overlay {
             position: fixed;
             inset: 0;
@@ -86,7 +87,6 @@
             pointer-events: none;
         }
 
-        /* 3. 鼠标阻尼光晕 */
         .cursor-glow {
             position: fixed;
             width: 600px;
@@ -154,7 +154,6 @@
             padding: 0 50px;
         }
 
-        /* 导航容器 */
         .nav-grid {
             display: flex;
             flex-direction: column;
@@ -166,7 +165,6 @@
             transform: translateY(20px);
         }
 
-        /* 长方形卡片按钮 */
         .nav-card {
             display: flex;
             align-items: center;
@@ -182,7 +180,6 @@
             -webkit-backdrop-filter: blur(16px);
         }
 
-        /* 卡片内部的文字排版 */
         .card-text {
             display: flex;
             flex-direction: column;
@@ -204,7 +201,6 @@
             transition: color 0.3s ease;
         }
 
-        /* 按钮右侧的小箭头 */
         .nav-arrow {
             font-size: 20px;
             color: var(--text-muted);
@@ -212,7 +208,6 @@
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* 按钮悬停效果 */
         .nav-card:hover {
             background: var(--card-hover);
             border-color: rgba(255, 255, 255, 0.25);
@@ -258,22 +253,18 @@
             .nav-card { padding: 16px 20px; }
             .card-title { font-size: 16px; }
             .cursor-glow { display: none; }
-            .aurora-blob { filter: blur(60px); opacity: 0.1; } /* 手机端减轻渲染负担 */
+            .aurora-blob { filter: blur(60px); opacity: 0.1; }
         }
     </style>
 </head>
 <body>
-    <!-- 背景层：极光 + 网格 -->
     <div class="aurora-bg">
         <div class="aurora-blob blob-1"></div>
         <div class="aurora-blob blob-2"></div>
     </div>
     <div class="grid-overlay"></div>
-    
-    <!-- 鼠标光晕层 -->
     <div class="cursor-glow" id="glow"></div>
 
-    <!-- 顶部区域 -->
     <header>
         <div class="logo">Grass114</div>
         <div class="clock-wrapper">
@@ -282,10 +273,8 @@
         </div>
     </header>
 
-    <!-- 主体：长方形按钮导航 -->
     <main>
         <nav class="nav-grid">
-            <!-- 游戏卡片：标明了具体游戏名 -->
             <a href="heimao-touchi-midoufu.html" class="nav-card">
                 <div class="card-text">
                     <span class="card-title">黑猫偷吃米豆腐</span>
@@ -294,7 +283,6 @@
                 <span class="nav-arrow">↗</span>
             </a>
             
-            <!-- 关于我卡片 -->
             <a href="about.html" class="nav-card">
                 <div class="card-text">
                     <span class="card-title">关于我</span>
@@ -306,17 +294,23 @@
     </main>
 
     <script>
-        // ===== 人机验证 =====
+        // ===== 版本检测静默刷新逻辑 =====
         (function() {
             if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
-            const verified = localStorage.getItem('verified');
-            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
-            if (!verified || Date.now() - verifiedTime > 7*24*60*60*1000) {
-                if (!window.location.pathname.includes('verify.html')) window.location.href = 'verify.html';
+            
+            // 【注意】每次更新网页代码后，把这个数字改一下（比如改成 20261114_2）
+            const currentVersion = "20261114_1"; 
+            
+            const savedVersion = localStorage.getItem('site_version');
+            if (savedVersion && savedVersion !== currentVersion) {
+                localStorage.setItem('site_version', currentVersion);
+                window.location.reload(true);
+            } else {
+                localStorage.setItem('site_version', currentVersion);
             }
         })();
 
-        // ===== 时钟 =====
+        // ===== 动态时钟 =====
         const clock = document.getElementById('clock');
         setInterval(() => {
             const now = new Date();
@@ -342,7 +336,6 @@
             }, { passive: true });
 
             function animate() {
-                // 阻尼系数 0.08，让光晕跟手但又有丝滑的延迟
                 currentX += (targetX - currentX) * 0.08;
                 currentY += (targetY - currentY) * 0.08;
                 

@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="favicon.png" type="image/png" />
+    <!-- 强制浏览器不使用本地缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
     <title>关于我 · Grass114</title>
     <style>
         :root {
@@ -36,9 +40,7 @@
             flex-direction: column;
         }
 
-        /* =========================================
-           背景特效层：极光 + 网格 + 鼠标光晕
-           ========================================= */
+        /* 背景特效层 */
         .aurora-bg {
             position: fixed;
             inset: 0;
@@ -100,7 +102,7 @@
             will-change: left, top;
         }
 
-        /* ===== 顶部：左上角 Logo & 右上角时钟 ===== */
+        /* 顶部区域 */
         header {
             position: absolute;
             top: 0;
@@ -145,7 +147,7 @@
             animation: pulse 2s infinite;
         }
 
-        /* ===== 主体内容 ===== */
+        /* 主体内容 */
         main {
             position: relative;
             z-index: 5;
@@ -173,7 +175,6 @@
             transform: translateY(20px);
         }
 
-        /* 毛玻璃内容卡片 */
         .glass-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -244,7 +245,6 @@
             border-left: 2px solid var(--accent);
         }
 
-        /* 按钮区 */
         .actions {
             display: flex;
             gap: 16px;
@@ -286,7 +286,6 @@
             transform: translateY(-2px);
         }
 
-        /* ===== 动画 ===== */
         @keyframes float1 {
             0% { transform: translate(0, 0) scale(1); }
             100% { transform: translate(15vw, 10vh) scale(1.2); }
@@ -306,7 +305,6 @@
             50% { opacity: 0.5; transform: scale(0.8); }
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 768px) {
             header { padding: 24px; }
             .logo { font-size: 20px; }
@@ -322,7 +320,6 @@
     </style>
 </head>
 <body>
-    <!-- 背景特效层 -->
     <div class="aurora-bg">
         <div class="aurora-blob blob-1"></div>
         <div class="aurora-blob blob-2"></div>
@@ -330,7 +327,6 @@
     <div class="grid-overlay"></div>
     <div class="cursor-glow" id="glow"></div>
 
-    <!-- 顶部区域 -->
     <header>
         <a href="index.html" class="logo">Grass114</a>
         <div class="clock-wrapper">
@@ -339,7 +335,6 @@
         </div>
     </header>
 
-    <!-- 主内容 -->
     <main>
         <h1 class="page-title">关于我 / ABOUT</h1>
 
@@ -374,6 +369,21 @@
     </main>
 
     <script>
+        // ===== 版本检测静默刷新逻辑 =====
+        (function() {
+            if (window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
+            
+            const currentVersion = "20261114_1"; 
+            
+            const savedVersion = localStorage.getItem('site_version');
+            if (savedVersion && savedVersion !== currentVersion) {
+                localStorage.setItem('site_version', currentVersion);
+                window.location.reload(true);
+            } else {
+                localStorage.setItem('site_version', currentVersion);
+            }
+        })();
+
         // ===== 动态时钟 =====
         const clock = document.getElementById('clock');
         setInterval(() => {
