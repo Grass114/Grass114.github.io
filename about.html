@@ -4,73 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    
     <title>关于我 · Grass114</title>
     <style>
         :root {
-            --bg: #030303;
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --card-bg: rgba(255, 255, 255, 0.02);
+            --bg: #050508;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --card-bg: rgba(255, 255, 255, 0.03);
             --card-border: rgba(255, 255, 255, 0.08);
-            --card-hover: rgba(255, 255, 255, 0.04);
-            --accent: #6c63ff;
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: "SFMono-Regular", Consolas, monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg);
             color: var(--text-main);
             font-family: var(--font-main);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
-        .aurora-bg {
+        .ambient-bg {
             position: fixed;
             inset: 0;
             z-index: -2;
-            overflow: hidden;
-            background: var(--bg);
-        }
-
-        .aurora-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.15;
-            will-change: transform;
-        }
-
-        .blob-1 {
-            width: 60vw;
-            height: 60vw;
-            background: #0ea5e9;
-            top: -20%;
-            left: -10%;
-            animation: float1 25s infinite alternate ease-in-out;
-        }
-
-        .blob-2 {
-            width: 50vw;
-            height: 50vw;
-            background: #8b5cf6;
-            bottom: -20%;
-            right: -10%;
-            animation: float2 30s infinite alternate ease-in-out;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(14, 165, 233, 0.08), transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 40%);
         }
 
         .grid-overlay {
@@ -78,109 +42,74 @@
             inset: 0;
             z-index: -1;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 40px 40px;
-            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
-            -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
             pointer-events: none;
-        }
-
-        .cursor-glow {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 60%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            transform: translate(-50%, -50%);
-            left: 50%;
-            top: 50%;
-            will-change: left, top;
         }
 
         header {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             padding: 40px 50px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
         }
 
         .logo {
             font-size: 24px;
             font-weight: 800;
-            letter-spacing: -0.5px;
-            background: linear-gradient(180deg, #ffffff 0%, #a1a1a1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
             text-decoration: none;
-            user-select: none;
-            transition: opacity 0.3s;
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
-        .logo:hover { opacity: 0.8; }
 
         .clock-wrapper {
             font-family: var(--font-mono);
             font-size: 14px;
             color: var(--text-muted);
-            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .clock-dot {
-            width: 6px;
-            height: 6px;
+            width: 6px; height: 6px;
             background-color: #10b981;
             border-radius: 50%;
-            box-shadow: 0 0 10px #10b981;
+            box-shadow: 0 0 8px #10b981;
             animation: pulse 2s infinite;
         }
 
         main {
-            position: relative;
-            z-index: 5;
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 120px 50px 60px;
+            padding: 0 50px 60px;
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
         }
 
         .page-title {
-            font-size: clamp(3rem, 6vw, 5rem);
+            font-size: clamp(2.5rem, 5vw, 4rem);
             font-weight: 800;
-            line-height: 1.1;
             letter-spacing: -0.05em;
             margin-bottom: 40px;
-            background: linear-gradient(180deg, #ffffff 20%, #444444 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: enterUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-            transform: translateY(20px);
         }
 
-        .glass-card {
+        .content-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 40px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            animation: enterUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
-            opacity: 0;
-            transform: translateY(20px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
 
         .profile-header {
@@ -193,22 +122,15 @@
         }
 
         .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 16px;
+            width: 80px; height: 80px;
+            border-radius: 12px;
             border: 1px solid var(--card-border);
             background: rgba(0,0,0,0.5);
-            padding: 10px;
+            padding: 8px;
             object-fit: contain;
         }
 
-        .profile-info h2 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            letter-spacing: -0.5px;
-        }
-
+        .profile-info h2 { font-size: 24px; font-weight: 600; margin-bottom: 6px; }
         .badge {
             display: inline-block;
             font-family: var(--font-mono);
@@ -220,102 +142,49 @@
             border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
-        .bio {
-            font-size: 16px;
-            line-height: 1.8;
-            color: #cccccc;
-            margin-bottom: 24px;
-        }
+        .bio { font-size: 16px; line-height: 1.8; color: #cccccc; margin-bottom: 24px; }
+        .bio strong { color: var(--text-main); font-weight: 600; }
+        .bio p { margin-bottom: 16px; }
 
-        .bio strong { color: #ffffff; font-weight: 600; }
-
-        .signature {
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-bottom: 32px;
-            padding-left: 16px;
-            border-left: 2px solid var(--accent);
-        }
-
-        .actions {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
+        .actions { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 32px; }
 
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             padding: 12px 24px;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
             border: 1px solid transparent;
         }
 
-        .btn-primary {
-            background: #ffffff;
-            color: #000000;
-        }
+        .btn-primary { background: var(--text-main); color: var(--bg); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,255,255,0.15); }
+        .btn-outline { background: transparent; color: var(--text-main); border-color: var(--card-border); }
+        .btn-outline:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.2); }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255,255,255,0.15);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #ffffff;
-            border-color: var(--card-border);
-        }
-
-        .btn-outline:hover {
-            background: var(--card-hover);
-            border-color: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-        }
-
-        @keyframes float1 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(15vw, 10vh) scale(1.2); }
-        }
-
-        @keyframes float2 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-10vw, -15vh) scale(1.1); }
-        }
-
-        @keyframes enterUp { to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         @media (max-width: 768px) {
             header { padding: 24px; }
-            .logo { font-size: 20px; }
-            main { padding: 100px 24px 40px; }
-            .glass-card { padding: 24px; border-radius: 16px; }
+            main { padding: 0 24px 40px; }
+            .content-card { padding: 24px; }
             .profile-header { flex-direction: column; align-items: flex-start; gap: 16px; }
             .avatar { width: 64px; height: 64px; }
-            .cursor-glow { display: none; }
-            .aurora-blob { filter: blur(60px); opacity: 0.1; }
             .actions { flex-direction: column; }
             .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <div class="aurora-bg">
-        <div class="aurora-blob blob-1"></div>
-        <div class="aurora-blob blob-2"></div>
-    </div>
+    <div class="ambient-bg"></div>
     <div class="grid-overlay"></div>
-    <div class="cursor-glow" id="glow"></div>
 
     <header>
         <a href="index.html" class="logo">Grass114</a>
@@ -327,8 +196,7 @@
 
     <main>
         <h1 class="page-title">关于我 / ABOUT</h1>
-
-        <div class="glass-card">
+        <div class="content-card">
             <div class="profile-header">
                 <img src="favicon.png" alt="Grass114" class="avatar" />
                 <div class="profile-info">
@@ -338,17 +206,8 @@
             </div>
 
             <div class="bio">
-                <p style="margin-bottom: 16px;">
-                    👋 你好！我是 <strong>Grass114</strong>。一个喜欢捣鼓各种有意思的东西，并且热爱分享的人。
-                </p>
-                <p>
-                    🎯 做这个网站，是为了把我的作品和想法集中放在一个地方。
-                    这一路上我学到了很多，也希望能帮到同样热爱折腾的你。
-                </p>
-            </div>
-
-            <div class="signature">
-                “做自己喜欢的东西，然后分享出去。”
+                <p>👋 你好！我是 <strong>Grass114</strong>。一个喜欢捣鼓各种有意思的东西，并且热爱分享的人。</p>
+                <p>🎯 做这个网站，是为了把我的作品和想法集中放在一个地方。这一路上我学到了很多，也希望能帮到同样热爱折腾的你。</p>
             </div>
 
             <div class="actions">
@@ -367,32 +226,6 @@
                 String(now.getMinutes()).padStart(2, '0') + ':' +
                 String(now.getSeconds()).padStart(2, '0');
         }, 1000);
-
-        const glow = document.getElementById('glow');
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-        if (!isMobile) {
-            let targetX = window.innerWidth / 2;
-            let targetY = window.innerHeight / 2;
-            let currentX = targetX;
-            let currentY = targetY;
-
-            document.addEventListener('mousemove', (e) => {
-                targetX = e.clientX;
-                targetY = e.clientY;
-            }, { passive: true });
-
-            function animate() {
-                currentX += (targetX - currentX) * 0.08;
-                currentY += (targetY - currentY) * 0.08;
-                
-                glow.style.left = `${currentX}px`;
-                glow.style.top = `${currentY}px`;
-
-                requestAnimationFrame(animate);
-            }
-            animate();
-        }
     </script>
 </body>
 </html>

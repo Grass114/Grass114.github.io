@@ -64,6 +64,95 @@
   }
   button:hover { transform: translateY(-2px); box-shadow:0 12px 30px rgba(255,200,60,.4); filter:brightness(1.06); }
   button:active { transform: translateY(1px) scale(.98); }
+
+  /* ================= 虚拟控制按键 UI ================= */
+  #mobile-controls {
+    position: fixed;
+    inset: 0;
+    pointer-events: none; /* 穿透，不影响其他操作 */
+    z-index: 100;
+    display: none; /* 默认隐藏 */
+  }
+  /* JS 检测到触屏后，给 body 加 class="is-touch" 即可显示 */
+  body.is-touch #mobile-controls {
+    display: block;
+  }
+
+  /* 左下角方向键 */
+  #dpad {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    width: 140px;
+    height: 140px;
+    pointer-events: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .dpad-btn {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    touch-action: none;
+    user-select: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: background 0.1s, transform 0.1s;
+  }
+  .dpad-btn.active {
+    background: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    transform: scale(0.92);
+  }
+  .dpad-up { top: 0; left: 46px; }
+  .dpad-down { bottom: 0; left: 46px; }
+  .dpad-left { top: 46px; left: 0; }
+  .dpad-right { top: 46px; right: 0; }
+
+  /* 右下角冲刺键 */
+  #dash-btn-ui {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: rgba(124, 240, 164, 0.15);
+    border: 2px solid rgba(124, 240, 164, 0.4);
+    color: #7cf0a4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: background 0.1s, transform 0.1s;
+    box-shadow: 0 0 20px rgba(124, 240, 164, 0.1);
+  }
+  #dash-btn-ui.active {
+    background: rgba(124, 240, 164, 0.3);
+    transform: scale(0.92);
+  }
+
+  /* 针对手机端缩小一点 UI */
+  @media (max-width: 768px) {
+    #dpad { bottom: 30px; left: 20px; transform: scale(0.9); }
+    #dash-btn-ui { bottom: 35px; right: 25px; transform: scale(0.9); }
+  }
 </style>
 </head>
 <body>
@@ -98,6 +187,17 @@
       <button id="againBtn">再 来 一 次</button>
     </div>
   </div>
+</div>
+
+<!-- 虚拟方向键 UI 层 -->
+<div id="mobile-controls">
+  <div id="dpad">
+    <div class="dpad-btn dpad-up" data-dir="up">▲</div>
+    <div class="dpad-btn dpad-down" data-dir="down">▼</div>
+    <div class="dpad-btn dpad-left" data-dir="left">◀</div>
+    <div class="dpad-btn dpad-right" data-dir="right">▶</div>
+  </div>
+  <div id="dash-btn-ui">冲刺</div>
 </div>
 
 <script>
@@ -437,21 +537,21 @@ const game = {
    天气系统
    ══════════════════════════════════════════════════════ */
 const weather = {
-  type: 'clear',        // 'clear' | 'rain'
-  timer: 28,            // 当前天气剩余秒数
-  duration: 28,         // 当前天气总时长
-  rainAmount: 0,        // 0~1 平滑雨量
-  flashMsg: 0,          // 切换提示剩余时间
+  type: 'clear',
+  timer: 28,
+  duration: 28,
+  rainAmount: 0,
+  flashMsg: 0,
   flashText: ''
 };
 
 function setWeather(type, first) {
   weather.type = type;
   if (type === 'rain') {
-    weather.duration = first ? 16 : 14 + Math.random() * 8;   // 14~22 秒
+    weather.duration = first ? 16 : 14 + Math.random() * 8;
     weather.flashText = '🌧️ 开始下雨了';
   } else {
-    weather.duration = first ? 30 : 22 + Math.random() * 14;  // 22~36 秒
+    weather.duration = first ? 30 : 22 + Math.random() * 14;
     weather.flashText = '☀️ 雨停了';
   }
   weather.timer = weather.duration;
@@ -468,7 +568,6 @@ function updateWeather(dt) {
 
   if (weather.flashMsg > 0) weather.flashMsg -= dt;
 
-  /* 雨量平滑过渡 */
   const target = weather.type === 'rain' ? 1 : 0;
   weather.rainAmount += (target - weather.rainAmount) * (1 - Math.exp(-1.2 * dt));
   if (weather.rainAmount < 0.002) weather.rainAmount = 0;
@@ -500,6 +599,8 @@ let footTimer = 0;
    输入
    ══════════════════════════════════════════════════════ */
 const keys = Object.create(null);
+// 虚拟按键状态
+let uiMove = { up: false, down: false, left: false, right: false };
 
 let mouseX = 0, mouseY = 0, mouseActive = false;
 let touching = false, touchSX = 0, touchSY = 0, touchX = 0, touchY = 0;
@@ -566,10 +667,10 @@ function tryDash() {
   if (cat.dashCd > 0 || cat.dashTime > 0) return;
 
   let dx = 0, dy = 0;
-  if (keys['a'] || keys['arrowleft'])  dx -= 1;
-  if (keys['d'] || keys['arrowright']) dx += 1;
-  if (keys['w'] || keys['arrowup'])    dy -= 1;
-  if (keys['s'] || keys['arrowdown'])  dy += 1;
+  if (keys['a'] || keys['arrowleft'] || uiMove.left)  dx -= 1;
+  if (keys['d'] || keys['arrowright'] || uiMove.right) dx += 1;
+  if (keys['w'] || keys['arrowup'] || uiMove.up)    dy -= 1;
+  if (keys['s'] || keys['arrowdown'] || uiMove.down)  dy += 1;
 
   if (dx === 0 && dy === 0) {
     const spd = Math.sqrt(cat.vx * cat.vx + cat.vy * cat.vy);
@@ -598,6 +699,56 @@ function tryDash() {
   }
   SFX.dash();
 }
+
+/* ══════════════════════════════════════════════════════
+   虚拟按键事件绑定
+   ══════════════════════════════════════════════════════ */
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+  document.body.classList.add('is-touch');
+}
+
+const dpadBtns = document.querySelectorAll('.dpad-btn');
+dpadBtns.forEach(btn => {
+  const dir = btn.getAttribute('data-dir');
+  const setActive = (state) => {
+    uiMove[dir] = state;
+    if (state) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  };
+  btn.addEventListener('pointerdown', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    btn.setPointerCapture(e.pointerId);
+    setActive(true);
+  });
+  btn.addEventListener('pointerup', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    setActive(false);
+  });
+  btn.addEventListener('pointercancel', (e) => {
+    setActive(false);
+  });
+});
+
+const dashBtn = document.getElementById('dash-btn-ui');
+dashBtn.addEventListener('pointerdown', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  dashBtn.setPointerCapture(e.pointerId);
+  dashBtn.classList.add('active');
+  if (game.mode === 'playing') {
+    tryDash();
+  }
+});
+dashBtn.addEventListener('pointerup', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  dashBtn.classList.remove('active');
+});
+dashBtn.addEventListener('pointercancel', (e) => {
+  dashBtn.classList.remove('active');
+});
+
 
 /* ══════════════════════════════════════════════════════
    开始 / 结束
@@ -639,7 +790,6 @@ function startGame() {
   game.startTime = performance.now();
   game.lit = false;
 
-  /* 开局晴天，让玩家先熟悉环境 */
   weather.type = 'clear';
   weather.duration = 30;
   weather.timer = 30;
@@ -663,6 +813,9 @@ function startGame() {
 
   mouseActive = false;
   touching = false;
+  // 重置按键状态
+  uiMove = { up: false, down: false, left: false, right: false };
+  dpadBtns.forEach(b => b.classList.remove('active'));
 
   elMenu.classList.add('hidden');
   elOver.classList.add('hidden');
@@ -983,10 +1136,11 @@ function updateCat(dt) {
   cat.dashCd = Math.max(0, cat.dashCd - dt);
 
   let kx = 0, ky = 0;
-  if (keys['a'] || keys['arrowleft'])  kx -= 1;
-  if (keys['d'] || keys['arrowright']) kx += 1;
-  if (keys['w'] || keys['arrowup'])    ky -= 1;
-  if (keys['s'] || keys['arrowdown'])  ky += 1;
+  // 结合键盘和虚拟方向键
+  if (keys['a'] || keys['arrowleft'] || uiMove.left)  kx -= 1;
+  if (keys['d'] || keys['arrowright'] || uiMove.right) kx += 1;
+  if (keys['w'] || keys['arrowup'] || uiMove.up)    ky -= 1;
+  if (keys['s'] || keys['arrowdown'] || uiMove.down)  ky += 1;
 
   let dirX = 0, dirY = 0, mag = 0;
 
@@ -1236,7 +1390,6 @@ function update(dt) {
 
   updateParticles(dt);
 
-  /* 雨滴始终推进位置，保证切换天气时无缝 */
   for (let i = 0; i < rainDrops.length; i++) {
     const d = rainDrops[i];
     d.y += d.speed * dt;
@@ -1734,7 +1887,6 @@ function drawPopups() {
   ctx.globalAlpha = 1;
 }
 
-/* 雨：数量与透明度都随雨量变化 */
 function drawRain() {
   const amt = weather.rainAmount;
   if (amt < 0.01) return;
@@ -1850,7 +2002,6 @@ function drawWeatherPanel() {
   ctx.lineWidth = 1.2;
   roundRect(px, py, pw, ph, 12); ctx.stroke();
 
-  /* 图标 + 天气名 */
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.font = F_WEATHER_ICON;
@@ -1861,13 +2012,11 @@ function drawWeatherPanel() {
   ctx.fillStyle = isRain ? '#9cc4ff' : '#ffd166';
   ctx.fillText(isRain ? '下雨' : '晴天', px + 34, py + 15);
 
-  /* 剩余时间 */
   ctx.textAlign = 'right';
   ctx.font = F_WEATHER_TIME;
   ctx.fillStyle = 'rgba(160,178,215,0.78)';
   ctx.fillText(Math.ceil(weather.timer) + 's', px + pw - 10, py + 15);
 
-  /* 进度条 */
   const barX = px + 10, barY = py + 26, barW = pw - 20, barH = 5;
   ctx.fillStyle = 'rgba(255,255,255,0.08)';
   roundRect(barX, barY, barW, barH, 2.5); ctx.fill();
@@ -1876,7 +2025,6 @@ function drawWeatherPanel() {
   ctx.fillStyle = isRain ? '#6aa8ff' : '#ffc93c';
   roundRect(barX, barY, Math.max(2, barW * pct), barH, 2.5); ctx.fill();
 
-  /* 下一段天气预告 */
   ctx.textAlign = 'left';
   ctx.font = F_WEATHER_NEXT;
   ctx.fillStyle = 'rgba(130,150,190,0.68)';
@@ -1892,7 +2040,6 @@ function drawHUD() {
   const W = UI_W, H = UI_H;
   ctx.textBaseline = 'middle';
 
-  /* 左侧信息面板 */
   const panelW = 186, panelH = 90;
   const px = 12, py = 12;
   ctx.fillStyle = 'rgba(8,11,20,0.62)';
@@ -1924,7 +2071,6 @@ function drawHUD() {
   }
   ctx.shadowBlur = 0;
 
-  /* 冲刺指示器 */
   const dcdX = px + panelW + 14;
   const dcdY = py;
   const dcdSize = 58;
@@ -1961,7 +2107,6 @@ function drawHUD() {
   ctx.fillText(cat.dashCd > 0 ? cat.dashCd.toFixed(1) : '冲刺', 0, 1);
   ctx.restore();
 
-  /* 连击 */
   if (game.combo >= 2 && game.comboTimer > 0) {
     ctx.textAlign = 'center';
     ctx.globalAlpha = Math.min(1, game.comboTimer / 0.6);
@@ -1974,7 +2119,6 @@ function drawHUD() {
     ctx.globalAlpha = 1;
   }
 
-  /* 天气切换提示 */
   if (weather.flashMsg > 0) {
     ctx.globalAlpha = Math.min(1, weather.flashMsg / 0.5);
     ctx.textAlign = 'center';
@@ -1987,7 +2131,6 @@ function drawHUD() {
     ctx.globalAlpha = 1;
   }
 
-  /* 隐身提示 */
   if (cat.invis > 0 && game.mode === 'playing') {
     ctx.textAlign = 'center';
     ctx.font = F_INVIS;
@@ -1998,7 +2141,6 @@ function drawHUD() {
     ctx.shadowBlur = 0;
   }
 
-  /* 区域名 */
   if (game.regionTimer > 0 && game.currentRegion) {
     ctx.globalAlpha = Math.min(1, game.regionTimer / 0.5);
     ctx.textAlign = 'center';
@@ -2011,18 +2153,18 @@ function drawHUD() {
     ctx.globalAlpha = 1;
   }
 
-  /* 底部提示 */
   if (game.mode === 'playing') {
     ctx.textAlign = 'center';
     ctx.font = F_HINT;
     ctx.fillStyle = 'rgba(130,150,195,0.42)';
-    ctx.fillText('鼠标指向 / 拖动摇杆 / WASD 移动 · 空格冲刺 · M 键开关小地图', W * 0.5, H - 14);
+    // 触屏设备不显示这行文字
+    if (!document.body.classList.contains('is-touch')) {
+      ctx.fillText('鼠标指向 / 拖动摇杆 / WASD 移动 · 空格冲刺 · M 键开关小地图', W * 0.5, H - 14);
+    }
   }
 
-  /* 天气面板 */
   if (game.mode === 'playing') drawWeatherPanel();
 
-  /* 小地图 */
   if (game.mmAlpha > 0.02) {
     ctx.globalAlpha = game.mmAlpha;
     drawMinimap();
@@ -2070,7 +2212,6 @@ function render() {
   ctx.restore();
   ctx.restore();
 
-  /* 雨天全屏压暗，随雨量渐变 */
   if (weather.rainAmount > 0.01) {
     ctx.fillStyle = 'rgba(10,18,40,' + (weather.rainAmount * 0.12) + ')';
     ctx.fillRect(0, 0, VIEW_W, VIEW_H);

@@ -3,30 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 告诉浏览器：每次都要去服务器拉最新的，别用旧缓存 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    
     <title>Grass114</title>
     <style>
         :root {
-            --bg: #030303;
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --card-bg: rgba(255, 255, 255, 0.02);
+            --bg: #050508; /* 极深的蓝黑底色 */
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --card-bg: rgba(255, 255, 255, 0.03);
             --card-border: rgba(255, 255, 255, 0.08);
-            --card-hover: rgba(255, 255, 255, 0.06);
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            --card-hover-bg: rgba(255, 255, 255, 0.06);
+            --card-hover-border: rgba(255, 255, 255, 0.2);
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: "SFMono-Regular", Consolas, monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-font-smoothing: antialiased;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg);
@@ -35,77 +29,37 @@
             min-height: 100vh;
             overflow: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* =========================================
-           背景特效层：极光 + 网格 + 鼠标光晕
-           ========================================= */
-        .aurora-bg {
+        /* 静态高级极光背景 (纯 CSS 渐变，0 性能消耗) */
+        .ambient-bg {
             position: fixed;
             inset: 0;
             z-index: -2;
-            overflow: hidden;
-            background: var(--bg);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(14, 165, 233, 0.08), transparent 40%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 40%);
         }
 
-        .aurora-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.15;
-            will-change: transform;
-        }
-
-        .blob-1 {
-            width: 60vw;
-            height: 60vw;
-            background: #0ea5e9;
-            top: -20%;
-            left: -10%;
-            animation: float1 25s infinite alternate ease-in-out;
-        }
-
-        .blob-2 {
-            width: 50vw;
-            height: 50vw;
-            background: #8b5cf6;
-            bottom: -20%;
-            right: -10%;
-            animation: float2 30s infinite alternate ease-in-out;
-        }
-
+        /* 科技网格 */
         .grid-overlay {
             position: fixed;
             inset: 0;
             z-index: -1;
             background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 40px 40px;
-            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
-            -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
             pointer-events: none;
         }
 
-        .cursor-glow {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 60%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            transform: translate(-50%, -50%);
-            left: 50%;
-            top: 50%;
-            will-change: left, top;
-        }
-
-        /* ===== 顶部：左上角 Logo & 右上角时钟 ===== */
         header {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: 100%;
             padding: 40px 50px;
             display: flex;
@@ -118,32 +72,28 @@
             font-size: 24px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            background: linear-gradient(180deg, #ffffff 0%, #a1a1a1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
             user-select: none;
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
 
         .clock-wrapper {
             font-family: var(--font-mono);
             font-size: 14px;
             color: var(--text-muted);
-            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .clock-dot {
-            width: 6px;
-            height: 6px;
+            width: 6px; height: 6px;
             background-color: #10b981;
             border-radius: 50%;
-            box-shadow: 0 0 10px #10b981;
+            box-shadow: 0 0 8px #10b981;
             animation: pulse 2s infinite;
         }
 
-        /* ===== 主体内容 ===== */
         main {
             position: relative;
             z-index: 5;
@@ -160,11 +110,11 @@
             gap: 16px;
             width: 100%;
             max-width: 380px;
-            animation: enterUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeIn 0.5s ease-out forwards;
             opacity: 0;
-            transform: translateY(20px);
         }
 
+        /* 半透明高级卡片 */
         .nav-card {
             display: flex;
             align-items: center;
@@ -175,9 +125,7 @@
             padding: 20px 24px;
             text-decoration: none;
             color: var(--text-main);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            transition: background-color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
         }
 
         .card-text {
@@ -186,84 +134,44 @@
             gap: 6px;
         }
 
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .card-sub {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            transition: color 0.3s ease;
-        }
+        .card-title { font-size: 18px; font-weight: 600; }
+        .card-sub { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.5px; }
 
         .nav-arrow {
             font-size: 20px;
             color: var(--text-muted);
-            font-weight: 300;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.2s, color 0.2s;
         }
 
         .nav-card:hover {
-            background: var(--card-hover);
-            border-color: rgba(255, 255, 255, 0.25);
-            transform: translateX(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255,255,255,0.02);
+            background: var(--card-hover-bg);
+            border-color: var(--card-hover-border);
+            transform: translateX(6px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
-
-        .nav-card:hover .card-sub {
-            color: var(--text-main);
-        }
-
         .nav-card:hover .nav-arrow {
             color: var(--text-main);
-            transform: translateX(5px) translateY(-5px);
-        }
-
-        /* ===== 动画 ===== */
-        @keyframes float1 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(15vw, 10vh) scale(1.2); }
-        }
-
-        @keyframes float2 {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(-10vw, -15vh) scale(1.1); }
-        }
-
-        @keyframes enterUp {
-            to { opacity: 1; transform: translateY(0); }
+            transform: translateX(4px) translateY(-4px);
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
 
-        /* ===== 响应式 ===== */
         @media (max-width: 768px) {
             header { padding: 24px; }
-            .logo { font-size: 20px; }
             main { padding: 0 24px; }
-            .nav-grid { max-width: 100%; }
             .nav-card { padding: 16px 20px; }
-            .card-title { font-size: 16px; }
-            .cursor-glow { display: none; }
-            .aurora-blob { filter: blur(60px); opacity: 0.1; }
         }
     </style>
 </head>
 <body>
-    <div class="aurora-bg">
-        <div class="aurora-blob blob-1"></div>
-        <div class="aurora-blob blob-2"></div>
-    </div>
+    <div class="ambient-bg"></div>
     <div class="grid-overlay"></div>
-    <div class="cursor-glow" id="glow"></div>
 
     <header>
         <div class="logo">Grass114</div>
@@ -275,7 +183,6 @@
 
     <main>
         <nav class="nav-grid">
-            <!-- 第一行：游戏 -->
             <a href="heimao-touchi-midoufu.html" class="nav-card">
                 <div class="card-text">
                     <span class="card-title">黑猫偷吃米豆腐</span>
@@ -283,8 +190,6 @@
                 </div>
                 <span class="nav-arrow">↗</span>
             </a>
-            
-            <!-- 第二行：致谢（新添加） -->
             <a href="thankyou.html" class="nav-card">
                 <div class="card-text">
                     <span class="card-title">致谢</span>
@@ -292,8 +197,6 @@
                 </div>
                 <span class="nav-arrow">↗</span>
             </a>
-
-            <!-- 第三行：关于我 -->
             <a href="about.html" class="nav-card">
                 <div class="card-text">
                     <span class="card-title">关于我</span>
@@ -305,7 +208,6 @@
     </main>
 
     <script>
-        // 动态时钟
         const clock = document.getElementById('clock');
         setInterval(() => {
             const now = new Date();
@@ -314,33 +216,6 @@
                 String(now.getMinutes()).padStart(2, '0') + ':' +
                 String(now.getSeconds()).padStart(2, '0');
         }, 1000);
-
-        // 光晕阻尼平滑跟随
-        const glow = document.getElementById('glow');
-        const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-        if (!isMobile) {
-            let targetX = window.innerWidth / 2;
-            let targetY = window.innerHeight / 2;
-            let currentX = targetX;
-            let currentY = targetY;
-
-            document.addEventListener('mousemove', (e) => {
-                targetX = e.clientX;
-                targetY = e.clientY;
-            }, { passive: true });
-
-            function animate() {
-                currentX += (targetX - currentX) * 0.08;
-                currentY += (targetY - currentY) * 0.08;
-                
-                glow.style.left = `${currentX}px`;
-                glow.style.top = `${currentY}px`;
-
-                requestAnimationFrame(animate);
-            }
-            animate();
-        }
     </script>
 </body>
 </html>
