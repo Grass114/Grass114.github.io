@@ -1,316 +1,248 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="favicon.png" type="image/png" />
-    <title>致谢 · BlueCat114</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 告诉浏览器：每次都要去服务器拉最新的，别用旧缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
+    <title>致谢 · Grass114</title>
     <style>
         :root {
-            --theme-color: #6c63ff;
-            --theme-color-rgb: 108, 99, 255;
-
-            --bg-start: #f5f9ff;
-            --bg-end: #e6edf7;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --card-border: rgba(255, 255, 255, 0.8);
-            --text-primary: #0b1e33;
-            --text-secondary: #1e293b;
-            --text-muted: #64748b;
-            --text-light: #94a3b8;
-            --shadow-color: rgba(0, 20, 40, 0.08);
-            --shadow-hover: rgba(0, 20, 40, 0.12);
-            --topbar-bg: rgba(255, 255, 255, 0.6);
-            --topbar-border: rgba(255, 255, 255, 0.8);
-            --footer-border: rgba(255, 255, 255, 0.6);
-            --link-color: var(--theme-color, #6c63ff);
-            --link-hover: var(--theme-color, #4a42b8);
-            --clock-color: var(--text-muted);
-        }
-
-        [data-theme="dark"] {
-            --bg-start: #0f1724;
-            --bg-end: #1a2332;
-            --card-bg: rgba(30, 41, 59, 0.8);
-            --card-border: rgba(71, 85, 105, 0.5);
-            --text-primary: #e2e8f0;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --text-light: #64748b;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --shadow-hover: rgba(0, 0, 0, 0.4);
-            --topbar-bg: rgba(15, 23, 36, 0.8);
-            --topbar-border: rgba(71, 85, 105, 0.5);
-            --footer-border: rgba(71, 85, 105, 0.4);
-            --link-color: var(--theme-color, #818cf8);
-            --link-hover: var(--theme-color, #a5b4fc);
-            --clock-color: #94a3b8;
+            --bg: #030303;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-hover: rgba(255, 255, 255, 0.04);
+            --accent: #6c63ff;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        html,
-        body {
-            height: 100%;
-            width: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-end) 100%);
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            transition: background 0.4s ease, color 0.4s ease;
-            color: var(--text-primary);
         }
 
-        [data-theme="dark"] body {
-            background: linear-gradient(145deg, #0f1724 0%, #1a2332 100%);
-        }
-
-        .top-bar {
+        /* =========================================
+           背景特效层：极光 + 网格 + 鼠标光晕
+           ========================================= */
+        .aurora-bg {
             position: fixed;
+            inset: 0;
+            z-index: -2;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .aurora-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            will-change: transform;
+        }
+
+        .blob-1 {
+            width: 60vw;
+            height: 60vw;
+            background: #0ea5e9;
+            top: -20%;
+            left: -10%;
+            animation: float1 25s infinite alternate ease-in-out;
+        }
+
+        .blob-2 {
+            width: 50vw;
+            height: 50vw;
+            background: #8b5cf6;
+            bottom: -20%;
+            right: -10%;
+            animation: float2 30s infinite alternate ease-in-out;
+        }
+
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+            pointer-events: none;
+        }
+
+        .cursor-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 60%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            top: 50%;
+            will-change: left, top;
+        }
+
+        /* ===== 顶部：左上角 Logo & 右上角时钟 ===== */
+        header {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            z-index: 10000;
-            padding: 12px 28px;
-            background: #ffffff;
-            border-bottom: 1px solid #e9edf2;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            padding: 40px 50px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-        }
-
-        [data-theme="dark"] .top-bar {
-            background: #1a2332;
-            border-bottom: 1px solid #2a3a4a;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .top-bar-left {
-            display: flex;
             align-items: center;
-            gap: 12px;
+            z-index: 10;
         }
 
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .top-bar .site-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #0b1e33;
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1a1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-decoration: none;
-            letter-spacing: 0.3px;
-            display: inline-flex;
+            user-select: none;
+            transition: opacity 0.3s;
+        }
+        .logo:hover { opacity: 0.8; }
+
+        .clock-wrapper {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            display: flex;
             align-items: center;
             gap: 8px;
-            transition: color 0.2s;
         }
 
-        [data-theme="dark"] .top-bar .site-title {
-            color: #e2e8f0;
+        .clock-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse 2s infinite;
         }
 
-        .top-bar .site-title:hover {
-            color: var(--link-color);
-        }
-
-        .top-bar .site-title::before {
-            content: "🏠";
-            font-size: 20px;
-        }
-
-        .top-bar .nav-link {
-            font-size: 16px;
-            font-weight: 500;
-            color: #1e293b;
-            text-decoration: none;
-            transition: color 0.2s;
-            padding: 4px 0;
-            border-bottom: 2px solid transparent;
-        }
-
-        [data-theme="dark"] .top-bar .nav-link {
-            color: #cbd5e1;
-        }
-
-        .top-bar .nav-link::before {
-            content: "｜";
-            margin-right: 10px;
-            color: #94a3b8;
-            font-weight: 300;
-        }
-
-        .top-bar .nav-link:hover {
-            color: var(--link-color);
-            border-bottom-color: var(--link-color);
-        }
-
-        .top-bar .nav-link.active {
-            color: var(--link-color);
-            border-bottom-color: var(--link-color);
-        }
-
-        .clock-display {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--clock-color);
-            letter-spacing: 0.5px;
-            font-variant-numeric: tabular-nums;
-            transition: color 0.4s;
-            cursor: default;
-            user-select: none;
-            min-width: 80px;
-            text-align: right;
-        }
-
-        [data-theme="dark"] .clock-display {
-            color: #94a3b8;
-        }
-
-        .clock-display:hover {
-            color: var(--link-color);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: none;
-            font-size: 22px;
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 30px;
-            transition: background 0.3s;
-            color: #0b1e33;
-            background: #f1f4f9;
-            border: 1px solid #e2e8f0;
-            line-height: 1;
-        }
-
-        [data-theme="dark"] .theme-toggle {
-            color: #e2e8f0;
-            background: #2a3a4a;
-            border: 1px solid #3a4a5a;
-        }
-
-        .theme-toggle:hover {
-            background: rgba(0, 0, 0, 0.06);
-            transform: scale(1.1);
-        }
-
-        .main {
+        /* ===== 主体内容 ===== */
+        main {
+            position: relative;
+            z-index: 5;
             flex: 1;
-            max-width: 700px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 90px 28px 40px 28px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            padding: 120px 50px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .thanks-content {
+        .page-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.05em;
+            margin-bottom: 40px;
+            background: linear-gradient(180deg, #ffffff 20%, #444444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: enterUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* 毛玻璃内容卡片 */
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            animation: enterUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+            opacity: 0;
+            transform: translateY(20px);
             text-align: center;
         }
 
         .thanks-icon {
-            font-size: 72px;
+            font-size: 56px;
             display: block;
-            margin-bottom: 16px;
-        }
-
-        .thanks-title {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.3px;
-            transition: color 0.4s;
-            margin-bottom: 12px;
-        }
-
-        [data-theme="dark"] .thanks-title {
-            color: #e2e8f0;
+            margin-bottom: 24px;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
         }
 
         .thanks-sub {
-            font-size: 17px;
-            color: var(--text-muted);
+            font-size: 16px;
+            color: #cccccc;
             line-height: 1.8;
-            transition: color 0.4s;
-            margin-bottom: 28px;
+            margin-bottom: 40px;
         }
 
-        [data-theme="dark"] .thanks-sub {
-            color: #94a3b8;
-        }
-
-        .thanks-sub .highlight {
-            color: var(--link-color);
+        .thanks-sub strong {
+            color: #ffffff;
             font-weight: 600;
         }
 
+        /* 感谢名单区域 */
         .thanks-list {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 8px;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 40px;
         }
 
         .thanks-card {
             display: flex;
             align-items: center;
             gap: 16px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 14px 24px 14px 16px;
-            border-radius: 60px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 16px rgba(0, 20, 40, 0.06);
-            transition: all 0.3s ease;
-        }
-
-        [data-theme="dark"] .thanks-card {
-            background: rgba(30, 41, 59, 0.6);
-            border-color: rgba(71, 85, 105, 0.4);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 16px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .thanks-card:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 28px rgba(0, 20, 40, 0.12);
-            border-color: rgba(108, 99, 255, 0.2);
-        }
-
-        [data-theme="dark"] .thanks-card:hover {
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
-            border-color: rgba(129, 140, 248, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
 
         .thanks-card .avatar {
             width: 48px;
             height: 48px;
-            border-radius: 12px;
-            flex-shrink: 0;
+            border-radius: 10px;
             object-fit: cover;
-            border: 2px solid #e2e8f0;
-            background: #f1f4f9;
-        }
-
-        [data-theme="dark"] .thanks-card .avatar {
-            border-color: #3a4a5a;
-            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #111;
         }
 
         .thanks-card .info {
@@ -320,218 +252,121 @@
         }
 
         .thanks-card .name {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
-            color: var(--text-primary);
-            transition: color 0.4s;
-        }
-
-        [data-theme="dark"] .thanks-card .name {
-            color: #e2e8f0;
+            color: #ffffff;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
 
         .thanks-card .badge {
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--link-color);
-            background: rgba(108, 99, 255, 0.10);
-            padding: 1px 12px;
-            border-radius: 30px;
-            margin-top: 2px;
+            font-size: 12px;
+            font-family: var(--font-mono);
+            color: #ff8fa3;
+            background: rgba(255, 143, 163, 0.1);
+            padding: 2px 10px;
+            border-radius: 20px;
         }
 
-        [data-theme="dark"] .thanks-card .badge {
-            color: #818cf8;
-            background: rgba(129, 140, 248, 0.12);
-        }
-
+        /* 空状态提示 */
         .empty-state {
-            margin-top: 24px;
-            padding: 20px 24px;
-            background: rgba(108, 99, 255, 0.06);
-            border-radius: 16px;
-            border: 1px dashed rgba(108, 99, 255, 0.2);
-            font-size: 15px;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.01);
+            font-size: 14px;
             color: var(--text-muted);
-            transition: background 0.4s, border-color 0.4s, color 0.4s;
-        }
-
-        [data-theme="dark"] .empty-state {
-            background: rgba(108, 99, 255, 0.08);
-            border-color: rgba(108, 99, 255, 0.15);
-            color: #94a3b8;
+            line-height: 1.6;
         }
 
         .empty-state .emoji {
-            font-size: 28px;
+            font-size: 24px;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            opacity: 0.8;
         }
 
-        .footer {
-            text-align: center;
-            font-size: 14px;
-            color: var(--text-muted);
-            padding: 24px 0 28px 0;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-            max-width: 700px;
-            width: 100%;
-            margin: 0 auto;
-            transition: color 0.4s, border-color 0.4s;
-        }
-
-        [data-theme="dark"] .footer {
-            color: #64748b;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .footer a {
-            color: var(--link-color);
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 40px;
+            padding: 12px 32px;
+            background: #ffffff;
+            color: #000000;
             text-decoration: none;
-            font-weight: 500;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .footer a:hover {
-            text-decoration: underline;
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,255,255,0.15);
         }
 
-        @media (max-width: 700px) {
-            .main {
-                padding: 80px 18px 30px 18px;
-            }
-            .thanks-icon {
-                font-size: 56px;
-            }
-            .thanks-title {
-                font-size: 26px;
-            }
-            .thanks-sub {
-                font-size: 15px;
-            }
-            .thanks-card {
-                padding: 12px 18px 12px 12px;
-                gap: 12px;
-            }
-            .thanks-card .avatar {
-                width: 40px;
-                height: 40px;
-                border-radius: 10px;
-            }
-            .thanks-card .name {
-                font-size: 14px;
-            }
-            .top-bar {
-                padding: 10px 18px;
-                flex-wrap: wrap;
-                gap: 6px;
-            }
-            .top-bar .site-title {
-                font-size: 16px;
-            }
-            .top-bar .nav-link {
-                font-size: 14px;
-            }
-            .clock-display {
-                font-size: 14px;
-                min-width: 70px;
-            }
-            .theme-toggle {
-                font-size: 18px;
-                padding: 3px 6px;
-            }
-            .empty-state {
-                font-size: 14px;
-                padding: 16px 18px;
-            }
+        /* ===== 动画 ===== */
+        @keyframes float1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(15vw, 10vh) scale(1.2); }
         }
 
-        @media (max-width: 400px) {
-            .main {
-                padding: 72px 14px 24px 14px;
-            }
-            .thanks-icon {
-                font-size: 44px;
-            }
-            .thanks-title {
-                font-size: 22px;
-            }
-            .thanks-sub {
-                font-size: 14px;
-            }
-            .thanks-card {
-                padding: 10px 14px 10px 10px;
-                gap: 10px;
-                border-radius: 40px;
-            }
-            .thanks-card .avatar {
-                width: 34px;
-                height: 34px;
-                border-radius: 8px;
-            }
-            .thanks-card .name {
-                font-size: 13px;
-            }
-            .thanks-card .badge {
-                font-size: 10px;
-                padding: 0 10px;
-            }
-            .top-bar {
-                padding: 8px 12px;
-            }
-            .top-bar .site-title {
-                font-size: 14px;
-            }
-            .top-bar .nav-link {
-                font-size: 12px;
-            }
-            .top-bar .nav-link::before {
-                margin-right: 4px;
-            }
-            .clock-display {
-                font-size: 12px;
-                min-width: 60px;
-            }
-            .theme-toggle {
-                font-size: 16px;
-                padding: 2px 5px;
-            }
-            .empty-state {
-                font-size: 13px;
-                padding: 14px 14px;
-            }
-            .footer {
-                font-size: 12px;
-                padding: 18px 0 20px 0;
-            }
+        @keyframes float2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-10vw, -15vh) scale(1.1); }
+        }
+
+        @keyframes enterUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            header { padding: 24px; }
+            .logo { font-size: 20px; }
+            main { padding: 100px 24px 40px; }
+            .glass-card { padding: 24px; border-radius: 16px; }
+            .cursor-glow { display: none; }
+            .aurora-blob { filter: blur(60px); opacity: 0.1; }
+            .thanks-icon { font-size: 48px; }
+            .thanks-card { padding: 12px 16px; }
+            .thanks-card .avatar { width: 40px; height: 40px; }
+            .thanks-card .name { font-size: 16px; }
         }
     </style>
 </head>
 <body>
-
-    <div class="top-bar">
-        <div class="top-bar-left">
-            <a href="index.html" class="site-title">BlueCat114 官方网站</a>
-            <a href="project.html" class="nav-link">项目</a>
-            <a href="game.html" class="nav-link">网页游戏</a>
-            <a href="thankyou.html" class="nav-link active">致谢</a>
-            <a href="about.html" class="nav-link">关于我</a>
-            <a href="settings.html" class="nav-link">设置</a>
-        </div>
-        <div class="top-bar-right">
-            <div class="clock-display" id="clockDisplay" title="双击恢复自动模式">--:--:--</div>
-            <button class="theme-toggle" id="themeToggle" aria-label="切换暗色/亮色模式">☀️</button>
-        </div>
+    <div class="aurora-bg">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
     </div>
+    <div class="grid-overlay"></div>
+    <div class="cursor-glow" id="glow"></div>
 
-    <div class="main">
+    <header>
+        <a href="index.html" class="logo">Grass114</a>
+        <div class="clock-wrapper">
+            <div class="clock-dot"></div>
+            <div id="clock">00:00:00</div>
+        </div>
+    </header>
 
-        <div class="thanks-content">
+    <main>
+        <h1 class="page-title">致谢 / THANKS</h1>
+
+        <div class="glass-card">
             <span class="thanks-icon">🙏</span>
-            <h1 class="thanks-title">致谢</h1>
             <p class="thanks-sub">
-                感谢每一位帮助过 <span class="highlight">BlueCat114</span> 的人。
+                感谢每一位帮助过 <strong>Grass114</strong> 的人。
             </p>
 
+            <!-- 感谢名单 -->
             <div class="thanks-list">
                 <div class="thanks-card">
                     <img class="avatar" src="huise25.jpg" alt="huise25" />
@@ -542,156 +377,53 @@
                 </div>
             </div>
 
+            <!-- 空状态提示 -->
             <div class="empty-state">
                 <span class="emoji">🌱</span>
                 如果你曾帮助过我，欢迎告诉我，我会把你写在这里 ❤️
             </div>
+
+            <a href="index.html" class="back-btn">← 返回首页</a>
         </div>
-
-        <div class="footer">
-            © <span id="year"></span> <a href="https://github.com/grass114">BlueCat114</a> · 用 ❤️ 和 ☕ 打造
-        </div>
-
-    </div>
-
-    <script src="pet-loader.js"></script>
+    </main>
 
     <script>
-        // ===== 人机验证检查 =====
-        (function() {
-            const verified = localStorage.getItem('verified');
-            const verifiedTime = parseInt(localStorage.getItem('verifiedTime') || '0');
-            const EXPIRY = 7 * 24 * 60 * 60 * 1000;
-            if (window.location.pathname.includes('verify.html')) return;
-            if (!verified || Date.now() - verifiedTime > EXPIRY) {
-                window.location.href = 'verify.html';
-            }
-        })();
-
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        const clockDisplay = document.getElementById('clockDisplay');
-        const toggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-
-        let isAutoMode = true;
-        let currentTheme = 'light';
-        let savedThemeMode = 'auto';
-        let timeThemeTimer = null;
-
-        function getThemeByHour() {
-            const h = new Date().getHours();
-            return (h >= 6 && h < 18) ? 'light' : 'dark';
-        }
-
-        function applyTheme(theme) {
-            html.setAttribute('data-theme', theme);
-            toggle.textContent = theme === 'dark' ? '🌙' : '☀️';
-            currentTheme = theme;
-        }
-
-        function loadSavedTheme() {
-            const saved = localStorage.getItem('webSettings');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    savedThemeMode = parsed.theme || 'auto';
-                } catch {
-                    savedThemeMode = 'auto';
-                }
-            } else {
-                savedThemeMode = 'auto';
-            }
-            return savedThemeMode;
-        }
-
-        function applyThemeFromMode(mode) {
-            if (mode === 'auto') {
-                const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                applyTheme(isDark ? 'dark' : 'light');
-                isAutoMode = true;
-                stopTimeThemeTimer();
-            } else if (mode === 'time') {
-                applyTheme(getThemeByHour());
-                isAutoMode = false;
-                startTimeThemeTimer();
-            } else if (mode === 'light' || mode === 'dark') {
-                applyTheme(mode);
-                isAutoMode = false;
-                stopTimeThemeTimer();
-            } else {
-                const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                applyTheme(isDark ? 'dark' : 'light');
-                isAutoMode = true;
-                stopTimeThemeTimer();
-            }
-        }
-
-        function startTimeThemeTimer() {
-            stopTimeThemeTimer();
-            timeThemeTimer = setInterval(() => {
-                const target = getThemeByHour();
-                if (target !== currentTheme) {
-                    applyTheme(target);
-                }
-            }, 60000);
-        }
-
-        function stopTimeThemeTimer() {
-            if (timeThemeTimer) {
-                clearInterval(timeThemeTimer);
-                timeThemeTimer = null;
-            }
-        }
-
-        function initTheme() {
-            const mode = loadSavedTheme();
-            applyThemeFromMode(mode);
-        }
-
-        clockDisplay.addEventListener('dblclick', function() {
-            savedThemeMode = 'auto';
-            localStorage.setItem('webSettings', JSON.stringify({ theme: 'auto' }));
-            applyThemeFromMode('auto');
-        });
-
-        toggle.addEventListener('click', function() {
-            const current = html.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            savedThemeMode = next;
-            localStorage.setItem('webSettings', JSON.stringify({ theme: next }));
-            applyThemeFromMode(next);
-        });
-
-        if (window.matchMedia) {
-            const media = window.matchMedia('(prefers-color-scheme: dark)');
-            media.addEventListener('change', function(e) {
-                const mode = loadSavedTheme();
-                if (mode === 'auto') {
-                    applyTheme(e.matches ? 'dark' : 'light');
-                }
-            });
-        }
-
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'webSettings') {
-                const mode = loadSavedTheme();
-                applyThemeFromMode(mode);
-            }
-        });
-
-        initTheme();
-
-        function updateClockDisplay() {
+        // 动态时钟
+        const clock = document.getElementById('clock');
+        setInterval(() => {
             const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            clockDisplay.textContent = h + ':' + m + ':' + s;
-        }
-        updateClockDisplay();
-        setInterval(updateClockDisplay, 1000);
-    </script>
+            clock.textContent = 
+                String(now.getHours()).padStart(2, '0') + ':' +
+                String(now.getMinutes()).padStart(2, '0') + ':' +
+                String(now.getSeconds()).padStart(2, '0');
+        }, 1000);
 
+        // 光晕阻尼平滑跟随
+        const glow = document.getElementById('glow');
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+        if (!isMobile) {
+            let targetX = window.innerWidth / 2;
+            let targetY = window.innerHeight / 2;
+            let currentX = targetX;
+            let currentY = targetY;
+
+            document.addEventListener('mousemove', (e) => {
+                targetX = e.clientX;
+                targetY = e.clientY;
+            }, { passive: true });
+
+            function animate() {
+                currentX += (targetX - currentX) * 0.08;
+                currentY += (targetY - currentY) * 0.08;
+                
+                glow.style.left = `${currentX}px`;
+                glow.style.top = `${currentY}px`;
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
 </body>
 </html>

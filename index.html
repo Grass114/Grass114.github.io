@@ -37,7 +37,9 @@
             position: relative;
         }
 
-        /* 背景特效层 */
+        /* =========================================
+           背景特效层：极光 + 网格 + 鼠标光晕
+           ========================================= */
         .aurora-bg {
             position: fixed;
             inset: 0;
@@ -99,6 +101,7 @@
             will-change: left, top;
         }
 
+        /* ===== 顶部：左上角 Logo & 右上角时钟 ===== */
         header {
             position: absolute;
             top: 0;
@@ -140,6 +143,7 @@
             animation: pulse 2s infinite;
         }
 
+        /* ===== 主体内容 ===== */
         main {
             position: relative;
             z-index: 5;
@@ -211,13 +215,16 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255,255,255,0.02);
         }
 
-        .nav-card:hover .card-sub { color: var(--text-main); }
+        .nav-card:hover .card-sub {
+            color: var(--text-main);
+        }
 
         .nav-card:hover .nav-arrow {
             color: var(--text-main);
             transform: translateX(5px) translateY(-5px);
         }
 
+        /* ===== 动画 ===== */
         @keyframes float1 {
             0% { transform: translate(0, 0) scale(1); }
             100% { transform: translate(15vw, 10vh) scale(1.2); }
@@ -228,12 +235,16 @@
             100% { transform: translate(-10vw, -15vh) scale(1.1); }
         }
 
-        @keyframes enterUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes enterUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.8); }
         }
 
+        /* ===== 响应式 ===== */
         @media (max-width: 768px) {
             header { padding: 24px; }
             .logo { font-size: 20px; }
@@ -264,6 +275,7 @@
 
     <main>
         <nav class="nav-grid">
+            <!-- 第一行：游戏 -->
             <a href="heimao-touchi-midoufu.html" class="nav-card">
                 <div class="card-text">
                     <span class="card-title">黑猫偷吃米豆腐</span>
@@ -272,6 +284,16 @@
                 <span class="nav-arrow">↗</span>
             </a>
             
+            <!-- 第二行：致谢（新添加） -->
+            <a href="thankyou.html" class="nav-card">
+                <div class="card-text">
+                    <span class="card-title">致谢</span>
+                    <span class="card-sub">感谢 / THANKS</span>
+                </div>
+                <span class="nav-arrow">↗</span>
+            </a>
+
+            <!-- 第三行：关于我 -->
             <a href="about.html" class="nav-card">
                 <div class="card-text">
                     <span class="card-title">关于我</span>
