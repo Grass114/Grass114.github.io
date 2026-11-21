@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 告诉浏览器：每次都要去服务器拉最新的，别用旧缓存 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    
     <title>Grass114</title>
     <style>
         :root {
-            --bg: #050508; /* 极深的蓝黑底色 */
+            --bg: #050508;
             --text-main: #f4f4f5;
             --text-muted: #a1a1aa;
             --card-bg: rgba(255, 255, 255, 0.03);
@@ -21,9 +17,7 @@
             --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             --font-mono: "SFMono-Regular", Consolas, monospace;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             background-color: var(--bg);
             color: var(--text-main);
@@ -34,8 +28,6 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* 静态高级极光背景 (纯 CSS 渐变) */
         .ambient-bg {
             position: fixed;
             inset: 0;
@@ -44,8 +36,6 @@
                 radial-gradient(circle at 15% 50%, rgba(14, 165, 233, 0.08), transparent 40%),
                 radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 40%);
         }
-
-        /* 科技网格 */
         .grid-overlay {
             position: fixed;
             inset: 0;
@@ -58,7 +48,6 @@
             -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
             pointer-events: none;
         }
-
         header {
             position: absolute;
             top: 0; left: 0;
@@ -69,7 +58,6 @@
             align-items: center;
             z-index: 10;
         }
-
         .logo {
             font-size: 24px;
             font-weight: 800;
@@ -78,7 +66,6 @@
             user-select: none;
             text-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
-
         .clock-wrapper {
             font-family: var(--font-mono);
             font-size: 14px;
@@ -87,7 +74,6 @@
             align-items: center;
             gap: 8px;
         }
-
         .clock-dot {
             width: 6px; height: 6px;
             background-color: #10b981;
@@ -95,7 +81,6 @@
             box-shadow: 0 0 8px #10b981;
             animation: pulse 2s infinite;
         }
-
         main {
             position: relative;
             z-index: 5;
@@ -105,18 +90,15 @@
             justify-content: center;
             padding: 0 50px;
         }
-
         .nav-grid {
             display: flex;
             flex-direction: column;
             gap: 16px;
             width: 100%;
-            max-width: 420px; /* 稍微加宽一点，因为卡片少了 */
+            max-width: 420px;
             animation: fadeIn 0.5s ease-out forwards;
             opacity: 0;
         }
-
-        /* 半透明高级卡片 */
         .nav-card {
             display: flex;
             align-items: center;
@@ -129,22 +111,14 @@
             color: var(--text-main);
             transition: background-color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
         }
-
-        .card-text {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
+        .card-text { display: flex; flex-direction: column; gap: 6px; }
         .card-title { font-size: 18px; font-weight: 600; }
         .card-sub { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); letter-spacing: 0.5px; }
-
         .nav-arrow {
             font-size: 20px;
             color: var(--text-muted);
             transition: transform 0.2s, color 0.2s;
         }
-
         .nav-card:hover {
             background: var(--card-hover-bg);
             border-color: var(--card-hover-border);
@@ -155,15 +129,8 @@
             color: var(--text-main);
             transform: translateX(4px) translateY(-4px);
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        @keyframes fadeIn { to { opacity: 1; } }
         @media (max-width: 768px) {
             header { padding: 24px; }
             main { padding: 0 24px; }
@@ -185,11 +152,11 @@
 
     <main>
         <nav class="nav-grid">
-            <!-- 删除了“关于我”，保留了游戏和致谢 -->
-            <a href="heimao-touchi-midoufu.html" class="nav-card">
+            <!-- 修改：指向 game.html -->
+            <a href="game.html" class="nav-card">
                 <div class="card-text">
-                    <span class="card-title">黑猫偷吃米豆腐</span>
-                    <span class="card-sub">游戏 / GAME</span>
+                    <span class="card-title">游戏中心</span>
+                    <span class="card-sub">GAMES</span>
                 </div>
                 <span class="nav-arrow">↗</span>
             </a>
