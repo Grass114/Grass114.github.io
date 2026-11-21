@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 告诉浏览器：每次都要去服务器拉最新的，别用旧缓存 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+    
     <title>Grass114</title>
     <style>
         :root {
@@ -33,7 +35,7 @@
             flex-direction: column;
         }
 
-        /* 静态高级极光背景 (纯 CSS 渐变，0 性能消耗) */
+        /* 静态高级极光背景 (纯 CSS 渐变) */
         .ambient-bg {
             position: fixed;
             inset: 0;
@@ -109,7 +111,7 @@
             flex-direction: column;
             gap: 16px;
             width: 100%;
-            max-width: 380px;
+            max-width: 420px; /* 稍微加宽一点，因为卡片少了 */
             animation: fadeIn 0.5s ease-out forwards;
             opacity: 0;
         }
@@ -183,6 +185,7 @@
 
     <main>
         <nav class="nav-grid">
+            <!-- 删除了“关于我”，保留了游戏和致谢 -->
             <a href="heimao-touchi-midoufu.html" class="nav-card">
                 <div class="card-text">
                     <span class="card-title">黑猫偷吃米豆腐</span>
@@ -194,13 +197,6 @@
                 <div class="card-text">
                     <span class="card-title">致谢</span>
                     <span class="card-sub">感谢 / THANKS</span>
-                </div>
-                <span class="nav-arrow">↗</span>
-            </a>
-            <a href="about.html" class="nav-card">
-                <div class="card-text">
-                    <span class="card-title">关于我</span>
-                    <span class="card-sub">简介 / ABOUT</span>
                 </div>
                 <span class="nav-arrow">↗</span>
             </a>
