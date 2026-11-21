@@ -12,15 +12,19 @@
     font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    -webkit-user-select: none;
   }
   #stage { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:#04050a; }
   canvas { display:block; touch-action:none; cursor:crosshair; }
   
+  /* 菜单UI */
   .overlay {
     position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
     padding:20px; pointer-events:none; z-index:10;
   }
   .overlay.hidden { display:none; }
+  
+  /* 加宽卡片以容纳左右两栏 */
   .card {
     pointer-events:auto;
     background: rgba(10,13,23,.92);
@@ -28,21 +32,76 @@
     border:1px solid rgba(120,160,255,.2);
     border-radius:26px;
     padding:34px 38px 32px;
-    width: min(470px, 92vw);
+    width: min(680px, 94vw);
     text-align:center; color:#e8eeff;
     box-shadow: 0 30px 80px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.06);
     animation: pop .4s cubic-bezier(.2,1.5,.45,1);
     max-height: 90vh; overflow-y: auto;
   }
   @keyframes pop { from{ transform:scale(.88); opacity:0 } to{ transform:scale(1); opacity:1 } }
+  
   .card h1 {
-    font-size: clamp(21px, 5.2vw, 29px); letter-spacing:2px; margin-bottom:8px;
+    font-size: clamp(21px, 5.2vw, 29px); letter-spacing:2px; margin-bottom:20px;
     background: linear-gradient(100deg,#ffe07a,#ffb2d0 55%,#8fb4ff);
     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    position: relative; display: inline-block;
   }
+
+  /* 版本号样式 */
+  .version-badge {
+    font-size: 13px;
+    color: #0a0d16;
+    background: linear-gradient(135deg, #ffe066, #ffc93c);
+    padding: 2px 8px;
+    border-radius: 12px;
+    vertical-align: middle;
+    margin-left: 8px;
+    letter-spacing: 0;
+    font-weight: 800;
+    -webkit-text-fill-color: #0a0d16;
+  }
+
+  /* ===== 左右分栏布局 ===== */
+  .menu-layout {
+    display: flex;
+    gap: 30px;
+    text-align: left;
+    margin-bottom: 24px;
+  }
+
+  .menu-left { flex: 1.2; }
+  .menu-right { flex: 1; }
+
+  .sub { font-size:13px; color:#8f9cc4; margin-bottom:12px; line-height:1.6; }
+  .rules { list-style:none; font-size:13px; color:#b9c6ea; line-height:2; }
+  .rules li::before { content:"•"; color:#8f9cc4; margin-right:6px; }
+
+  /* 更新日志面板 */
+  .update-log {
+    font-size: 12px;
+    color: #a1b0d6;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+    line-height: 1.7;
+    height: 100%;
+  }
+  .update-log .log-title {
+    color: #7cf0a4;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .update-log ul { list-style: none; }
+  .update-log li { margin-bottom: 8px; position: relative; padding-left: 14px; }
+  .update-log li::before { content: "→"; position: absolute; left: 0; color: #5c6a8a; }
+  .update-log li:last-child { margin-bottom: 0; }
+
+  /* ===== 其他菜单样式 ===== */
   .card h2 { font-size: clamp(20px,5vw,26px); margin-bottom:16px; color:#ff8fa3; letter-spacing:2px; }
-  .sub { font-size:13px; color:#8f9cc4; margin-bottom:20px; line-height:1.7; }
-  .rules { list-style:none; text-align:left; font-size:13px; color:#b9c6ea; line-height:2; margin:0 auto 22px; display:inline-block; }
   .score-line { font-size:16px; color:#cfd9f5; margin-bottom:6px; }
   .score-line span { font-size:32px; font-weight:800; color:#ffe066; }
   .best-line { font-size:13px; color:#8f9cc4; margin-bottom:24px; }
@@ -87,18 +146,49 @@
   .lb-row.top2 .lb-rank, .lb-row.top2 .lb-name { color: #e2e8f0; }
   .lb-row.top3 .lb-rank, .lb-row.top3 .lb-name { color: #d97706; }
 
-  /* 虚拟控制按键 */
-  #mobile-controls { position: fixed; inset: 0; pointer-events: none; z-index: 100; display: none; }
-  body.is-touch #mobile-controls { display: block; }
-  #dpad { position: absolute; bottom: 40px; left: 40px; width: 140px; height: 140px; pointer-events: auto; display: flex; justify-content: center; align-items: center; }
-  .dpad-btn { position: absolute; width: 48px; height: 48px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; color: rgba(255,255,255,0.7); display: flex; justify-content: center; align-items: center; font-size: 20px; touch-action: none; user-select: none; backdrop-filter: blur(4px); transition: background .1s, transform .1s; }
+  /* ================= 虚拟方向键 & 冲刺键 ================= */
+  #mobile-controls { position: fixed; inset: 0; pointer-events: none; z-index: 100; }
+  #action-group { position: absolute; bottom: 40px; left: 40px; display: flex; align-items: center; gap: 30px; }
+  #dpad { position: relative; width: 140px; height: 140px; pointer-events: auto; }
+  .dpad-btn { 
+    position: absolute; width: 48px; height: 48px; 
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); 
+    border-radius: 12px; color: rgba(255,255,255,0.7); display: flex; justify-content: center; 
+    align-items: center; font-size: 20px; touch-action: none; user-select: none; 
+    -webkit-user-select: none; -webkit-touch-callout: none; 
+    backdrop-filter: blur(4px); transition: background .1s, transform .1s; 
+  }
   .dpad-btn.active { background: rgba(255,255,255,0.3); color: #fff; transform: scale(0.92); }
   .dpad-up { top: 0; left: 46px; } .dpad-down { bottom: 0; left: 46px; } .dpad-left { top: 46px; left: 0; } .dpad-right { top: 46px; right: 0; }
-  #dash-btn-ui { position: absolute; bottom: 40px; right: 40px; width: 76px; height: 76px; border-radius: 50%; background: rgba(124,240,164,0.15); border: 2px solid rgba(124,240,164,0.4); color: #7cf0a4; display: flex; justify-content: center; align-items: center; font-size: 15px; font-weight: bold; letter-spacing: 2px; pointer-events: auto; touch-action: none; backdrop-filter: blur(4px); transition: background .1s, transform .1s; box-shadow: 0 0 20px rgba(124,240,164,.1); }
-  #dash-btn-ui.active { background: rgba(124,240,164,0.3); transform: scale(0.92); }
-  @media (max-width: 768px) {
-    #dpad { bottom: 30px; left: 20px; transform: scale(0.9); }
-    #dash-btn-ui { bottom: 35px; right: 25px; transform: scale(0.9); }
+
+  #dash-btn-ui { 
+    width: 84px; height: 84px; 
+    border-radius: 50%; background: rgba(124,240,164,0.1); border: 2px solid rgba(124,240,164,0.3); 
+    color: #7cf0a4; display: flex; justify-content: center; align-items: center; 
+    font-size: 17px; font-weight: bold; letter-spacing: 2px; pointer-events: auto; 
+    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; 
+    backdrop-filter: blur(4px); box-shadow: 0 0 20px rgba(124,240,164,0.15); 
+    position: relative; transition: transform 0.1s, background 0.2s, border-color 0.2s;
+  }
+  #dash-btn-ui.active { transform: scale(0.92); background: rgba(124,240,164,0.25); }
+  #dash-btn-ui.cooldown { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); box-shadow: none; }
+
+  #dash-progress { position: absolute; top: -2px; left: -2px; width: 84px; height: 84px; transform: rotate(-90deg); pointer-events: none; }
+  #dash-progress circle { fill: none; stroke-width: 4; stroke-linecap: round; r: 42; cx: 42; cy: 42; }
+  #dash-progress .bg { stroke: transparent; }
+  #dash-progress .fg { stroke: #7cf0a4; stroke-dasharray: 264; stroke-dashoffset: 0; transition: stroke-dashoffset 0.1s linear; }
+  #dash-btn-ui.cooldown #dash-progress .fg { stroke: rgba(255,255,255,0.2); }
+
+  @media (max-width: 600px) {
+    .menu-layout { flex-direction: column; gap: 16px; }
+    .update-log { height: auto; padding: 12px; }
+    .card { padding: 24px; width: min(470px, 92vw); }
+    #action-group { bottom: 20px; left: 20px; gap: 20px; }
+    #dpad { width: 120px; height: 120px; }
+    .dpad-btn { width: 40px; height: 40px; font-size: 16px; }
+    .dpad-up { left: 40px; } .dpad-down { left: 40px; } .dpad-left { top: 40px; } .dpad-right { top: 40px; }
+    #dash-btn-ui { width: 74px; height: 74px; font-size: 15px; }
+    #dash-progress, #dash-progress circle { width: 74px; height: 74px; r: 37; cx: 37; cy: 37; stroke-dasharray: 232; }
   }
 </style>
 </head>
@@ -109,18 +199,41 @@
   <!-- 主菜单 -->
   <div class="overlay" id="menu">
     <div class="card">
-      <h1>🐈‍⬛ 黑猫偷吃米豆腐</h1>
-      <p class="sub">深夜的街道，米豆腐的香气飘满了整条街……</p>
-      <ul class="rules">
-        <li>🌍 广阔的开放世界，四个区域自由探索</li>
-        <li>🖱️ 鼠标指向 / 触屏拖拽 / WASD 移动</li>
-        <li>⚡ 空格键 / 右下角按键冲刺（冷却 3 秒）</li>
-        <li>🍥 吃米豆腐得分，连续吃触发连击加成</li>
-        <li>🐟 小鱼干回血 · 🌿 隐身草免疫视线</li>
-        <li>🔦 躲开手电筒！障碍物能挡住视线</li>
-      </ul>
-      <button id="startBtn">开 始 偷 吃</button>
-      <button id="menuLeaderboardBtn" class="btn-secondary" style="margin-top:16px;">🏆 本地排行榜</button>
+      <h1>🐈‍⬛ 黑猫偷吃米豆腐 <span class="version-badge">v1.1</span></h1>
+      
+      <!-- 左右分栏区域 -->
+      <div class="menu-layout">
+        <!-- 左边：游戏介绍 -->
+        <div class="menu-left">
+          <p class="sub">深夜的街道，米豆腐的香气飘满了整条街……</p>
+          <ul class="rules">
+            <li>🌍 广阔的开放世界，四个区域自由探索</li>
+            <li>⌨️ 键盘 WASD/方向键 或 左下角摇杆移动</li>
+            <li>⚡ 空格键 或 左下角按键冲刺（冷却 3 秒）</li>
+            <li>🍥 吃米豆腐得分，连续吃触发连击加成</li>
+            <li>🐟 小鱼干回血 · 🌿 隐身草免疫视线</li>
+            <li>🔦 躲开手电筒！障碍物能挡住视线</li>
+          </ul>
+        </div>
+
+        <!-- 右边：更新日志 -->
+        <div class="menu-right">
+          <div class="update-log">
+            <div class="log-title">✨ v1.1 更新内容</div>
+            <ul>
+              <li>修复触屏长按误触右键菜单的问题</li>
+              <li>修复关闭排行榜后界面卡死空白的问题</li>
+              <li>优化冲刺冷却进度环与底部按键排版</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部按钮 -->
+      <div>
+        <button id="startBtn">开 始 偷 吃</button>
+        <button id="menuLeaderboardBtn" class="btn-secondary" style="margin-top:16px;">🏆 本地排行榜</button>
+      </div>
     </div>
   </div>
 
@@ -131,7 +244,6 @@
       <p class="score-line">本局得分 <span id="finalScore">0</span></p>
       <p class="best-line">历史最高 <span id="bestScore">0</span></p>
       
-      <!-- 排行榜提交区 -->
       <div id="submitScoreArea" style="display:none; margin-bottom:20px;">
         <p style="font-size:13px; color:#7cf0a4; margin-bottom:8px;">🎉 恭喜进入前 10 名！</p>
         <input type="text" id="playerName" class="name-input" placeholder="输入你的昵称" maxlength="8" autocomplete="off">
@@ -155,15 +267,23 @@
   </div>
 </div>
 
-<!-- 虚拟方向键 -->
+<!-- 虚拟方向键和冲刺键 -->
 <div id="mobile-controls">
-  <div id="dpad">
-    <div class="dpad-btn dpad-up" data-dir="up">▲</div>
-    <div class="dpad-btn dpad-down" data-dir="down">▼</div>
-    <div class="dpad-btn dpad-left" data-dir="left">◀</div>
-    <div class="dpad-btn dpad-right" data-dir="right">▶</div>
+  <div id="action-group">
+    <div id="dpad">
+      <div class="dpad-btn dpad-up" data-dir="up">▲</div>
+      <div class="dpad-btn dpad-down" data-dir="down">▼</div>
+      <div class="dpad-btn dpad-left" data-dir="left">◀</div>
+      <div class="dpad-btn dpad-right" data-dir="right">▶</div>
+    </div>
+    <div id="dash-btn-ui">
+      <svg id="dash-progress">
+        <circle class="bg"></circle>
+        <circle class="fg" id="dash-ring"></circle>
+      </svg>
+      <span id="dash-text">冲刺</span>
+    </div>
   </div>
-  <div id="dash-btn-ui">冲刺</div>
 </div>
 
 <script>
@@ -171,26 +291,19 @@
 'use strict';
 
 /* ══════════════════════════════════════════════════════
-   纯前端排行榜逻辑（LocalStorage）
+   全局拦截右键与长按菜单
    ══════════════════════════════════════════════════════ */
-const LB_KEY = 'hemao_leaderboard_v1';
-
-function getLeaderboard() {
-  try {
-    return JSON.parse(localStorage.getItem(LB_KEY)) || [];
-  } catch (e) {
-    return [];
-  }
-}
-
-function saveLeaderboard(list) {
-  try {
-    localStorage.setItem(LB_KEY, JSON.stringify(list));
-  } catch (e) {}
-}
+window.addEventListener('contextmenu', e => { e.preventDefault(); });
 
 /* ══════════════════════════════════════════════════════
-   游戏核心常量与变量
+   排行榜逻辑
+   ══════════════════════════════════════════════════════ */
+const LB_KEY = 'hemao_leaderboard_v1';
+function getLeaderboard() { try { return JSON.parse(localStorage.getItem(LB_KEY)) || []; } catch (e) { return []; } }
+function saveLeaderboard(list) { try { localStorage.setItem(LB_KEY, JSON.stringify(list)); } catch (e) {} }
+
+/* ══════════════════════════════════════════════════════
+   核心常量
    ══════════════════════════════════════════════════════ */
 const DISPLAY_SCALE = 1.0;
 const ZOOM_OUT      = 0.8;
@@ -204,8 +317,6 @@ const F_HEART  = '15px system-ui, "Segoe UI Symbol", sans-serif';
 const F_POPUP  = '700 18px ' + FONT;
 const F_COMBO  = '800 20px ' + FONT;
 const F_REGION = '800 26px ' + FONT;
-const F_HINT   = '400 11px ' + FONT;
-const F_DASH   = '800 10px ' + FONT;
 const F_INVIS  = '700 13px ' + FONT;
 
 const cv  = document.getElementById('cv');
@@ -221,13 +332,7 @@ const mmRect = { x: 0, y: 0, w: 0, h: 0 };
 const clamp = (v, a, b) => v < a ? a : (v > b ? b : v);
 function roundRectOn(c, x, y, w, h, r) {
   r = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
-  c.beginPath();
-  c.moveTo(x + r, y);
-  c.arcTo(x + w, y,     x + w, y + h, r);
-  c.arcTo(x + w, y + h, x,     y + h, r);
-  c.arcTo(x,     y + h, x,     y,     r);
-  c.arcTo(x,     y,     x + w, y,     r);
-  c.closePath();
+  c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
 }
 const roundRect = (x, y, w, h, r) => roundRectOn(ctx, x, y, w, h, r);
 
@@ -236,43 +341,22 @@ function getGlow(r, g, b, radius) {
   const key = (((r << 16) | (g << 8) | b) * 1000) + radius;
   let c = glowCache.get(key);
   if (c) return c;
-  const size = radius * 2;
-  c = document.createElement('canvas');
-  c.width = c.height = Math.ceil(size * DPR);
-  const gc = c.getContext('2d');
-  gc.scale(DPR, DPR);
+  const size = radius * 2; c = document.createElement('canvas'); c.width = c.height = Math.ceil(size * DPR);
+  const gc = c.getContext('2d'); gc.scale(DPR, DPR);
   const grd = gc.createRadialGradient(radius, radius, 0, radius, radius, radius);
-  grd.addColorStop(0,   'rgba(' + r + ',' + g + ',' + b + ',0.95)');
-  grd.addColorStop(0.4, 'rgba(' + r + ',' + g + ',' + b + ',0.32)');
-  grd.addColorStop(1,   'rgba(' + r + ',' + g + ',' + b + ',0)');
-  gc.fillStyle = grd;
-  gc.fillRect(0, 0, size, size);
-  glowCache.set(key, c);
-  return c;
+  grd.addColorStop(0, 'rgba(' + r + ',' + g + ',' + b + ',0.95)'); grd.addColorStop(0.4, 'rgba(' + r + ',' + g + ',' + b + ',0.32)'); grd.addColorStop(1, 'rgba(' + r + ',' + g + ',' + b + ',0)');
+  gc.fillStyle = grd; gc.fillRect(0, 0, size, size); glowCache.set(key, c); return c;
 }
-function drawGlow(r, g, b, radius, x, y, alpha) {
-  ctx.globalAlpha = alpha;
-  ctx.drawImage(getGlow(r, g, b, radius), x - radius, y - radius, radius * 2, radius * 2);
-  ctx.globalAlpha = 1;
-}
+function drawGlow(r, g, b, radius, x, y, alpha) { ctx.globalAlpha = alpha; ctx.drawImage(getGlow(r, g, b, radius), x - radius, y - radius, radius * 2, radius * 2); ctx.globalAlpha = 1; }
 
 let actx = null;
-function initAudio() {
-  if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } }
-  if (actx && actx.state === 'suspended') actx.resume();
-}
+function initAudio() { if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } } if (actx && actx.state === 'suspended') actx.resume(); }
 function tone(freq, dur, type, vol, delay) {
   if (!actx) return;
-  const t0 = actx.currentTime + (delay || 0);
-  const o = actx.createOscillator();
-  const g = actx.createGain();
-  o.type = type || 'sine';
-  o.frequency.setValueAtTime(freq, t0);
-  g.gain.setValueAtTime(0.0001, t0);
-  g.gain.linearRampToValueAtTime(vol || 0.06, t0 + 0.012);
-  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-  o.connect(g); g.connect(actx.destination);
-  o.start(t0); o.stop(t0 + dur + 0.03);
+  const t0 = actx.currentTime + (delay || 0); const o = actx.createOscillator(); const g = actx.createGain();
+  o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0.0001, t0); g.gain.linearRampToValueAtTime(vol || 0.06, t0 + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g); g.connect(actx.destination); o.start(t0); o.stop(t0 + dur + 0.03);
 }
 const SFX = {
   eat()    { tone(760, .07, 'triangle', .07); tone(1140, .09, 'triangle', .04, .05); },
@@ -289,15 +373,10 @@ const SFX = {
 };
 
 function makePattern(drawFn, size) {
-  const c = document.createElement('canvas');
-  c.width = c.height = size * DPR;
-  const g = c.getContext('2d');
-  g.scale(DPR, DPR);
-  drawFn(g, size);
+  const c = document.createElement('canvas'); c.width = c.height = size * DPR;
+  const g = c.getContext('2d'); g.scale(DPR, DPR); drawFn(g, size);
   const p = ctx.createPattern(c, 'repeat');
-  if (p && p.setTransform) {
-    try { p.setTransform(new DOMMatrix([1 / DPR, 0, 0, 1 / DPR, 0, 0])); } catch (e) {}
-  }
+  if (p && p.setTransform) { try { p.setTransform(new DOMMatrix([1 / DPR, 0, 0, 1 / DPR, 0, 0])); } catch (e) {} }
   return p;
 }
 
@@ -310,7 +389,6 @@ PAT.roof = makePattern((g, s) => { g.fillStyle = '#211a25'; g.fillRect(0, 0, s, 
 const REGIONS = [ { id: 'kitchen', x: 0, y: 0, w: 1500, h: 1100 }, { id: 'garden', x: 1500, y: 0, w: 1500, h: 1100 }, { id: 'street', x: 0, y: 1100, w: 1500, h: 1100 }, { id: 'roof', x: 1500, y: 1100, w: 1500, h: 1100 } ];
 const REGION_NAMES = { kitchen: '厨 房', garden: '庭 院', street: '街 道', roof: '屋 顶' };
 const MM_COLOR = { kitchen: '#3a435f', garden: '#243c2d', street: '#232633', roof: '#2c2430' };
-
 function regionAt(x, y) { for (let i = 0; i < REGIONS.length; i++) { const r = REGIONS[i]; if (x >= r.x && x < r.x + r.w && y >= r.y && y < r.y + r.h) return r.id; } return ''; }
 
 const obstacles = [];
@@ -320,7 +398,6 @@ addRect(220, 460, 180, 90, 'table'); addRect(880, 460, 180, 90, 'table'); addRec
 addCircle(1820, 300, 55, 'tree'); addCircle(2520, 520, 62, 'tree'); addCircle(2120, 820, 58, 'tree'); addCircle(2820, 260, 48, 'tree'); addCircle(1680, 900, 52, 'tree'); addRect(2300, 190, 120, 70, 'bench');
 addRect(200, 1250, 200, 100, 'car'); addRect(900, 1600, 200, 100, 'car'); addRect(400, 1900, 80, 80, 'crate'); addRect(520, 1900, 80, 80, 'crate'); addRect(1150, 1980, 90, 60, 'crate');
 addRect(1900, 1300, 80, 80, 'chimney'); addRect(2400, 1700, 80, 80, 'chimney'); addRect(2100, 1500, 110, 60, 'ac'); addRect(2650, 1280, 90, 70, 'ac');
-
 for (const o of obstacles) { if (o.shape === 'rect') { o.cx = o.x + o.w / 2; o.cy = o.y + o.h / 2; o.cr = Math.sqrt(o.w * o.w + o.h * o.h) / 2; } else { o.cx = o.x; o.cy = o.y; o.cr = o.r; } }
 
 const guards = [
@@ -352,36 +429,70 @@ const cat = { x: SPAWN.x, y: SPAWN.y, vx: 0, vy: 0, r: 18, face: 1, invuln: 0, i
 const cam = { x: 0, y: 0 };
 let tofus = []; let parts = []; let popups = []; let footTimer = 0;
 
+/* ══════════════════════════════════════════════════════
+   输入系统：键盘 + 十字方向键
+   ══════════════════════════════════════════════════════ */
 const keys = Object.create(null);
 let uiMove = { up: false, down: false, left: false, right: false };
-let mouseX = 0, mouseY = 0, mouseActive = false;
-let touching = false, touchSX = 0, touchSY = 0, touchX = 0, touchY = 0;
-let cvRect = { left: 0, top: 0, width: 1, height: 1 };
-function refreshRect() { cvRect = cv.getBoundingClientRect(); }
-function toWorldXY(clientX, clientY) { return { x: (clientX - cvRect.left) * (VIEW_W / cvRect.width), y: (clientY - cvRect.top) * (VIEW_H / cvRect.height) }; }
 
-cv.addEventListener('pointerdown', (e) => { initAudio(); refreshRect(); const p = toWorldXY(e.clientX, e.clientY); if (e.pointerType === 'mouse') { mouseX = p.x; mouseY = p.y; mouseActive = true; } else { touching = true; touchSX = touchX = p.x; touchSY = touchY = p.y; } if (cv.setPointerCapture) { try { cv.setPointerCapture(e.pointerId); } catch (err) {} } });
-cv.addEventListener('pointermove', (e) => { const p = toWorldXY(e.clientX, e.clientY); if (e.pointerType === 'mouse') { mouseX = p.x; mouseY = p.y; mouseActive = true; } else if (touching) { touchX = p.x; touchY = p.y; } });
-cv.addEventListener('pointerup', (e) => { if (e.pointerType === 'mouse') return; touching = false; });
-cv.addEventListener('pointercancel', () => { touching = false; });
-cv.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') mouseActive = false; });
-
-window.addEventListener('keydown', (e) => { const k = e.key.toLowerCase(); const wasDown = keys[k]; keys[k] = true; if (k === 'arrowup' || k === 'arrowdown' || k === 'arrowleft' || k === 'arrowright' || k === ' ') e.preventDefault(); if (k === 'm' && !wasDown) game.showMinimap = !game.showMinimap; if ((k === ' ' || k === 'enter') && (game.mode === 'menu' || game.mode === 'over')) { initAudio(); startGame(); } if (k === ' ' && game.mode === 'playing' && !wasDown) tryDash(); });
+window.addEventListener('keydown', (e) => {
+  const k = e.key.toLowerCase(); const wasDown = keys[k]; keys[k] = true;
+  if (['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault();
+  if (k === 'm' && !wasDown) game.showMinimap = !game.showMinimap;
+  if ((k === ' ' || k === 'enter') && (game.mode === 'menu' || game.mode === 'over')) { initAudio(); startGame(); }
+  if (k === ' ' && game.mode === 'playing' && !wasDown) tryDash();
+});
 window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
-window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; touching = false; });
+window.addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 
-function tryDash() { if (cat.dashCd > 0 || cat.dashTime > 0) return; let dx = 0, dy = 0; if (keys['a'] || keys['arrowleft'] || uiMove.left) dx -= 1; if (keys['d'] || keys['arrowright'] || uiMove.right) dx += 1; if (keys['w'] || keys['arrowup'] || uiMove.up) dy -= 1; if (keys['s'] || keys['arrowdown'] || uiMove.down) dy += 1; if (dx === 0 && dy === 0) { const spd = Math.sqrt(cat.vx * cat.vx + cat.vy * cat.vy); if (spd > 25) { dx = cat.vx / spd; dy = cat.vy / spd; } else { dx = cat.face; dy = 0; } } else { const m = Math.sqrt(dx * dx + dy * dy); dx /= m; dy /= m; } cat.dashTime = 0.16; cat.dashDirX = dx; cat.dashDirY = dy; cat.dashCd = 3.0; cat.invuln = Math.max(cat.invuln, 0.24); for (let i = 0; i < 10; i++) { const a = Math.random() * TAU; parts.push({ x: cat.x, y: cat.y, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160, life: 0.4, max: 0.4, color: '#7cf0a4', size: 2 + Math.random() * 3 }); } SFX.dash(); }
-
-if ('ontouchstart' in window || navigator.maxTouchPoints > 0) { document.body.classList.add('is-touch'); }
 const dpadBtns = document.querySelectorAll('.dpad-btn');
-dpadBtns.forEach(btn => { const dir = btn.getAttribute('data-dir'); const setActive = (state) => { uiMove[dir] = state; if (state) btn.classList.add('active'); else btn.classList.remove('active'); }; btn.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); btn.setPointerCapture(e.pointerId); setActive(true); }); btn.addEventListener('pointerup', (e) => { e.preventDefault(); e.stopPropagation(); setActive(false); }); btn.addEventListener('pointercancel', (e) => { setActive(false); }); });
+dpadBtns.forEach(btn => { 
+  const dir = btn.getAttribute('data-dir'); 
+  const setActive = (state) => { 
+    uiMove[dir] = state; 
+    if (state) btn.classList.add('active'); 
+    else btn.classList.remove('active'); 
+  }; 
+  btn.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); btn.setPointerCapture(e.pointerId); setActive(true); }); 
+  btn.addEventListener('pointerup', (e) => { e.preventDefault(); e.stopPropagation(); setActive(false); }); 
+  btn.addEventListener('pointercancel', (e) => { setActive(false); }); 
+});
+
 const dashBtn = document.getElementById('dash-btn-ui');
-dashBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); dashBtn.setPointerCapture(e.pointerId); dashBtn.classList.add('active'); if (game.mode === 'playing') tryDash(); });
+const dashText = document.getElementById('dash-text');
+const dashRing = document.getElementById('dash-ring');
+const RING_CIRCUMFERENCE = 264;
+
+dashBtn.addEventListener('pointerdown', (e) => {
+  e.preventDefault(); e.stopPropagation();
+  dashBtn.setPointerCapture(e.pointerId);
+  dashBtn.classList.add('active');
+  if (game.mode === 'playing') tryDash();
+});
 dashBtn.addEventListener('pointerup', (e) => { e.preventDefault(); e.stopPropagation(); dashBtn.classList.remove('active'); });
-dashBtn.addEventListener('pointercancel', (e) => { dashBtn.classList.remove('active'); });
+dashBtn.addEventListener('pointercancel', () => { dashBtn.classList.remove('active'); });
+
+function tryDash() {
+  if (cat.dashCd > 0 || cat.dashTime > 0) return;
+  let dx = 0, dy = 0;
+  if (keys['a'] || keys['arrowleft'] || uiMove.left) dx -= 1; 
+  if (keys['d'] || keys['arrowright'] || uiMove.right) dx += 1; 
+  if (keys['w'] || keys['arrowup'] || uiMove.up) dy -= 1; 
+  if (keys['s'] || keys['arrowdown'] || uiMove.down) dy += 1;
+  
+  if (dx === 0 && dy === 0) { 
+    const spd = Math.sqrt(cat.vx * cat.vx + cat.vy * cat.vy); 
+    if (spd > 25) { dx = cat.vx / spd; dy = cat.vy / spd; } 
+    else { dx = cat.face; dy = 0; } 
+  } else { 
+    const m = Math.sqrt(dx * dx + dy * dy); dx /= m; dy /= m; 
+  }
+  cat.dashTime = 0.16; cat.dashDirX = dx; cat.dashDirY = dy; cat.dashCd = 3.0; cat.invuln = Math.max(cat.invuln, 0.24);
+  for (let i = 0; i < 10; i++) { const a = Math.random() * TAU; parts.push({ x: cat.x, y: cat.y, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160, life: 0.4, max: 0.4, color: '#7cf0a4', size: 2 + Math.random() * 3 }); } SFX.dash();
+}
 
 /* ══════════════════════════════════════════════════════
-   排行榜 UI 逻辑 (纯本地)
+   排行榜 UI 逻辑
    ══════════════════════════════════════════════════════ */
 const elMenu = document.getElementById('menu');
 const elOver = document.getElementById('gameover');
@@ -392,55 +503,41 @@ const elBest = document.getElementById('bestScore');
 const elSubmitArea = document.getElementById('submitScoreArea');
 const elPlayerName = document.getElementById('playerName');
 const elSubmitBtn = document.getElementById('submitScoreBtn');
-
 let pendingScore = 0;
 
 document.getElementById('startBtn').addEventListener('click', () => { initAudio(); startGame(); });
 document.getElementById('againBtn').addEventListener('click', () => { initAudio(); startGame(); });
 document.getElementById('menuLeaderboardBtn').addEventListener('click', () => { showLeaderboard(); });
 document.getElementById('gameoverLeaderboardBtn').addEventListener('click', () => { showLeaderboard(); });
-document.getElementById('closeLbBtn').addEventListener('click', () => { elLeaderboard.classList.add('hidden'); });
+
+document.getElementById('closeLbBtn').addEventListener('click', () => { 
+  elLeaderboard.classList.add('hidden'); 
+  if (game.mode === 'menu') {
+    elMenu.classList.remove('hidden');
+  } else if (game.mode === 'over') {
+    elOver.classList.remove('hidden');
+  }
+});
 
 function showLeaderboard() {
-  elMenu.classList.add('hidden');
-  elOver.classList.add('hidden');
-  elLeaderboard.classList.remove('hidden');
-  
+  elMenu.classList.add('hidden'); elOver.classList.add('hidden'); elLeaderboard.classList.remove('hidden');
   const data = getLeaderboard();
-  if (data.length === 0) {
-    elLbList.innerHTML = '<p style="color:#8f9cc4; text-align:center;">暂无记录，快来抢占第一！</p>';
-    return;
-  }
-
+  if (data.length === 0) { elLbList.innerHTML = '<p style="color:#8f9cc4; text-align:center;">暂无记录，快来抢占第一！</p>'; return; }
   let html = '';
   data.forEach((item, index) => {
-    let cls = '';
-    if (index === 0) cls = 'top1';
-    else if (index === 1) cls = 'top2';
-    else if (index === 2) cls = 'top3';
-    html += `<div class="lb-row ${cls}">
-      <div class="lb-rank">#${index + 1}</div>
-      <div class="lb-name">${escapeHTML(item.name)}</div>
-      <div class="lb-score">${item.score}</div>
-    </div>`;
+    let cls = ''; if (index === 0) cls = 'top1'; else if (index === 1) cls = 'top2'; else if (index === 2) cls = 'top3';
+    html += `<div class="lb-row ${cls}"><div class="lb-rank">#${index + 1}</div><div class="lb-name">${escapeHTML(item.name)}</div><div class="lb-score">${item.score}</div></div>`;
   });
   elLbList.innerHTML = html;
 }
 
-function escapeHTML(str) {
-  return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
-}
+function escapeHTML(str) { return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)); }
 
 elSubmitBtn.addEventListener('click', () => {
   const name = elPlayerName.value.trim() || '匿名猫咪';
-  const data = getLeaderboard();
-  
-  data.push({ name: name.substring(0,8), score: pendingScore });
-  data.sort((a, b) => b.score - a.score);
-  saveLeaderboard(data.slice(0, 10));
-
-  elSubmitArea.style.display = 'none';
-  showLeaderboard();
+  const data = getLeaderboard(); data.push({ name: name.substring(0,8), score: pendingScore });
+  data.sort((a, b) => b.score - a.score); saveLeaderboard(data.slice(0, 10));
+  elSubmitArea.style.display = 'none'; showLeaderboard();
 });
 
 function resetGuard(g) { const w0 = g.waypoints[0]; g.x = w0[0]; g.y = w0[1]; g.wp = 1 % g.waypoints.length; g.wait = 0; const nw = g.waypoints[g.wp]; g.angle = g.baseAngle = Math.atan2(nw[1] - g.y, nw[0] - g.x); g._sees = false; }
@@ -453,34 +550,22 @@ function startGame() {
   while (tofus.length < game.tofuTarget) { if (!spawnItem()) break; }
   for (const g of guards) resetGuard(g);
   cam.x = clamp(cat.x - VIEW_W / 2, 0, Math.max(0, WORLD_W - VIEW_W)); cam.y = clamp(cat.y - VIEW_H / 2, 0, Math.max(0, WORLD_H - VIEW_H));
-  mouseActive = false; touching = false; uiMove = { up: false, down: false, left: false, right: false }; dpadBtns.forEach(b => b.classList.remove('active'));
+  uiMove = { up: false, down: false, left: false, right: false }; dpadBtns.forEach(b => b.classList.remove('active'));
   elMenu.classList.add('hidden'); elOver.classList.add('hidden'); elLeaderboard.classList.add('hidden');
-  elSubmitArea.style.display = 'none';
-  SFX.start();
+  elSubmitArea.style.display = 'none'; SFX.start();
 }
 
 function gameOver() {
-  game.mode = 'over';
-  if (game.score > game.best) { game.best = game.score; try { localStorage.setItem('hemao_best9', String(game.best)); } catch (e) {} }
-  elFinal.textContent = game.score; elBest.textContent = game.best;
-  
-  pendingScore = game.score;
-
+  game.mode = 'over'; if (game.score > game.best) { game.best = game.score; try { localStorage.setItem('hemao_best9', String(game.best)); } catch (e) {} }
+  elFinal.textContent = game.score; elBest.textContent = game.best; pendingScore = game.score;
   if (game.score > 0) {
-    elSubmitArea.style.display = 'none';
-    const list = getLeaderboard();
-    // 如果不足 10 人，或者分数比最后一名高，就可以上榜
+    elSubmitArea.style.display = 'none'; const list = getLeaderboard();
     if (list.length < 10 || game.score > list[list.length - 1].score) {
-      elSubmitArea.style.display = 'block';
-      elPlayerName.value = localStorage.getItem('hemao_player_name') || '';
-      elSubmitBtn.textContent = '保 存 分 数';
+      elSubmitArea.style.display = 'block'; elPlayerName.value = localStorage.getItem('hemao_player_name') || ''; elSubmitBtn.textContent = '保 存 分 数';
     }
   }
-
-  elOver.classList.remove('hidden');
-  SFX.over();
+  elOver.classList.remove('hidden'); SFX.over();
 }
-
 elPlayerName.addEventListener('input', () => { localStorage.setItem('hemao_player_name', elPlayerName.value.trim()); });
 
 function spawnItem() {
@@ -562,13 +647,34 @@ function updateCat(dt) {
     cat.invuln = Math.max(0, cat.invuln - dt); cat.invis = Math.max(0, cat.invis - dt); cat.dashCd = Math.max(0, cat.dashCd - dt); return;
   }
   cat.dashCd = Math.max(0, cat.dashCd - dt);
+
+  // 冲刺冷却 UI 更新
+  if (cat.dashCd > 0) {
+    if (!dashBtn.classList.contains('cooldown')) {
+      dashBtn.classList.add('cooldown');
+      dashText.textContent = '';
+    }
+    const pct = cat.dashCd / 3;
+    dashRing.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - pct);
+    const text = cat.dashCd.toFixed(1);
+    if (dashText.textContent !== text) dashText.textContent = text;
+  } else {
+    if (dashBtn.classList.contains('cooldown')) {
+      dashBtn.classList.remove('cooldown');
+      dashText.textContent = '冲刺';
+      dashRing.style.strokeDashoffset = 0;
+    }
+  }
+
   let kx = 0, ky = 0;
-  if (keys['a'] || keys['arrowleft'] || uiMove.left) kx -= 1; if (keys['d'] || keys['arrowright'] || uiMove.right) kx += 1;
-  if (keys['w'] || keys['arrowup'] || uiMove.up) ky -= 1; if (keys['s'] || keys['arrowdown'] || uiMove.down) ky += 1;
+  if (keys['a'] || keys['arrowleft'] || uiMove.left) kx -= 1; 
+  if (keys['d'] || keys['arrowright'] || uiMove.right) kx += 1;
+  if (keys['w'] || keys['arrowup'] || uiMove.up) ky -= 1; 
+  if (keys['s'] || keys['arrowdown'] || uiMove.down) ky += 1;
+
   let dirX = 0, dirY = 0, mag = 0;
   if (kx || ky) { const m = Math.sqrt(kx * kx + ky * ky); dirX = kx / m; dirY = ky / m; mag = 1; }
-  else if (touching) { const dx = touchX - touchSX, dy = touchY - touchSY; const d = Math.sqrt(dx * dx + dy * dy); if (d > 8) { dirX = dx / d; dirY = dy / d; mag = Math.min(1, (d - 8) / 100); } }
-  else if (mouseActive) { const dx = mouseX - VIEW_W * 0.5; const dy = mouseY - VIEW_H * 0.5; const d = Math.sqrt(dx * dx + dy * dy); if (d > 12) { dirX = dx / d; dirY = dy / d; mag = Math.min(1, (d - 12) / 170); } }
+
   const resp = 1 - Math.exp(-15 * dt); cat.vx += (dirX * MAX * mag - cat.vx) * resp; cat.vy += (dirY * MAX * mag - cat.vy) * resp;
   cat.x += cat.vx * dt; cat.y += cat.vy * dt;
   const p = collideCircle(cat.x, cat.y, cat.r); cat.x = clamp(p.x, cat.r + 8, WORLD_W - cat.r - 8); cat.y = clamp(p.y, cat.r + 8, WORLD_H - cat.r - 8);
@@ -581,7 +687,7 @@ function updateCat(dt) {
 function updateAlert(dt) { if (cat.invuln > 0 || cat.invis > 0) { game.alert = Math.max(0, game.alert - dt * 2.5); return; } game.alert += (game.lit ? 1.6 : -1.3) * dt; if (game.alert >= 1) { game.alert = 1; onCaught(); return; } if (game.alert < 0) game.alert = 0; }
 
 function onCaught() {
-  game.alert = 0; game.lives--; game.shake = 22; game.flash = 1; cat.invuln = 2.8; cat.invis = 0; cat.x = SPAWN.x; cat.y = SPAWN.y; cat.vx = cat.vy = 0; cat.r = 18; game.combo = 0; game.comboTimer = 0; game.lit = false; mouseActive = false; touching = false;
+  game.alert = 0; game.lives--; game.shake = 22; game.flash = 1; cat.invuln = 2.8; cat.invis = 0; cat.x = SPAWN.x; cat.y = SPAWN.y; cat.vx = cat.vy = 0; cat.r = 18; game.combo = 0; game.comboTimer = 0; game.lit = false;
   burst(cat.x, cat.y, '#ff6b81', 26, 280); popup(cat.x, cat.y - 48, '被抓到了！', '#ff6b81'); SFX.caught();
   if (game.lives <= 0) gameOver();
 }
@@ -819,20 +925,10 @@ function drawHUD() {
   const slots = Math.max(3, game.lives); ctx.font = F_HEART;
   for (let i = 0; i < slots; i++) { const on = i < game.lives; ctx.fillStyle = on ? '#ff5d7a' : 'rgba(255,255,255,0.12)'; if (on) { ctx.shadowColor = 'rgba(255,90,120,0.55)'; ctx.shadowBlur = 8; } else ctx.shadowBlur = 0; ctx.fillText('♥', px + 14 + i * 19, py + 70); }
   ctx.shadowBlur = 0;
-  const dcdX = px + panelW + 14; const dcdY = py; const dcdSize = 58; const dcdR = 19;
-  ctx.fillStyle = 'rgba(8,11,20,0.62)'; roundRect(dcdX, dcdY, dcdSize, dcdSize, 11); ctx.fill();
-  ctx.strokeStyle = cat.dashCd > 0 ? 'rgba(120,155,225,0.2)' : 'rgba(124,240,164,0.7)'; ctx.lineWidth = 1.6; roundRect(dcdX, dcdY, dcdSize, dcdSize, 11); ctx.stroke();
-  ctx.save(); ctx.translate(dcdX + dcdSize / 2, dcdY + dcdSize / 2);
-  ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, dcdR, 0, TAU); ctx.stroke();
-  if (cat.dashCd > 0) { ctx.strokeStyle = '#7cf0a4'; ctx.beginPath(); ctx.arc(0, 0, dcdR, -Math.PI / 2, -Math.PI / 2 + TAU * (1 - cat.dashCd / 3)); ctx.stroke(); }
-  else { ctx.strokeStyle = '#7cf0a4'; ctx.shadowColor = 'rgba(124,240,164,0.9)'; ctx.shadowBlur = 8; ctx.beginPath(); ctx.arc(0, 0, dcdR, 0, TAU); ctx.stroke(); ctx.shadowBlur = 0; }
-  ctx.font = F_DASH; ctx.textAlign = 'center'; ctx.fillStyle = cat.dashCd > 0 ? 'rgba(180,200,240,0.75)' : '#7cf0a4'; ctx.fillText(cat.dashCd > 0 ? cat.dashCd.toFixed(1) : '冲刺', 0, 1);
-  ctx.restore();
   if (game.combo >= 2 && game.comboTimer > 0) { ctx.textAlign = 'center'; ctx.globalAlpha = Math.min(1, game.comboTimer / 0.6); ctx.font = F_COMBO; ctx.fillStyle = '#ff9ec4'; ctx.shadowColor = 'rgba(255,120,180,0.7)'; ctx.shadowBlur = 14; ctx.fillText('COMBO x' + game.combo, W * 0.5, 40); ctx.shadowBlur = 0; ctx.globalAlpha = 1; }
   if (weather.flashMsg > 0) { ctx.globalAlpha = Math.min(1, weather.flashMsg / 0.5); ctx.textAlign = 'center'; ctx.font = '800 16px ' + FONT; ctx.fillStyle = weather.type === 'rain' ? '#9cc4ff' : '#ffd166'; ctx.shadowColor = 'rgba(0,0,0,0.85)'; ctx.shadowBlur = 12; ctx.fillText(weather.flashText, W * 0.5, 132); ctx.shadowBlur = 0; ctx.globalAlpha = 1; }
   if (cat.invis > 0 && game.mode === 'playing') { ctx.textAlign = 'center'; ctx.font = F_INVIS; ctx.fillStyle = '#7cf0a4'; ctx.shadowColor = 'rgba(120,255,160,0.6)'; ctx.shadowBlur = 8; ctx.fillText('🌿 隐身 ' + cat.invis.toFixed(1) + 's', W * 0.5, H - 42); ctx.shadowBlur = 0; }
   if (game.regionTimer > 0 && game.currentRegion) { ctx.globalAlpha = Math.min(1, game.regionTimer / 0.5); ctx.textAlign = 'center'; ctx.font = F_REGION; ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(160,190,255,0.7)'; ctx.shadowBlur = 18; ctx.fillText(REGION_NAMES[game.currentRegion] || '', W * 0.5, 96); ctx.shadowBlur = 0; ctx.globalAlpha = 1; }
-  if (game.mode === 'playing' && !document.body.classList.contains('is-touch')) { ctx.textAlign = 'center'; ctx.font = F_HINT; ctx.fillStyle = 'rgba(130,150,195,0.42)'; ctx.fillText('鼠标指向 / 拖动摇杆 / WASD 移动 · 空格冲刺 · M 键开关小地图', W * 0.5, H - 14); }
   if (game.mode === 'playing') drawWeatherPanel();
   if (game.mmAlpha > 0.02) { ctx.globalAlpha = game.mmAlpha; drawMinimap(); ctx.globalAlpha = 1; }
 }
@@ -861,10 +957,10 @@ function resize() {
   UI_W = cssW; UI_H = cssH; VIEW_W = Math.round(cssW / ZOOM_OUT); VIEW_H = Math.round(cssH / ZOOM_OUT);
   cv.width = Math.round(VIEW_W * DPR); cv.height = Math.round(VIEW_H * DPR); cv.style.width = cssW + 'px'; cv.style.height = cssH + 'px';
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  buildVignette(); buildMinimapStatic(); initRain(); refreshRect();
+  buildVignette(); buildMinimapStatic(); initRain();
   cam.x = clamp(cam.x, 0, Math.max(0, WORLD_W - VIEW_W)); cam.y = clamp(cam.y, 0, Math.max(0, WORLD_H - VIEW_H));
 }
-window.addEventListener('resize', resize); window.addEventListener('scroll', refreshRect, { passive: true });
+window.addEventListener('resize', resize);
 
 let lastTime = performance.now();
 function loop(now) { const dt = (now - lastTime) / 1000; lastTime = now; update(dt > 0.05 ? 0.05 : dt); render(); requestAnimationFrame(loop); }
